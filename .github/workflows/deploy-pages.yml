@@ -11,8 +11,9 @@ name: Deploy dist/ to GitHub Pages
 #   - 将 main 分支的 dist/ 目录同步到 gh-pages 分支
 #   - GitHub Pages 会自动从 gh-pages 构建并发布
 #
-# 权限：
-#   - 需要 contents: write（推送 gh-pages 分支）
+# 实现方式：
+#   - 使用 peaceiris/actions-gh-pages（成熟稳定的 action）
+#   - 内部自动处理 Git 身份、token 认证
 # =============================================================
 
 on:
@@ -44,40 +45,28 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: 准备发布目录
+      - name: 添加 .nojekyll 标记
         run: |
-          # 创建临时发布目录
-          mkdir -p _publish
-          # 复制 dist/ 全部内容
-          cp -r dist/. _publish/
-          # 添加 .nojekyll 标记，避免 Jekyll 处理
-          touch _publish/.nojekyll
-          # 复制 .gitignore（保留忽略规则）
-          cp .gitignore _publish/.gitignore 2>/dev/null || true
+          # .nojekyll 让 GitHub Pages 跳过 Jekyll 处理
+          # （Jekyll 会忽略以 _ 开头的文件，但我们有中文文件名等需要绕过）
+          touch dist/.nojekyll
 
       - name: 部署到 gh-pages 分支
-        env:
-          GIT_USER_NAME: 'github-actions[bot]'
-          GIT_USER_EMAIL: 'github-actions[bot]@users.noreply.github.com'
-        run: |
-          cd _publish
-
-          # 在临时目录里配置 git（--local 只对当前仓库生效）
-          git init -b main
-          git config --local user.name "${GIT_USER_NAME}"
-          git config --local user.email "${GIT_USER_EMAIL}"
-
-          git add .
-          git commit -m "deploy: auto-sync dist/ from main @ ${GITHUB_SHA::7}"
-
-          # 使用 GITHUB_TOKEN 推送
-          git push -f \
-            https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git \
-            HEAD:gh-pages
-
-      - name: 清理
-        if: always()
-        run: rm -rf _publish
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # 部署源目录
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          # 部署时把 dist/.nojekyll 复制到 gh-pages 根目录
+          keep_files: false
+          # 提交信息
+          commit_message: "deploy: auto-sync dist/ from main @ ${{ github.sha }}"
+          # 强制推送（覆盖历史）
+          force_orphan: true
+          # 作者信息
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
 
       - name: 验证部署
         if: success()
