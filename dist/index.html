@@ -1144,7 +1144,14 @@ function extractGameType(text) {
     '派对','节奏','教育','益智','赛车','动画','反应','健身','艺术',
     '竞速','解谜','模拟'
   ];
-  for (const t of types) { if (text.includes(t)) return t; }
+  console.log('[extractGameType-debug] input text:', text.substring(0, 300));
+  for (const t of types) {
+    if (text.includes(t)) {
+      console.log('[extractGameType-debug] matched:', t);
+      return t;
+    }
+  }
+  console.log('[extractGameType-debug] no match');
   return '';
 }
 
@@ -1212,16 +1219,20 @@ function extractAge(text) {
 }
 
 function extractPlayers(text) {
+  console.log('[extractPlayers-debug] input text:', text.substring(0, 300));
   // 范围格式：1~4人、2-4人、1-2人
   const rangeMatch = text.match(/(\d+)\s*[~\-到至]\s*(\d+)\s*人/);
+  console.log('[extractPlayers-debug] rangeMatch:', rangeMatch);
   if (rangeMatch) return `${rangeMatch[1]}~${rangeMatch[2]}人`;
 
   // "仅限" / "限定" / "支持" / "最多" / "至少" 后跟数字
   const limitMatch = text.match(/(?:仅限|限定|支持|最多|至少)\s*(\d+)\s*人/);
+  console.log('[extractPlayers-debug] limitMatch:', limitMatch);
   if (limitMatch) return `仅限${limitMatch[1]}人`;
 
   // 数字 + 人
   const numMatch = text.match(/(\d+)\s*人(?!\s*[以之])/);
+  console.log('[extractPlayers-debug] numMatch:', numMatch);
   if (numMatch) return `${numMatch[1]}人`;
 
   // 关键词兜底
@@ -1231,6 +1242,7 @@ function extractPlayers(text) {
   if (/四人|4\s*人/.test(text)) return '4人';
   if (/多人|团队|组队|在线|联机/.test(text)) return '多人';
 
+  console.log('[extractPlayers-debug] no match, returning empty');
   return '';
 }
 
