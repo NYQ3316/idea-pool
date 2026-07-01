@@ -520,6 +520,176 @@ textarea {
   background: rgba(239, 68, 68, 0.25);
 }
 
+/* ===== 标签复选框 ===== */
+.tag-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.tag-chip:hover {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.3);
+  color: rgba(255,255,255,0.8);
+}
+.tag-chip.active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4));
+  border-color: #7c3aed;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+}
+.tag-chip.card-tag {
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: default;
+  background: rgba(124, 58, 237, 0.25);
+  border-color: rgba(124, 58, 237, 0.3);
+  color: #c4b5fd;
+}
+
+/* ===== 区间输入 ===== */
+.range-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.range-input {
+  width: 100px;
+  padding: 10px 12px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: rgba(0,0,0,0.2);
+  color: #e0e0e0;
+  text-align: center;
+  transition: all 0.2s;
+}
+.range-input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+.range-input::placeholder {
+  color: rgba(255,255,255,0.25);
+}
+.range-sep {
+  color: rgba(255,255,255,0.4);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* ===== 卡片内联编辑 ===== */
+.card-meta-editable {
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: -2px -6px;
+}
+.card-meta-editable:hover {
+  background: rgba(124, 58, 237, 0.12);
+}
+.card-meta-editable.editing {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px dashed rgba(124, 58, 237, 0.4);
+}
+.card-edit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.card-edit-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.card-edit-panel {
+  background: #1a1a3e;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.card-edit-panel h3 {
+  color: #fff;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+.card-edit-panel .form-group {
+  margin-bottom: 16px;
+}
+.card-edit-panel label {
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+.card-edit-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.card-edit-btns button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.btn-save {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+}
+.btn-save:hover { box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
+.btn-cancel {
+  background: rgba(255,255,255,0.08);
+  color: #b0b0d0;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.btn-cancel:hover { background: rgba(255,255,255,0.14); color: white; }
+.btn-edit-card {
+  background: rgba(124, 58, 237, 0.1);
+  color: #c4b5fd;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-right: 8px;
+}
+.btn-edit-card:hover { background: rgba(124, 58, 237, 0.25); }
+
 .empty-state {
   text-align: center;
   color: rgba(255,255,255,0.3);
@@ -637,12 +807,47 @@ textarea {
 
 我想做一个**体感休闲游戏**，类似水果忍者的玩法，用体感手柄挥砍水果。
 
-- 适合年龄：6-12岁
-- 游戏人数：单人
-- 操作方式：体感
-
 参考原型：http://example.com" required></textarea>
-        <div class="hint">支持 Markdown 格式。系统会自动提取：游戏类型、参考原型链接、建议年龄、游戏人数、操作方式。可直接在文本框中 Ctrl+V 粘贴截图。</div>
+        <div class="hint">支持 Markdown 格式。系统会自动提取参考原型链接。可直接在文本框中 Ctrl+V 粘贴截图。</div>
+      </div>
+
+      <!-- 游戏类型 - 多选标签 -->
+      <div class="form-group">
+        <label>🎮 游戏类型</label>
+        <div class="tag-checkbox-group" id="gameTypeTags">
+          <span class="tag-chip" data-val="竞技">竞技</span><span class="tag-chip" data-val="动作">动作</span><span class="tag-chip" data-val="滑雪">滑雪</span><span class="tag-chip" data-val="射击">射击</span><span class="tag-chip" data-val="球类">球类</span><span class="tag-chip" data-val="合作">合作</span><span class="tag-chip" data-val="舞蹈">舞蹈</span><span class="tag-chip" data-val="科普">科普</span><span class="tag-chip" data-val="亲子">亲子</span><span class="tag-chip" data-val="派对">派对</span><span class="tag-chip" data-val="节奏">节奏</span><span class="tag-chip" data-val="教育">教育</span><span class="tag-chip" data-val="益智">益智</span><span class="tag-chip" data-val="赛车">赛车</span><span class="tag-chip" data-val="动画">动画</span><span class="tag-chip" data-val="反应">反应</span><span class="tag-chip" data-val="健身">健身</span><span class="tag-chip" data-val="艺术">艺术</span><span class="tag-chip" data-val="竞速">竞速</span><span class="tag-chip" data-val="解谜">解谜</span><span class="tag-chip" data-val="模拟">模拟</span>
+        </div>
+      </div>
+
+      <!-- 建议年龄 - 区间输入 -->
+      <div class="form-group">
+        <label>👶 建议年龄</label>
+        <div class="range-input-row">
+          <input type="text" id="ageMin" placeholder="最小年龄" class="range-input" maxlength="3">
+          <span class="range-sep">~</span>
+          <input type="text" id="ageMax" placeholder="最大年龄" class="range-input" maxlength="3">
+        </div>
+        <div class="hint">留空表示不限。系统会自动从描述中提取。</div>
+      </div>
+
+      <!-- 游戏人数 - 区间输入 -->
+      <div class="form-group">
+        <label>👥 游戏人数</label>
+        <div class="range-input-row">
+          <input type="text" id="playersMin" placeholder="最少人数" class="range-input" maxlength="3">
+          <span class="range-sep">~</span>
+          <input type="text" id="playersMax" placeholder="最多人数" class="range-input" maxlength="3">
+        </div>
+        <div class="hint">留空表示不限。系统会自动从描述中提取。</div>
+      </div>
+
+      <!-- 操作方式 - 多选标签 -->
+      <div class="form-group">
+        <label>🕹️ 操作方式</label>
+        <div class="tag-checkbox-group" id="controlTags">
+          <span class="tag-chip" data-val="手臂">手臂</span><span class="tag-chip" data-val="上半身晃动">上半身晃动</span><span class="tag-chip" data-val="腿部">腿部</span><span class="tag-chip" data-val="跳">跳</span><span class="tag-chip" data-val="蹲">蹲</span><span class="tag-chip" data-val="左右移动">左右移动</span><span class="tag-chip" data-val="陀螺仪">陀螺仪</span><span class="tag-chip" data-val="手势">手势</span><span class="tag-chip" data-val="头部">头部</span>
+        </div>
+        <div class="hint">系统会自动从描述中提取，也可手动勾选。</div>
       </div>
 
       <!-- 图片上传区域 -->
@@ -690,21 +895,20 @@ textarea {
   <img id="lightboxImg" src="">
 </div>
 
+<!-- 卡片编辑弹窗 -->
+<div class="card-edit-overlay" id="cardEditOverlay">
+  <div class="card-edit-panel" id="cardEditPanel"></div>
+</div>
+
 <script>
-const STORAGE_KEY = 'creative_ideas_v3';
-const NEXT_ID_KEY = 'creative_next_id_v3';
+const STORAGE_KEY = 'creative_ideas_v4';
+const NEXT_ID_KEY = 'creative_next_id_v4';
 
 // 当前表单中已添加的图片（未提交）
 let pendingImages = [];
 
 // 后端 API 地址
-// 本地开发时用 http://localhost:3001
-// 部署后改为你的后端地址，例如 https://your-app.vercel.app
-const API_BASE_URL = (function() {
-  // 从当前页面 URL 自动推断：如果是 Pages 部署，尝试同域 3001 端口
-  // 也可以手动修改这里
-  return ''; // ← 留空则用 localStorage 存 base64，填上地址则走后端上传
-})();
+const API_BASE_URL = '';
 
 // 上传文件到后端
 async function uploadFileToBackend(file, name) {
@@ -713,43 +917,53 @@ async function uploadFileToBackend(file, name) {
     showToast('正在上传图片...');
     const formData = new FormData();
     formData.append('image', file, name);
-    const res = await fetch(`${API_BASE_URL}/api/upload`, {
-      method: 'POST',
-      body: formData
-    });
+    const res = await fetch(`${API_BASE_URL}/api/upload`, { method: 'POST', body: formData });
     const data = await res.json();
-    if (data.success) {
-      showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`);
-      return data.url;
-    }
+    if (data.success) { showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`); return data.url; }
     throw new Error(data.error || '上传失败');
-  } catch (err) {
-    showToast(`上传失败: ${err.message}`, true);
-    return null;
-  }
+  } catch (err) { showToast(`上传失败: ${err.message}`, true); return null; }
 }
 
-// 上传 base64 到后端
 async function uploadBase64ToBackend(base64, name) {
   if (!API_BASE_URL) return null;
   try {
     showToast('正在上传图片...');
-    const res = await fetch(`${API_BASE_URL}/api/upload-base64`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ base64, name })
-    });
+    const res = await fetch(`${API_BASE_URL}/api/upload-base64`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ base64, name }) });
     const data = await res.json();
-    if (data.success) {
-      showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`);
-      return data.url;
-    }
+    if (data.success) { showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`); return data.url; }
     throw new Error(data.error || '上传失败');
-  } catch (err) {
-    showToast(`上传失败: ${err.message}`, true);
-    return null;
-  }
+  } catch (err) { showToast(`上传失败: ${err.message}`, true); return null; }
 }
+
+// ===== 标签芯片初始化 =====
+function initTagChips(containerId, activeValues) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const active = activeValues || [];
+  container.querySelectorAll('.tag-chip').forEach(chip => {
+    const val = chip.dataset.val;
+    if (active.includes(val)) chip.classList.add('active');
+    chip.addEventListener('click', () => chip.classList.toggle('active'));
+  });
+}
+function getTagChipValues(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return [];
+  const vals = [];
+  container.querySelectorAll('.tag-chip.active').forEach(chip => vals.push(chip.dataset.val));
+  return vals;
+}
+function setTagChipValues(containerId, values) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.tag-chip').forEach(chip => {
+    if (values.includes(chip.dataset.val)) chip.classList.add('active'); else chip.classList.remove('active');
+  });
+}
+
+// 初始化表单标签
+initTagChips('gameTypeTags', []);
+initTagChips('controlTags', []);
 
 // ===== 自适应高度文本框 =====
 const rawTextArea = document.getElementById('rawText');
@@ -765,61 +979,34 @@ rawTextArea.addEventListener('input', function() {
 rawTextArea.addEventListener('paste', function(e) {
   const cd = e.clipboardData;
   if (!cd) return;
-
   let hasImage = false;
 
-  console.log('[paste-debug] clipboardData:', {
-    files: cd.files ? cd.files.length : 0,
-    items: cd.items ? cd.items.length : 0,
-    types: cd.types ? [...cd.types] : [],
-    textPlain: (cd.getData('text/plain') || '').substring(0, 200),
-    textHtml: (cd.getData('text/html') || '').substring(0, 200)
-  });
-
-  // 方案1：从 clipboardData.files 获取图片（截图工具等）
   if (cd.files && cd.files.length > 0) {
     for (const file of cd.files) {
-      console.log('[paste-debug] file:', file.type, file.name);
-      if (file.type.startsWith('image/')) {
-        hasImage = true;
-        addImageBlob(file, '粘贴图片');
-      }
+      if (file.type.startsWith('image/')) { hasImage = true; addImageBlob(file, '粘贴图片'); }
     }
   }
-
-  // 方案2：从 clipboardData.items 获取图片（网页右键复制图片）
   if (cd.items) {
     for (let i = 0; i < cd.items.length; i++) {
       const item = cd.items[i];
-      console.log('[paste-debug] item[' + i + ']:', item.type, item.kind);
       if (item.type.indexOf('image') !== -1) {
         const blob = item.getAsFile();
-        if (blob) {
-          hasImage = true;
-          addImageBlob(blob, '粘贴图片');
-        }
+        if (blob) { hasImage = true; addImageBlob(blob, '粘贴图片'); }
       }
     }
   }
-
-  // 方案3：从 text/html 中提取图片 URL（某些浏览器复制图片时会粘贴 HTML）
   if (!hasImage) {
     const html = cd.getData('text/html');
     if (html) {
       const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (imgMatch && imgMatch[1]) {
-        const imgUrl = imgMatch[1];
-        if (imgUrl.startsWith('http')) {
-          hasImage = true;
-          pendingImages.push({ type: 'url', src: imgUrl, name: '粘贴图片' });
-          renderPendingImages();
-          showToast('已从网页复制图片');
-        }
+      if (imgMatch && imgMatch[1] && imgMatch[1].startsWith('http')) {
+        hasImage = true;
+        pendingImages.push({ type: 'url', src: imgMatch[1], name: '粘贴图片' });
+        renderPendingImages();
+        showToast('已从网页复制图片');
       }
     }
   }
-
-  // 方案4：从纯文本中提取图片 URL
   if (!hasImage) {
     const text = cd.getData('text/plain');
     if (text) {
@@ -832,16 +1019,8 @@ rawTextArea.addEventListener('paste', function(e) {
       }
     }
   }
-
-  // 关键修复：只有当剪贴板【只有图片没有文本】时才阻止默认粘贴
-  // 如果有文本内容，让浏览器正常粘贴文本到光标位置，图片走上面的逻辑
   const hasText = (cd.getData('text/plain') || '').trim().length > 0;
-  if (hasImage && !hasText) {
-    // 纯图片粘贴，阻止默认（避免把图片 base64 粘贴到文本框）
-    e.preventDefault();
-  }
-  // 如果同时有图片和文本，不阻止默认，文本正常插入，图片走上方逻辑
-
+  if (hasImage && !hasText) { e.preventDefault(); }
   setTimeout(() => autoResizeTextarea(this), 0);
 });
 
@@ -1136,163 +1315,61 @@ function extractImagesFromText(text) {
   return images;
 }
 
-// ===== 提取逻辑（未识别返回空字符串） =====
-function extractGameType(text) {
-  // 严格只从以下列表中提取，不自动增补其他类型
-  const types = [
-    '竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子',
-    '派对','节奏','教育','益智','赛车','动画','反应','健身','艺术',
-    '竞速','解谜','模拟'
-  ];
-  console.log('[extractGameType-debug] input text:', text.substring(0, 300));
-  for (const t of types) {
-    if (text.includes(t)) {
-      console.log('[extractGameType-debug] matched:', t);
-      return t;
-    }
-  }
-  console.log('[extractGameType-debug] no match');
-  return '';
+// ===== 提取逻辑 =====
+function extractGameTypes(text) {
+  const types = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
+  return types.filter(t => text.includes(t));
 }
 
 function extractUrls(text) {
   const imgUrls = new Set(extractImagesFromText(text).map(i => i.src));
-  console.log('[extractUrls-debug] imgUrls from text:', [...imgUrls]);
-  // 匹配 http:// 或 https:// 开头的 URL（包括含 vd_source 等参数的链接）
   const urlRegex = /https?:\/\/[^\s\)\]\>]+/gi;
   const matches = text.match(urlRegex);
-  console.log('[extractUrls-debug] raw matches:', matches);
   if (!matches) return [];
-  const filtered = matches
+  return matches
     .map(u => u.replace(/[.,;!?]$/, ''))
-    .filter(u => {
-      // 排除已作为图片识别的 URL
-      if (imgUrls.has(u)) return false;
-      // 排除纯图片文件 URL（但保留含图片后缀后还有路径/参数的，如某些预览链接）
-      if (/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u)) return false;
-      return true;
-    });
-  console.log('[extractUrls-debug] filtered result:', filtered);
-  return filtered;
+    .filter(u => !imgUrls.has(u) && !/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u));
 }
 
 function extractAge(text) {
-  // 全年龄（优先）
-  if (/全年龄|全龄|老少皆宜|所有人|all\s*ages/i.test(text)) return '全年龄';
-
-  // 精确匹配：必须有"岁"字或明确年龄关键词的上下文
-  // 格式：XX岁~YY岁、XX-YY岁、XX~YY岁、XX岁以上/以下、适合XX岁、建议XX岁、年龄XX
-  const agePatterns = [
-    // 范围：适合6-12岁、建议4~6岁
-    /(?:适合|建议|年龄|适用|针对)\s*(\d{1,2})\s*[-~到至]\s*(\d{1,2})\s*岁/g,
-    // 范围：6-12岁、4~6岁（前后有年龄上下文）
-    /(\d{1,2})\s*[-~到至]\s*(\d{1,2})\s*岁/g,
-    // XX岁以上、XX岁以下、XX岁及以上
-    /(\d{1,2})\s*岁\s*(?:以上|及以上|以下|及以下)/g,
-    // XX+、XX＋（年龄上下文）
-    /(\d{1,2})\s*[+＋](?:\s*岁)?(?:\s|$)/g,
-    // 单独：XX岁（前后有"适合/建议/年龄/适用"等词）
-    /(?:适合|建议|年龄|适用|针对)\s*(\d{1,2})\s*[岁+＋]/g,
-    // 兜底：单独的"XX岁"，但必须在相关行中
-    /(\d{1,2})\s*岁(?:\s|$)/g,
-  ];
-
-  for (const re of agePatterns) {
-    const matches = text.matchAll(re);
-    const results = [];
-    for (const m of matches) {
-      if (m.length >= 3) {
-        // 范围格式：提取 2 个数字
-        results.push(`${m[1]}~${m[2]}`);
-      } else if (m.length === 2) {
-        results.push(m[1]);
-      }
-    }
-    if (results.length > 0) {
-      const uniq = [...new Set(results)];
-      // 单个年龄 → X+，范围 → X~Y
-      return uniq.map(r => r.includes('~') ? `${r}岁` : `${r}+`).join(' / ');
-    }
-  }
-
-  return '';
+  if (/全年龄|全龄|老少皆宜|所有人|all\s*ages/i.test(text)) return { min: '', max: '', display: '全年龄' };
+  const rangeMatch = text.match(/(?:适合|建议|年龄|适用|针对)?\s*(\d{1,2})\s*[-~到至]\s*(\d{1,2})\s*岁/);
+  if (rangeMatch) return { min: rangeMatch[1], max: rangeMatch[2], display: `${rangeMatch[1]}~${rangeMatch[2]}岁` };
+  const plusMatch = text.match(/(?:适合|建议|年龄|适用|针对)?\s*(\d{1,2})\s*[+＋](?:\s*岁)?/);
+  if (plusMatch) return { min: plusMatch[1], max: '', display: `${plusMatch[1]}+` };
+  const singleMatch = text.match(/(\d{1,2})\s*岁/);
+  if (singleMatch) return { min: singleMatch[1], max: '', display: `${singleMatch[1]}+` };
+  return { min: '', max: '', display: '' };
 }
 
 function extractPlayers(text) {
-  console.log('[extractPlayers-debug] input text:', text.substring(0, 300));
-  // 范围格式：1~4人、2-4人、1-2、1~2 等（"人"字可选，因为有些用户会省略）
   const rangeMatch = text.match(/(\d+)\s*[~\-～−—到至]\s*(\d+)\s*人?/);
-  console.log('[extractPlayers-debug] rangeMatch:', rangeMatch);
-  if (rangeMatch) return `${rangeMatch[1]}~${rangeMatch[2]}人`;
-
-  // "仅限" / "限定" / "支持" / "最多" / "至少" 后跟数字
-  const limitMatch = text.match(/(?:仅限|限定|支持|最多|至少)\s*(\d+)\s*人/);
-  console.log('[extractPlayers-debug] limitMatch:', limitMatch);
-  if (limitMatch) return `仅限${limitMatch[1]}人`;
-
-  // 数字 + 人
-  const numMatch = text.match(/(\d+)\s*人(?!\s*[以之])/);
-  console.log('[extractPlayers-debug] numMatch:', numMatch);
-  if (numMatch) return `${numMatch[1]}人`;
-
-  // 关键词兜底
-  if (/单人|一个人|solo/i.test(text)) return '1人';
-  if (/双人|两个人|对战/i.test(text)) return '2人';
-  if (/三人|3\s*人|3P/.test(text)) return '3人';
-  if (/四人|4\s*人/.test(text)) return '4人';
-  if (/多人|团队|组队|在线|联机/.test(text)) return '多人';
-
-  console.log('[extractPlayers-debug] no match, returning empty');
-  return '';
+  if (rangeMatch) return { min: rangeMatch[1], max: rangeMatch[2], display: `${rangeMatch[1]}~${rangeMatch[2]}人` };
+  const numMatch = text.match(/(\d+)\s*人/);
+  if (numMatch) return { min: numMatch[1], max: numMatch[1], display: `${numMatch[1]}人` };
+  if (/单人|一个人|solo/i.test(text)) return { min: '1', max: '1', display: '1人' };
+  if (/双人|两个人|对战/i.test(text)) return { min: '2', max: '2', display: '2人' };
+  if (/多人|团队|组队|在线|联机/i.test(text)) return { min: '2', max: '', display: '多人' };
+  return { min: '', max: '', display: '' };
 }
 
 function extractControl(text) {
-  const parts = [];
-
-  // 体感类：只提取描述中明确提及的部位/动作，不加"体感"前缀，不自行增补
-  if (/体感|kinect|ps\s*move|动作捕捉|body\s*tracking/i.test(text)) {
-    if (/双手|两手|双臂|双侧/.test(text)) parts.push('双手');
-    if (/单手|一手|单臂|单侧/.test(text)) parts.push('单手');
-    if (/上肢|手臂|胳膊|挥手|挥砍|挥动|挥臂/.test(text)) parts.push('上肢');
-    if (/下肢|腿部|脚部|脚步|脚|踢|踩|蹦/.test(text)) parts.push('下肢');
-    if (/全身|身体|整体/.test(text)) parts.push('全身');
-    if (/头部|脑袋|脸/.test(text)) parts.push('头部');
-    if (/手指|手势/.test(text)) parts.push('手指');
-    // 仅在描述中明确出现"跳"或"跃"时才添加，不自动增补陀螺仪等
-    if (/跳|跃/.test(text) && !parts.includes('下肢')) parts.push('跳跃');
-    // 如果检测到了体感关键词但没有任何部位匹配，返回空（不自行增补）
+  const mapping = {
+    '手臂': /手臂|胳膊|上肢|挥手|挥砍|挥动|挥臂|双手|两手|双臂|双侧|单手|一手|单臂/,
+    '上半身晃动': /上半身|身体晃动|倾斜身体|左右倾斜/,
+    '腿部': /腿部|下肢|脚部|脚步|脚|踢|踩|蹦/,
+    '跳': /跳|跃|蹦/,
+    '蹲': /蹲|下蹲/,
+    '左右移动': /左右移动|侧移|横移/,
+    '陀螺仪': /陀螺仪|重力感应/,
+    '手势': /手势|手指/,
+    '头部': /头部|脑袋|脸|头部/,
+  };
+  const result = [];
+  for (const [key, re] of Object.entries(mapping)) {
+    if (re.test(text)) result.push(key);
   }
-  // VR
-  else if (/vr|虚拟现实|头显|oculus|vive|quest/i.test(text)) {
-    if (/手柄|controller/.test(text)) parts.push('VR手柄');
-    if (/手势|hand/i.test(text)) parts.push('VR手势');
-    if (/眼动|eye|视线/i.test(text)) parts.push('VR眼动');
-    if (parts.length === 0) parts.push('VR');
-  }
-  // 手柄
-  else if (/手柄|controller|摇杆|gamepad|joycon|joy-stick/i.test(text)) {
-    if (/双手|两手/.test(text)) parts.push('手柄（双手）');
-    if (/单手|一手/.test(text)) parts.push('手柄（单手）');
-    if (parts.length === 0) parts.push('手柄');
-  }
-  // 触摸
-  else if (/触摸|触屏|swipe|pinch|touchscreen/i.test(text)) {
-    if (/双手|两手|两指/.test(text)) parts.push('触摸（双手）');
-    if (/单手|一手|单指/.test(text)) parts.push('触摸（单手）');
-    if (/手指/.test(text)) parts.push('触摸（手指）');
-    if (parts.length === 0) parts.push('触摸');
-  }
-
-  // 其他独立操作方式：仅在描述中明确提及才添加
-  if (/点击|鼠标|mouse/i.test(text) && parts.length === 0) parts.push('点击/鼠标');
-  if (/按键|键盘|keyboard|key|按钮/i.test(text)) parts.push('按键/键盘');
-  if (/语音|声控|说话|voice/i.test(text)) parts.push('语音');
-  // 陀螺仪：仅在描述中明确出现"陀螺仪"或"重力感应"时才添加，不自动推断
-  if (/陀螺仪|重力感应/i.test(text)) parts.push('陀螺仪');
-  if (/眼动|眼球|视线|eye/i.test(text) && parts.length === 0) parts.push('眼动');
-  if (/脑波|脑机|bci|mind/i.test(text)) parts.push('脑波');
-
-  return parts.join('、');
+  return result;
 }
 
 function extractTitle(text) {
@@ -1315,6 +1392,44 @@ function advanceId() {
   return nextId;
 }
 
+// ===== 自动预填：描述输入后自动提取并填到表单 =====
+rawTextArea.addEventListener('blur', function() {
+  const text = this.value.trim();
+  if (!text) return;
+
+  // 游戏类型：自动选中匹配的标签
+  const gTypes = extractGameTypes(text);
+  if (gTypes.length > 0) {
+    const container = document.getElementById('gameTypeTags');
+    container.querySelectorAll('.tag-chip').forEach(chip => {
+      if (gTypes.includes(chip.dataset.val)) chip.classList.add('active');
+    });
+  }
+
+  // 年龄
+  const ageInfo = extractAge(text);
+  if (ageInfo.min) {
+    document.getElementById('ageMin').value = ageInfo.min;
+    document.getElementById('ageMax').value = ageInfo.max;
+  }
+
+  // 人数
+  const pInfo = extractPlayers(text);
+  if (pInfo.min) {
+    document.getElementById('playersMin').value = pInfo.min;
+    document.getElementById('playersMax').value = pInfo.max;
+  }
+
+  // 操作方式
+  const ctrl = extractControl(text);
+  if (ctrl.length > 0) {
+    const container = document.getElementById('controlTags');
+    container.querySelectorAll('.tag-chip').forEach(chip => {
+      if (ctrl.includes(chip.dataset.val)) chip.classList.add('active');
+    });
+  }
+});
+
 // ===== 提交 =====
 document.getElementById('ideaForm').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -1322,62 +1437,67 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
   const author = document.getElementById('author').value.trim();
   if (!rawText || !author) return;
 
-  // 显示提交中状态
   const submitBtn = this.querySelector('button[type="submit"]');
   const originalText = submitBtn.textContent;
   submitBtn.textContent = '⏳ 正在上传图片...';
   submitBtn.disabled = true;
 
   try {
-    // 第一步：先上传所有待处理图片到后端（获取远程 URL）
     const uploadedImages = [];
     for (const img of pendingImages) {
       if (img.type === 'base64' && API_BASE_URL) {
-        // 本地图片 → 上传到后端
         const url = await uploadBase64ToBackend(img.src, img.name);
-        if (url) {
-          uploadedImages.push({ src: url, alt: img.name, source: 'github' });
-        } else {
-          // 上传失败，降级为 base64
-          uploadedImages.push({ src: img.src, alt: img.name, source: 'upload' });
-        }
+        if (url) { uploadedImages.push({ src: url, alt: img.name, source: 'github' }); }
+        else { uploadedImages.push({ src: img.src, alt: img.name, source: 'upload' }); }
       } else if (img.type === 'url') {
-        // URL 类型的图片直接保留
         uploadedImages.push({ src: img.src, alt: img.name, source: 'url' });
       } else {
-        // 没有后端或未知类型，保留原始
         uploadedImages.push({ src: img.src, alt: img.name, source: img.type || 'unknown' });
       }
     }
 
-    // 第二步：合并描述中的图片 + 已上传的图片
     const textImages = extractImagesFromText(rawText);
     const allImages = [...textImages];
     for (const p of uploadedImages) {
-      if (!allImages.some(img => img.src === p.src)) {
-        allImages.push(p);
-      }
+      if (!allImages.some(img => img.src === p.src)) allImages.push(p);
     }
 
-    // 第三步：从描述中剥离纯 URL（避免和参考原型卡片重复显示）
     let cleanDesc = rawText;
-    // 移除描述末尾的 URL（通常在最后一行单独出现）
     cleanDesc = cleanDesc.replace(/^https?:\/\/[^\s]+\s*$/gm, '').trim();
-    // 移除行内的纯 URL（前后都是空白）
     cleanDesc = cleanDesc.replace(/\s+https?:\/\/[^\s]+\s*/g, ' ').trim();
-    // 合并多余空白
     cleanDesc = cleanDesc.replace(/\n{3,}/g, '\n\n');
+
+    // 从表单获取用户手动选择的标签和输入
+    const gameTypes = getTagChipValues('gameTypeTags');
+    const ageMin = document.getElementById('ageMin').value.trim();
+    const ageMax = document.getElementById('ageMax').value.trim();
+    const playersMin = document.getElementById('playersMin').value.trim();
+    const playersMax = document.getElementById('playersMax').value.trim();
+    const controls = getTagChipValues('controlTags');
+
+    // 格式化显示文本
+    let ageDisplay = '';
+    if (ageMin && ageMax) ageDisplay = `${ageMin}~${ageMax}岁`;
+    else if (ageMin) ageDisplay = `${ageMin}+`;
+
+    let playersDisplay = '';
+    if (playersMin && playersMax && playersMin !== playersMax) playersDisplay = `${playersMin}~${playersMax}人`;
+    else if (playersMin) playersDisplay = `${playersMin}人`;
 
     const idea = {
       id: advanceId(),
       author: author,
       title: extractTitle(rawText),
       desc: cleanDesc,
-      gameType: extractGameType(rawText),
+      gameTypes: gameTypes,
       urls: extractUrls(rawText),
-      age: extractAge(rawText),
-      players: extractPlayers(rawText),
-      control: extractControl(rawText),
+      ageMin: ageMin,
+      ageMax: ageMax,
+      ageDisplay: ageDisplay,
+      playersMin: playersMin,
+      playersMax: playersMax,
+      playersDisplay: playersDisplay,
+      controls: controls,
       images: allImages,
       createdAt: new Date().toLocaleString('zh-CN')
     };
@@ -1386,16 +1506,14 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
     ideas.unshift(idea);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
 
-    const uploadCount = allImages.filter(i => i.source === 'github').length;
-    const base64Count = allImages.filter(i => i.source === 'upload' || i.src.startsWith('data:')).length;
-    let msg = '✅ 创意提交成功！';
-    if (uploadCount > 0) msg += ` (${uploadCount} 张图片已上传 GitHub)`;
-    if (base64Count > 0) msg += ` (${base64Count} 张本地)`;
-    showToast(msg);
+    showToast('✅ 创意提交成功！');
 
     this.reset();
     pendingImages = [];
     renderPendingImages();
+    // 重置标签
+    initTagChips('gameTypeTags', []);
+    initTagChips('controlTags', []);
     autoResizeTextarea(rawTextArea);
     renderIdeas();
   } catch (err) {
@@ -1404,6 +1522,109 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
     submitBtn.textContent = originalText;
     submitBtn.disabled = false;
   }
+});
+
+// ===== 卡片编辑弹窗 =====
+let editingCardId = null;
+
+function openCardEditor(id) {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  editingCardId = id;
+
+  const allGameTypes = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
+  const allControls = ['手臂','上半身晃动','腿部','跳','蹲','左右移动','陀螺仪','手势','头部'];
+
+  const currentTypes = item.gameTypes || (item.gameType ? [item.gameType] : []);
+  const currentControls = item.controls || (item.control ? item.control.split('、') : []);
+
+  const gameTypeChips = allGameTypes.map(t => `<span class="tag-chip${currentTypes.includes(t)?' active':''}" data-val="${t}" onclick="this.classList.toggle('active')">${t}</span>`).join('');
+  const controlChips = allControls.map(t => `<span class="tag-chip${currentControls.includes(t)?' active':''}" data-val="${t}" onclick="this.classList.toggle('active')">${t}</span>`).join('');
+
+  document.getElementById('cardEditPanel').innerHTML = `
+    <h3>编辑创意 #${id}</h3>
+    <div class="form-group">
+      <label>🎮 游戏类型</label>
+      <div class="tag-checkbox-group" id="editGameTypeTags">${gameTypeChips}</div>
+    </div>
+    <div class="form-group">
+      <label>👶 建议年龄</label>
+      <div class="range-input-row">
+        <input type="text" id="editAgeMin" class="range-input" placeholder="最小" value="${escapeHtml(item.ageMin || '')}" maxlength="3">
+        <span class="range-sep">~</span>
+        <input type="text" id="editAgeMax" class="range-input" placeholder="最大" value="${escapeHtml(item.ageMax || '')}" maxlength="3">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>👥 游戏人数</label>
+      <div class="range-input-row">
+        <input type="text" id="editPlayersMin" class="range-input" placeholder="最少" value="${escapeHtml(item.playersMin || '')}" maxlength="3">
+        <span class="range-sep">~</span>
+        <input type="text" id="editPlayersMax" class="range-input" placeholder="最多" value="${escapeHtml(item.playersMax || '')}" maxlength="3">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>🕹️ 操作方式</label>
+      <div class="tag-checkbox-group" id="editControlTags">${controlChips}</div>
+    </div>
+    <div class="card-edit-btns">
+      <button class="btn-cancel" onclick="closeCardEditor()">取消</button>
+      <button class="btn-save" onclick="saveCardEdit()">保存</button>
+    </div>
+  `;
+  document.getElementById('cardEditOverlay').classList.add('active');
+}
+
+function closeCardEditor() {
+  document.getElementById('cardEditOverlay').classList.remove('active');
+  editingCardId = null;
+}
+
+function saveCardEdit() {
+  if (!editingCardId) return;
+
+  const gameTypes = [];
+  document.querySelectorAll('#editGameTypeTags .tag-chip.active').forEach(chip => gameTypes.push(chip.dataset.val));
+
+  const controls = [];
+  document.querySelectorAll('#editControlTags .tag-chip.active').forEach(chip => controls.push(chip.dataset.val));
+
+  const ageMin = document.getElementById('editAgeMin').value.trim();
+  const ageMax = document.getElementById('editAgeMax').value.trim();
+  const playersMin = document.getElementById('editPlayersMin').value.trim();
+  const playersMax = document.getElementById('editPlayersMax').value.trim();
+
+  let ageDisplay = '';
+  if (ageMin && ageMax) ageDisplay = `${ageMin}~${ageMax}岁`;
+  else if (ageMin) ageDisplay = `${ageMin}+`;
+
+  let playersDisplay = '';
+  if (playersMin && playersMax && playersMin !== playersMax) playersDisplay = `${playersMin}~${playersMax}人`;
+  else if (playersMin) playersDisplay = `${playersMin}人`;
+
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === editingCardId);
+  if (idx >= 0) {
+    ideas[idx].gameTypes = gameTypes;
+    ideas[idx].controls = controls;
+    ideas[idx].ageMin = ageMin;
+    ideas[idx].ageMax = ageMax;
+    ideas[idx].ageDisplay = ageDisplay;
+    ideas[idx].playersMin = playersMin;
+    ideas[idx].playersMax = playersMax;
+    ideas[idx].playersDisplay = playersDisplay;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  }
+
+  closeCardEditor();
+  renderIdeas();
+  showToast('卡片已更新');
+}
+
+// 点击遮罩关闭
+document.getElementById('cardEditOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeCardEditor();
 });
 
 // ===== 渲染 =====
@@ -1420,11 +1641,32 @@ function renderIdeas() {
 
   footer.style.display = 'flex';
   list.innerHTML = ideas.map(item => {
-    // 关键信息：固定5个字段，无值显示"待补充"
     const emptyText = '<span class="empty">待补充</span>';
     const formatVal = (val) => val ? escapeHtml(val) : emptyText;
 
-    // 参考原型链接特殊处理：可点击 + 多链接换行
+    // 游戏类型标签
+    let gameTypeHtml = emptyText;
+    const gTypes = item.gameTypes || (item.gameType ? [item.gameType] : []);
+    if (gTypes.length > 0) {
+      gameTypeHtml = '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + gTypes.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>';
+    }
+
+    // 操作方式标签
+    let controlHtml = emptyText;
+    const ctrls = item.controls || (item.control ? item.control.split('、') : []);
+    if (ctrls.length > 0) {
+      controlHtml = '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + ctrls.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>';
+    }
+
+    // 年龄
+    const ageVal = item.ageDisplay || item.age || '';
+    const ageHtml = ageVal ? `<span class="card-meta-editable" onclick="openCardEditor(${item.id})">${escapeHtml(ageVal)}</span>` : `<span class="card-meta-editable" onclick="openCardEditor(${item.id})" style="color:rgba(255,255,255,0.25);font-style:italic;">点击设置</span>`;
+
+    // 人数
+    const playersVal = item.playersDisplay || item.players || '';
+    const playersHtml = playersVal ? `<span class="card-meta-editable" onclick="openCardEditor(${item.id})">${escapeHtml(playersVal)}</span>` : `<span class="card-meta-editable" onclick="openCardEditor(${item.id})" style="color:rgba(255,255,255,0.25);font-style:italic;">点击设置</span>`;
+
+    // 参考原型链接
     let urlsHtml = emptyText;
     if (item.urls && item.urls.length > 0) {
       urlsHtml = '<div class="mutil-link">' +
@@ -1436,19 +1678,19 @@ function renderIdeas() {
       <div class="card-meta-grid">
         <div class="card-meta-item">
           <span class="meta-label">🎮 游戏类型</span>
-          <span class="meta-value ${item.gameType ? '' : 'empty'}">${formatVal(item.gameType)}</span>
+          <span class="meta-value ${gTypes.length > 0 ? '' : 'empty'}">${gameTypeHtml}</span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">👶 建议年龄</span>
-          <span class="meta-value ${item.age ? '' : 'empty'}">${formatVal(item.age)}</span>
+          <span class="meta-value">${ageHtml}</span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">👥 游戏人数</span>
-          <span class="meta-value ${item.players ? '' : 'empty'}">${formatVal(item.players)}</span>
+          <span class="meta-value">${playersHtml}</span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">🕹️ 操作方式</span>
-          <span class="meta-value ${item.control ? '' : 'empty'}">${formatVal(item.control)}</span>
+          <span class="meta-value ${ctrls.length > 0 ? '' : 'empty'}">${controlHtml}</span>
         </div>
         <div class="card-meta-item" style="grid-column: 1 / -1;">
           <span class="meta-label">🔗 参考原型</span>
@@ -1461,7 +1703,7 @@ function renderIdeas() {
       ? `<div class="card-images">
            <div class="card-images-label">📎 图片 (${item.images.length})</div>
            <div class="card-images-grid">
-             ${item.images.map((img, idx) => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="openLightbox('${escapeHtml(img.src)}')" data-idx="${idx}">`).join('')}
+             ${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="openLightbox('${escapeHtml(img.src)}')">`).join('')}
            </div>
          </div>`
       : '';
@@ -1486,6 +1728,7 @@ function renderIdeas() {
         </div>
         ${imagesHtml}
         <div class="card-footer">
+          <button class="btn-edit-card" onclick="openCardEditor(${item.id})">✏️ 编辑</button>
           <button class="btn-del" onclick="deleteItem(${item.id})">删除</button>
         </div>
       </div>
