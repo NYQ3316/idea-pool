@@ -768,9 +768,18 @@ rawTextArea.addEventListener('paste', function(e) {
 
   let hasImage = false;
 
+  console.log('[paste-debug] clipboardData:', {
+    files: cd.files ? cd.files.length : 0,
+    items: cd.items ? cd.items.length : 0,
+    types: cd.types ? [...cd.types] : [],
+    textPlain: (cd.getData('text/plain') || '').substring(0, 200),
+    textHtml: (cd.getData('text/html') || '').substring(0, 200)
+  });
+
   // 方案1：从 clipboardData.files 获取图片（截图工具等）
   if (cd.files && cd.files.length > 0) {
     for (const file of cd.files) {
+      console.log('[paste-debug] file:', file.type, file.name);
       if (file.type.startsWith('image/')) {
         hasImage = true;
         addImageBlob(file, '粘贴图片');
@@ -782,6 +791,7 @@ rawTextArea.addEventListener('paste', function(e) {
   if (cd.items) {
     for (let i = 0; i < cd.items.length; i++) {
       const item = cd.items[i];
+      console.log('[paste-debug] item[' + i + ']:', item.type, item.kind);
       if (item.type.indexOf('image') !== -1) {
         const blob = item.getAsFile();
         if (blob) {
@@ -1149,11 +1159,13 @@ function extractGameType(text) {
 
 function extractUrls(text) {
   const imgUrls = new Set(extractImagesFromText(text).map(i => i.src));
+  console.log('[extractUrls-debug] imgUrls from text:', [...imgUrls]);
   // 匹配 http:// 或 https:// 开头的 URL（包括含 vd_source 等参数的链接）
   const urlRegex = /https?:\/\/[^\s\)\]\>]+/gi;
   const matches = text.match(urlRegex);
+  console.log('[extractUrls-debug] raw matches:', matches);
   if (!matches) return [];
-  return matches
+  const filtered = matches
     .map(u => u.replace(/[.,;!?]$/, ''))
     .filter(u => {
       // 排除已作为图片识别的 URL
@@ -1162,6 +1174,8 @@ function extractUrls(text) {
       if (/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u)) return false;
       return true;
     });
+  console.log('[extractUrls-debug] filtered result:', filtered);
+  return filtered;
 }
 
 function extractAge(text) {
