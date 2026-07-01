@@ -1138,22 +1138,13 @@ function extractImagesFromText(text) {
 
 // ===== 提取逻辑（未识别返回空字符串） =====
 function extractGameType(text) {
+  // 严格只从以下列表中提取，不自动增补其他类型
   const types = [
     '竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子',
     '派对','节奏','教育','益智','赛车','动画','反应','健身','艺术',
     '竞速','解谜','模拟'
   ];
   for (const t of types) { if (text.includes(t)) return t; }
-  // 关键词兜底（补充可能的变体说法）
-  if (/体感/.test(text)) return '体感';
-  if (/休闲|放松/.test(text)) return '休闲';
-  if (/卡牌|卡片/.test(text)) return '卡牌';
-  if (/格斗|拳|武术/.test(text)) return '格斗';
-  if (/策略|计谋|战术/.test(text)) return '策略';
-  if (/恐怖|惊悚|鬼/.test(text)) return '恐怖';
-  if (/冒险|探索|探险/.test(text)) return '冒险';
-  if (/音游|音乐/.test(text)) return '节奏';
-  if (/跑酷/.test(text)) return '跑酷';
   return '';
 }
 
@@ -1221,7 +1212,7 @@ function extractAge(text) {
 }
 
 function extractPlayers(text) {
-  // 范围格式：1~4人、2-4人
+  // 范围格式：1~4人、2-4人、1-2人
   const rangeMatch = text.match(/(\d+)\s*[~\-到至]\s*(\d+)\s*人/);
   if (rangeMatch) return `${rangeMatch[1]}~${rangeMatch[2]}人`;
 
