@@ -1121,27 +1121,22 @@ function extractImagesFromText(text) {
 
 // ===== 提取逻辑（未识别返回空字符串） =====
 function extractGameType(text) {
-  const types = ['休闲游戏','射击游戏','解谜游戏','益智游戏','塔防游戏','动作游戏','跑酷游戏','竞速游戏','卡牌游戏','音游','音乐游戏','沙盒游戏','模拟经营','角色扮演','RPG','格斗游戏','策略游戏','恐怖游戏','冒险游戏','体感游戏','派对游戏'];
+  const types = [
+    '竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子',
+    '派对','节奏','教育','益智','赛车','动画','反应','健身','艺术',
+    '竞速','解谜','模拟'
+  ];
   for (const t of types) { if (text.includes(t)) return t; }
-  if (/体感/.test(text)) return '体感游戏';
-  if (/休闲|放松|简单/.test(text)) return '休闲游戏';
-  if (/射击|枪|瞄准/.test(text)) return '射击游戏';
-  if (/解谜|谜题/.test(text)) return '解谜游戏';
-  if (/益智|智力/.test(text)) return '益智游戏';
-  if (/塔防|防御/.test(text)) return '塔防游戏';
-  if (/动作|战斗/.test(text)) return '动作游戏';
-  if (/跑酷|跑|跳跃/.test(text)) return '跑酷游戏';
-  if (/竞速|赛车|速度/.test(text)) return '竞速游戏';
-  if (/卡牌|卡片/.test(text)) return '卡牌游戏';
-  if (/音乐|节奏|音游|音符/.test(text)) return '音游';
-  if (/沙盒|创造|建造/.test(text)) return '沙盒游戏';
-  if (/模拟|经营|养成/.test(text)) return '模拟经营';
-  if (/角色|剧情|故事/.test(text)) return '角色扮演';
-  if (/格斗|拳|武术/.test(text)) return '格斗游戏';
-  if (/策略|计谋|战术/.test(text)) return '策略游戏';
-  if (/恐怖|惊悚|鬼/.test(text)) return '恐怖游戏';
-  if (/冒险|探索|探险/.test(text)) return '冒险游戏';
-  if (/派对|聚会|多人同屏/.test(text)) return '派对游戏';
+  // 关键词兜底（补充可能的变体说法）
+  if (/体感/.test(text)) return '体感';
+  if (/休闲|放松/.test(text)) return '休闲';
+  if (/卡牌|卡片/.test(text)) return '卡牌';
+  if (/格斗|拳|武术/.test(text)) return '格斗';
+  if (/策略|计谋|战术/.test(text)) return '策略';
+  if (/恐怖|惊悚|鬼/.test(text)) return '恐怖';
+  if (/冒险|探索|探险/.test(text)) return '冒险';
+  if (/音游|音乐/.test(text)) return '节奏';
+  if (/跑酷/.test(text)) return '跑酷';
   return '';
 }
 
@@ -1221,47 +1216,50 @@ function extractPlayers(text) {
 }
 
 function extractControl(text) {
-  // 体感优先：再细分为身体部位
+  const parts = [];
+
+  // 体感类：只提取部位，不加"体感"前缀
   if (/体感|kinect|ps\s*move|动作捕捉|body\s*tracking/i.test(text)) {
-    // 提取具体身体部位
-    if (/双手|两手|双臂|双侧/.test(text)) return '体感（双手）';
-    if (/单手|一手|单臂|单侧/.test(text)) return '体感（单手）';
-    if (/上肢|手臂|胳膊/.test(text)) return '体感（上肢）';
-    if (/下肢|腿部|脚部|脚步|脚/.test(text)) return '体感（下肢）';
-    if (/全身|身体|整体/.test(text)) return '体感（全身）';
-    if (/头部|脑袋|脸/.test(text)) return '体感（头部）';
-    if (/手指|指|手势/.test(text)) return '体感（手指）';
-    if (/挥手|挥砍|挥动|挥臂/.test(text)) return '体感（上肢）';
-    if (/踢|踩|跳|蹦/.test(text)) return '体感（下肢）';
-    return '体感';
+    if (/双手|两手|双臂|双侧/.test(text)) parts.push('双手');
+    if (/单手|一手|单臂|单侧/.test(text)) parts.push('单手');
+    if (/上肢|手臂|胳膊|挥手|挥砍|挥动|挥臂/.test(text)) parts.push('上肢');
+    if (/下肢|腿部|脚部|脚步|脚|踢|踩|蹦/.test(text)) parts.push('下肢');
+    if (/全身|身体|整体/.test(text)) parts.push('全身');
+    if (/头部|脑袋|脸/.test(text)) parts.push('头部');
+    if (/手指|手势/.test(text)) parts.push('手指');
+    if (/跳|跃/.test(text) && !parts.includes('下肢')) parts.push('跳跃');
+    if (parts.length === 0) parts.push('体感');
   }
   // VR
-  if (/vr|虚拟现实|头显|vr\s*手柄|oculus|vive|quest/i.test(text)) {
-    if (/手柄|controller/.test(text)) return 'VR（手柄）';
-    if (/手势|hand/i.test(text)) return 'VR（手势）';
-    if (/眼动|eye|视线/i.test(text)) return 'VR（眼动）';
-    return 'VR';
+  else if (/vr|虚拟现实|头显|oculus|vive|quest/i.test(text)) {
+    if (/手柄|controller/.test(text)) parts.push('VR手柄');
+    if (/手势|hand/i.test(text)) parts.push('VR手势');
+    if (/眼动|eye|视线/i.test(text)) parts.push('VR眼动');
+    if (parts.length === 0) parts.push('VR');
   }
-  // 手柄 - 区分身体部位
-  if (/手柄|controller|摇杆|gamepad|joycon|joy-stick/i.test(text)) {
-    if (/双手|两手/.test(text)) return '手柄（双手）';
-    if (/单手|一手/.test(text)) return '手柄（单手）';
-    return '手柄';
+  // 手柄
+  else if (/手柄|controller|摇杆|gamepad|joycon|joy-stick/i.test(text)) {
+    if (/双手|两手/.test(text)) parts.push('手柄（双手）');
+    if (/单手|一手/.test(text)) parts.push('手柄（单手）');
+    if (parts.length === 0) parts.push('手柄');
   }
-  // 触摸 - 区分身体部位
-  if (/触摸|触屏|触|swipe|pinch|touchscreen/i.test(text)) {
-    if (/双手|两手|两指/.test(text)) return '触摸（双手）';
-    if (/单手|一手|单指/.test(text)) return '触摸（单手）';
-    if (/手指/.test(text)) return '触摸（手指）';
-    return '触摸';
+  // 触摸
+  else if (/触摸|触屏|swipe|pinch|touchscreen/i.test(text)) {
+    if (/双手|两手|两指/.test(text)) parts.push('触摸（双手）');
+    if (/单手|一手|单指/.test(text)) parts.push('触摸（单手）');
+    if (/手指/.test(text)) parts.push('触摸（手指）');
+    if (parts.length === 0) parts.push('触摸');
   }
-  if (/点击|鼠标|mouse/i.test(text)) return '点击/鼠标';
-  if (/按键|键盘|keyboard|key|按钮/i.test(text)) return '按键/键盘';
-  if (/语音|声控|说话|voice/i.test(text)) return '语音';
-  if (/陀螺仪|重力感应|倾斜|accelerometer/i.test(text)) return '陀螺仪';
-  if (/眼动|眼球|视线|eye/i.test(text)) return '眼动';
-  if (/脑波|脑机|bci|mind/i.test(text)) return '脑波';
-  return '';
+
+  // 其他独立操作方式
+  if (/点击|鼠标|mouse/i.test(text) && parts.length === 0) parts.push('点击/鼠标');
+  if (/按键|键盘|keyboard|key|按钮/i.test(text)) parts.push('按键/键盘');
+  if (/语音|声控|说话|voice/i.test(text)) parts.push('语音');
+  if (/陀螺仪|重力感应|倾斜|accelerometer/i.test(text)) parts.push('陀螺仪');
+  if (/眼动|眼球|视线|eye/i.test(text) && parts.length === 0) parts.push('眼动');
+  if (/脑波|脑机|bci|mind/i.test(text)) parts.push('脑波');
+
+  return parts.join('、');
 }
 
 function extractTitle(text) {
@@ -1328,11 +1326,20 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
       }
     }
 
+    // 第三步：从描述中剥离纯 URL（避免和参考原型卡片重复显示）
+    let cleanDesc = rawText;
+    // 移除描述末尾的 URL（通常在最后一行单独出现）
+    cleanDesc = cleanDesc.replace(/^https?:\/\/[^\s]+\s*$/gm, '').trim();
+    // 移除行内的纯 URL（前后都是空白）
+    cleanDesc = cleanDesc.replace(/\s+https?:\/\/[^\s]+\s*/g, ' ').trim();
+    // 合并多余空白
+    cleanDesc = cleanDesc.replace(/\n{3,}/g, '\n\n');
+
     const idea = {
       id: advanceId(),
       author: author,
       title: extractTitle(rawText),
-      desc: rawText,
+      desc: cleanDesc,
       gameType: extractGameType(rawText),
       urls: extractUrls(rawText),
       age: extractAge(rawText),
