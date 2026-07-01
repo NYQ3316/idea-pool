@@ -13,6 +13,7 @@ pnpm-debug.log*
 server/uploads/
 server/.env
 server/.env.local
+!server/.env.example
 server/*.log
 
 # 前端构建产物（如果以后有 dist 之外的输出）
@@ -42,6 +43,10 @@ desktop.ini
 # 日志
 logs/
 *.log
+*.log.err
+server.log
+server.log.err
+npm-debug.log*
 
 # 临时文件
 tmp/
