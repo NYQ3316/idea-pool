@@ -1220,8 +1220,8 @@ function extractAge(text) {
 
 function extractPlayers(text) {
   console.log('[extractPlayers-debug] input text:', text.substring(0, 300));
-  // 范围格式：1~4人、2-4人、1-2人
-  const rangeMatch = text.match(/(\d+)\s*[~\-到至]\s*(\d+)\s*人/);
+  // 范围格式：1~4人、2-4人、1-2、1~2 等（"人"字可选，因为有些用户会省略）
+  const rangeMatch = text.match(/(\d+)\s*[~\-～−—到至]\s*(\d+)\s*人?/);
   console.log('[extractPlayers-debug] rangeMatch:', rangeMatch);
   if (rangeMatch) return `${rangeMatch[1]}~${rangeMatch[2]}人`;
 
