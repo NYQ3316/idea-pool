@@ -599,15 +599,59 @@ textarea {
   cursor: pointer;
   transition: all 0.15s;
   border-radius: 6px;
-  padding: 2px 6px;
-  margin: -2px -6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  display: inline-block;
+  min-height: 20px;
 }
 .card-meta-editable:hover {
-  background: rgba(124, 58, 237, 0.12);
-}
-.card-meta-editable.editing {
   background: rgba(124, 58, 237, 0.15);
-  border: 1px dashed rgba(124, 58, 237, 0.4);
+  outline: 1px dashed rgba(124, 58, 237, 0.4);
+}
+.card-inline-edit {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  border-radius: 8px;
+}
+.card-inline-edit input {
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+.card-inline-edit input:focus {
+  outline: none;
+  border-color: #7c3aed;
+}
+.card-inline-edit-sep {
+  color: rgba(255,255,255,0.5);
+  margin: 0 4px;
+  font-weight: 700;
+}
+.card-inline-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  border-radius: 8px;
+  max-width: 100%;
+}
+.card-inline-tags .tag-chip {
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  background: rgba(255,255,255,0.05);
+}
+.card-inline-tags .tag-chip.active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4));
 }
 .card-edit-overlay {
   position: fixed;
@@ -1627,6 +1671,189 @@ document.getElementById('cardEditOverlay').addEventListener('click', function(e)
   if (e.target === this) closeCardEditor();
 });
 
+// ===== 内联编辑：游戏类型 =====
+function startEditGameType(id) {
+  const el = document.getElementById('gt-' + id);
+  if (!el) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  const current = item.gameTypes || (item.gameType ? [item.gameType] : []);
+  const allTypes = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
+  el.innerHTML = '<div class="card-inline-tags">' + allTypes.map(t => `<span class="tag-chip${current.includes(t) ? ' active' : ''}" data-val="${t}">${t}</span>`).join('') + '</div>';
+  el.querySelectorAll('.tag-chip').forEach(chip => {
+    chip.addEventListener('click', e => {
+      e.stopPropagation();
+      chip.classList.toggle('active');
+    });
+  });
+  // 点击外部保存
+  const saveHandler = (e) => {
+    if (!el.contains(e.target)) {
+      saveEditGameType(id);
+      document.removeEventListener('click', saveHandler, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
+}
+
+function saveEditGameType(id) {
+  const el = document.getElementById('gt-' + id);
+  if (!el) return;
+  const selected = [];
+  el.querySelectorAll('.tag-chip.active').forEach(chip => selected.push(chip.dataset.val));
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === id);
+  if (idx >= 0) {
+    ideas[idx].gameTypes = selected;
+    delete ideas[idx].gameType;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  }
+  renderIdeas();
+  showToast('已保存');
+}
+
+// ===== 内联编辑：操作方式 =====
+function startEditControl(id) {
+  const el = document.getElementById('ct-' + id);
+  if (!el) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  const current = item.controls || (item.control ? item.control.split('、') : []);
+  const allCtrl = ['手臂','上半身晃动','腿部','跳','蹲','左右移动','陀螺仪','手势','头部'];
+  el.innerHTML = '<div class="card-inline-tags">' + allCtrl.map(t => `<span class="tag-chip${current.includes(t) ? ' active' : ''}" data-val="${t}">${t}</span>`).join('') + '</div>';
+  el.querySelectorAll('.tag-chip').forEach(chip => {
+    chip.addEventListener('click', e => {
+      e.stopPropagation();
+      chip.classList.toggle('active');
+    });
+  });
+  const saveHandler = (e) => {
+    if (!el.contains(e.target)) {
+      saveEditControl(id);
+      document.removeEventListener('click', saveHandler, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
+}
+
+function saveEditControl(id) {
+  const el = document.getElementById('ct-' + id);
+  if (!el) return;
+  const selected = [];
+  el.querySelectorAll('.tag-chip.active').forEach(chip => selected.push(chip.dataset.val));
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === id);
+  if (idx >= 0) {
+    ideas[idx].controls = selected;
+    delete ideas[idx].control;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  }
+  renderIdeas();
+  showToast('已保存');
+}
+
+// ===== 内联编辑：年龄 =====
+function startEditAge(id) {
+  const el = document.getElementById('ag-' + id);
+  if (!el) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  el.innerHTML = `<div class="card-inline-edit">
+    <input type="text" id="ag-min-${id}" value="${escapeHtml(item.ageMin || '')}" placeholder="最小" maxlength="3">
+    <span class="card-inline-edit-sep">~</span>
+    <input type="text" id="ag-max-${id}" value="${escapeHtml(item.ageMax || '')}" placeholder="最大" maxlength="3">
+  </div>`;
+  const minInput = document.getElementById(`ag-min-${id}`);
+  const maxInput = document.getElementById(`ag-max-${id}`);
+  minInput.focus();
+  minInput.select();
+  const saveHandler = (e) => {
+    if (!el.contains(e.target)) {
+      saveEditAge(id);
+      document.removeEventListener('click', saveHandler, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
+  [minInput, maxInput].forEach(inp => {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveEditAge(id); document.removeEventListener('click', saveHandler, true); } });
+  });
+}
+
+function saveEditAge(id) {
+  const minInput = document.getElementById(`ag-min-${id}`);
+  const maxInput = document.getElementById(`ag-max-${id}`);
+  if (!minInput || !maxInput) return;
+  const min = minInput.value.trim();
+  const max = maxInput.value.trim();
+  let display = '';
+  if (min && max) display = `${min}~${max}岁`;
+  else if (min) display = `${min}+`;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === id);
+  if (idx >= 0) {
+    ideas[idx].ageMin = min;
+    ideas[idx].ageMax = max;
+    ideas[idx].ageDisplay = display;
+    delete ideas[idx].age;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  }
+  renderIdeas();
+  showToast('已保存');
+}
+
+// ===== 内联编辑：人数 =====
+function startEditPlayers(id) {
+  const el = document.getElementById('pl-' + id);
+  if (!el) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  el.innerHTML = `<div class="card-inline-edit">
+    <input type="text" id="pl-min-${id}" value="${escapeHtml(item.playersMin || '')}" placeholder="最少" maxlength="3">
+    <span class="card-inline-edit-sep">~</span>
+    <input type="text" id="pl-max-${id}" value="${escapeHtml(item.playersMax || '')}" placeholder="最多" maxlength="3">
+  </div>`;
+  const minInput = document.getElementById(`pl-min-${id}`);
+  const maxInput = document.getElementById(`pl-max-${id}`);
+  minInput.focus();
+  minInput.select();
+  const saveHandler = (e) => {
+    if (!el.contains(e.target)) {
+      saveEditPlayers(id);
+      document.removeEventListener('click', saveHandler, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
+  [minInput, maxInput].forEach(inp => {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveEditPlayers(id); document.removeEventListener('click', saveHandler, true); } });
+  });
+}
+
+function saveEditPlayers(id) {
+  const minInput = document.getElementById(`pl-min-${id}`);
+  const maxInput = document.getElementById(`pl-max-${id}`);
+  if (!minInput || !maxInput) return;
+  const min = minInput.value.trim();
+  const max = maxInput.value.trim();
+  let display = '';
+  if (min && max && min !== max) display = `${min}~${max}人`;
+  else if (min) display = `${min}人`;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === id);
+  if (idx >= 0) {
+    ideas[idx].playersMin = min;
+    ideas[idx].playersMax = max;
+    ideas[idx].playersDisplay = display;
+    delete ideas[idx].players;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  }
+  renderIdeas();
+  showToast('已保存');
+}
+
 // ===== 渲染 =====
 function renderIdeas() {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -1642,29 +1869,34 @@ function renderIdeas() {
   footer.style.display = 'flex';
   list.innerHTML = ideas.map(item => {
     const emptyText = '<span class="empty">待补充</span>';
-    const formatVal = (val) => val ? escapeHtml(val) : emptyText;
 
-    // 游戏类型标签
-    let gameTypeHtml = emptyText;
+    // 游戏类型 - 渲染为可点击编辑的标签
     const gTypes = item.gameTypes || (item.gameType ? [item.gameType] : []);
+    let gameTypeHtml = emptyText;
     if (gTypes.length > 0) {
       gameTypeHtml = '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + gTypes.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>';
     }
+    const gameTypeDisplay = gTypes.length > 0
+      ? gameTypeHtml
+      : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击选择</span>';
 
-    // 操作方式标签
-    let controlHtml = emptyText;
+    // 操作方式
     const ctrls = item.controls || (item.control ? item.control.split('、') : []);
+    let controlHtml = emptyText;
     if (ctrls.length > 0) {
       controlHtml = '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + ctrls.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>';
     }
+    const controlDisplay = ctrls.length > 0
+      ? controlHtml
+      : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击选择</span>';
 
     // 年龄
     const ageVal = item.ageDisplay || item.age || '';
-    const ageHtml = ageVal ? `<span class="card-meta-editable" onclick="openCardEditor(${item.id})">${escapeHtml(ageVal)}</span>` : `<span class="card-meta-editable" onclick="openCardEditor(${item.id})" style="color:rgba(255,255,255,0.25);font-style:italic;">点击设置</span>`;
+    const ageDisplay = ageVal ? escapeHtml(ageVal) : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击设置</span>';
 
     // 人数
     const playersVal = item.playersDisplay || item.players || '';
-    const playersHtml = playersVal ? `<span class="card-meta-editable" onclick="openCardEditor(${item.id})">${escapeHtml(playersVal)}</span>` : `<span class="card-meta-editable" onclick="openCardEditor(${item.id})" style="color:rgba(255,255,255,0.25);font-style:italic;">点击设置</span>`;
+    const playersDisplay = playersVal ? escapeHtml(playersVal) : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击设置</span>';
 
     // 参考原型链接
     let urlsHtml = emptyText;
@@ -1678,19 +1910,19 @@ function renderIdeas() {
       <div class="card-meta-grid">
         <div class="card-meta-item">
           <span class="meta-label">🎮 游戏类型</span>
-          <span class="meta-value ${gTypes.length > 0 ? '' : 'empty'}">${gameTypeHtml}</span>
+          <span class="meta-value" id="gt-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditGameType(${item.id})">${gameTypeDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">👶 建议年龄</span>
-          <span class="meta-value">${ageHtml}</span>
+          <span class="meta-value" id="ag-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditAge(${item.id})">${ageDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">👥 游戏人数</span>
-          <span class="meta-value">${playersHtml}</span>
+          <span class="meta-value" id="pl-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditPlayers(${item.id})">${playersDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">🕹️ 操作方式</span>
-          <span class="meta-value ${ctrls.length > 0 ? '' : 'empty'}">${controlHtml}</span>
+          <span class="meta-value" id="ct-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditControl(${item.id})">${controlDisplay}</span></span>
         </div>
         <div class="card-meta-item" style="grid-column: 1 / -1;">
           <span class="meta-label">🔗 参考原型</span>
@@ -1728,7 +1960,6 @@ function renderIdeas() {
         </div>
         ${imagesHtml}
         <div class="card-footer">
-          <button class="btn-edit-card" onclick="openCardEditor(${item.id})">✏️ 编辑</button>
           <button class="btn-del" onclick="deleteItem(${item.id})">删除</button>
         </div>
       </div>
