@@ -766,28 +766,26 @@ rawTextArea.addEventListener('paste', function(e) {
   const cd = e.clipboardData;
   if (!cd) return;
 
-  let handled = false;
+  let hasImage = false;
 
   // 方案1：从 clipboardData.files 获取图片（截图工具等）
   if (cd.files && cd.files.length > 0) {
     for (const file of cd.files) {
       if (file.type.startsWith('image/')) {
-        handled = true;
-        e.preventDefault();
+        hasImage = true;
         addImageBlob(file, '粘贴图片');
       }
     }
   }
 
   // 方案2：从 clipboardData.items 获取图片（网页右键复制图片）
-  if (!handled && cd.items) {
+  if (cd.items) {
     for (let i = 0; i < cd.items.length; i++) {
       const item = cd.items[i];
       if (item.type.indexOf('image') !== -1) {
         const blob = item.getAsFile();
         if (blob) {
-          handled = true;
-          e.preventDefault();
+          hasImage = true;
           addImageBlob(blob, '粘贴图片');
         }
       }
@@ -795,15 +793,14 @@ rawTextArea.addEventListener('paste', function(e) {
   }
 
   // 方案3：从 text/html 中提取图片 URL（某些浏览器复制图片时会粘贴 HTML）
-  if (!handled) {
+  if (!hasImage) {
     const html = cd.getData('text/html');
     if (html) {
       const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
       if (imgMatch && imgMatch[1]) {
         const imgUrl = imgMatch[1];
         if (imgUrl.startsWith('http')) {
-          handled = true;
-          e.preventDefault();
+          hasImage = true;
           pendingImages.push({ type: 'url', src: imgUrl, name: '粘贴图片' });
           renderPendingImages();
           showToast('已从网页复制图片');
@@ -813,19 +810,27 @@ rawTextArea.addEventListener('paste', function(e) {
   }
 
   // 方案4：从纯文本中提取图片 URL
-  if (!handled) {
+  if (!hasImage) {
     const text = cd.getData('text/plain');
     if (text) {
       const imgUrlMatch = text.match(/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/i);
       if (imgUrlMatch) {
-        handled = true;
-        e.preventDefault();
+        hasImage = true;
         pendingImages.push({ type: 'url', src: imgUrlMatch[0], name: '粘贴图片' });
         renderPendingImages();
         showToast('已从网页复制图片');
       }
     }
   }
+
+  // 关键修复：只有当剪贴板【只有图片没有文本】时才阻止默认粘贴
+  // 如果有文本内容，让浏览器正常粘贴文本到光标位置，图片走上面的逻辑
+  const hasText = (cd.getData('text/plain') || '').trim().length > 0;
+  if (hasImage && !hasText) {
+    // 纯图片粘贴，阻止默认（避免把图片 base64 粘贴到文本框）
+    e.preventDefault();
+  }
+  // 如果同时有图片和文本，不阻止默认，文本正常插入，图片走上方逻辑
 
   setTimeout(() => autoResizeTextarea(this), 0);
 });
@@ -1094,7 +1099,9 @@ function renderMarkdown(text) {
   html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
   html = html.replace(/<ul>(.*?)<\/ul>/gs, (match) => match.replace(/<\/li>\n<li>/g, '</li><li>'));
+  // 处理换行：双换行 = 新段落，单换行 = <br>
   html = html.replace(/\n\n/g, '</p><p>');
+  html = html.replace(/\n/g, '<br>');
   html = '<p>' + html + '</p>';
   html = html.replace(/<p><(h[1-4]|pre|ul|blockquote|hr)/g, '<$1');
   html = html.replace(/<\/(h[1-4]|pre|ul|blockquote|hr)><\/p>/g, '</$1>');
