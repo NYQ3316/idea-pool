@@ -1149,12 +1149,19 @@ function extractGameType(text) {
 
 function extractUrls(text) {
   const imgUrls = new Set(extractImagesFromText(text).map(i => i.src));
-  const urlRegex = /https?:\/\/[^\s]+|www\.[^\s]+/gi;
+  // 匹配 http:// 或 https:// 开头的 URL（包括含 vd_source 等参数的链接）
+  const urlRegex = /https?:\/\/[^\s\)\]\>]+/gi;
   const matches = text.match(urlRegex);
   if (!matches) return [];
   return matches
     .map(u => u.replace(/[.,;!?]$/, ''))
-    .filter(u => !imgUrls.has(u) && !/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?|$)/i.test(u));
+    .filter(u => {
+      // 排除已作为图片识别的 URL
+      if (imgUrls.has(u)) return false;
+      // 排除纯图片文件 URL（但保留含图片后缀后还有路径/参数的，如某些预览链接）
+      if (/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u)) return false;
+      return true;
+    });
 }
 
 function extractAge(text) {
@@ -1225,7 +1232,7 @@ function extractPlayers(text) {
 function extractControl(text) {
   const parts = [];
 
-  // 体感类：只提取部位，不加"体感"前缀
+  // 体感类：只提取描述中明确提及的部位/动作，不加"体感"前缀，不自行增补
   if (/体感|kinect|ps\s*move|动作捕捉|body\s*tracking/i.test(text)) {
     if (/双手|两手|双臂|双侧/.test(text)) parts.push('双手');
     if (/单手|一手|单臂|单侧/.test(text)) parts.push('单手');
@@ -1234,8 +1241,9 @@ function extractControl(text) {
     if (/全身|身体|整体/.test(text)) parts.push('全身');
     if (/头部|脑袋|脸/.test(text)) parts.push('头部');
     if (/手指|手势/.test(text)) parts.push('手指');
+    // 仅在描述中明确出现"跳"或"跃"时才添加，不自动增补陀螺仪等
     if (/跳|跃/.test(text) && !parts.includes('下肢')) parts.push('跳跃');
-    if (parts.length === 0) parts.push('体感');
+    // 如果检测到了体感关键词但没有任何部位匹配，返回空（不自行增补）
   }
   // VR
   else if (/vr|虚拟现实|头显|oculus|vive|quest/i.test(text)) {
@@ -1258,11 +1266,12 @@ function extractControl(text) {
     if (parts.length === 0) parts.push('触摸');
   }
 
-  // 其他独立操作方式
+  // 其他独立操作方式：仅在描述中明确提及才添加
   if (/点击|鼠标|mouse/i.test(text) && parts.length === 0) parts.push('点击/鼠标');
   if (/按键|键盘|keyboard|key|按钮/i.test(text)) parts.push('按键/键盘');
   if (/语音|声控|说话|voice/i.test(text)) parts.push('语音');
-  if (/陀螺仪|重力感应|倾斜|accelerometer/i.test(text)) parts.push('陀螺仪');
+  // 陀螺仪：仅在描述中明确出现"陀螺仪"或"重力感应"时才添加，不自动推断
+  if (/陀螺仪|重力感应/i.test(text)) parts.push('陀螺仪');
   if (/眼动|眼球|视线|eye/i.test(text) && parts.length === 0) parts.push('眼动');
   if (/脑波|脑机|bci|mind/i.test(text)) parts.push('脑波');
 
