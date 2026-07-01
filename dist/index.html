@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创意池</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.header {
+  text-align: center;
+  color: #e0e0e0;
+  margin-bottom: 30px;
+}
+.header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.header p {
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+.card-input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 28px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 32px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+label {
+  display: block;
+  color: #b0b0d0;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  background: rgba(0,0,0,0.2);
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #7c3aed;
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 60px;
+  field-sizing: content;
+}
+
+.hint {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.8rem;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ===== 图片上传区域 ===== */
+.image-upload-area {
+  border: 2px dashed rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 20px;
+  background: rgba(0,0,0,0.15);
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.image-upload-area.dragover {
+  border-color: #7c3aed;
+  background: rgba(124, 58, 237, 0.1);
+}
+.image-upload-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.image-upload-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s;
+  background: rgba(124, 58, 237, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+.image-upload-btn:hover {
+  background: rgba(124, 58, 237, 0.35);
+}
+.image-url-input-wrap {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+.image-url-input-wrap input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.2);
+  color: #e0e0e0;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.image-url-input-wrap input:focus {
+  outline: none;
+  border-color: #7c3aed;
+}
+.image-url-add-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  white-space: nowrap;
+}
+.image-upload-hint {
+  color: rgba(255,255,255,0.35);
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.image-upload-area:focus {
+  outline: none;
+  border-color: #7c3aed;
+}
+
+.image-upload-paste-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(79, 70, 229, 0.1));
+  border: 1px dashed rgba(124, 58, 237, 0.3);
+  border-radius: 10px;
+  margin-top: 12px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.image-upload-paste-hint.paste-active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(79, 70, 229, 0.25));
+  border-color: #7c3aed;
+  border-style: solid;
+  transform: scale(1.01);
+}
+
+.paste-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.paste-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.paste-text strong {
+  color: #c4b5fd;
+  font-size: 0.9rem;
+}
+
+.paste-text small {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.7rem;
+}
+
+/* 图片预览列表 */
+.image-preview-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.image-preview-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.2);
+}
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.image-preview-item .remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.85);
+  color: white;
+  border: none;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.image-preview-item .remove-btn:hover {
+  background: rgba(239, 68, 68, 1);
+  transform: scale(1.1);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.section-title {
+  color: #b0b0d0;
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ideas-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.idea-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 0;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.idea-card:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.card-header {
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.card-header-left {
+  flex: 1;
+  min-width: 0;
+}
+.card-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+.card-author-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.1);
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.card-author-badge .avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: white;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.card-date {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+  padding-top: 4px;
+}
+
+.card-meta-grid {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 20px;
+}
+.card-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 40px;
+}
+.card-meta-item .meta-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-meta-item .meta-value {
+  font-size: 0.92rem;
+  color: #ffffff;
+  font-weight: 600;
+  word-break: break-all;
+  line-height: 1.4;
+}
+.card-meta-item .meta-value.empty {
+  color: rgba(255,255,255,0.25);
+  font-weight: 400;
+  font-style: italic;
+}
+.card-meta-item .meta-value a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 500;
+}
+.card-meta-item .meta-value a:hover {
+  text-decoration: underline;
+}
+.card-meta-item .meta-value.mutil-link {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-body {
+  padding: 14px 20px 16px;
+  flex: 1;
+}
+.card-desc {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.card-desc h1, .card-desc h2, .card-desc h3, .card-desc h4 {
+  color: #ffffff;
+  margin: 14px 0 8px;
+  font-weight: 700;
+}
+.card-desc h1 { font-size: 1.15rem; }
+.card-desc h2 { font-size: 1.05rem; }
+.card-desc h3 { font-size: 0.95rem; }
+.card-desc p { margin-bottom: 10px; }
+.card-desc strong { color: #ffffff; font-weight: 700; }
+.card-desc em { color: #c4b5fd; }
+.card-desc ul, .card-desc ol { margin: 8px 0 8px 18px; }
+.card-desc li { margin-bottom: 4px; }
+.card-desc a { color: #93c5fd; text-decoration: none; }
+.card-desc a:hover { text-decoration: underline; }
+.card-desc code {
+  background: rgba(0,0,0,0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', monospace;
+  font-size: 0.85em;
+  color: #f9a8d4;
+}
+.card-desc pre {
+  background: rgba(0,0,0,0.3);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+.card-desc pre code { background: none; padding: 0; }
+.card-desc blockquote {
+  border-left: 3px solid #7c3aed;
+  padding-left: 12px;
+  margin: 10px 0;
+  color: rgba(255,255,255,0.6);
+}
+.card-desc hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 14px 0;
+}
+
+.card-images {
+  padding: 0 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+.card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  background: rgba(0,0,0,0.2);
+}
+.card-image:hover {
+  transform: scale(1.02);
+  border-color: rgba(124, 58, 237, 0.5);
+}
+.card-images-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.card-footer {
+  padding: 12px 20px 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-del {
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-del:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.empty-state {
+  text-align: center;
+  color: rgba(255,255,255,0.3);
+  padding: 50px 20px;
+  font-size: 0.95rem;
+  border: 2px dashed rgba(255,255,255,0.1);
+  border-radius: 14px;
+  grid-column: 1 / -1;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #10b981;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transform: translateX(150%);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1000;
+}
+.toast.show { transform: translateX(0); }
+.toast.error { background: #ef4444; }
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.btn-export {
+  background: rgba(255,255,255,0.08);
+  color: #b0b0d0;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-export:hover {
+  background: rgba(255,255,255,0.14);
+  color: white;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.lightbox.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.lightbox-close:hover { opacity: 1; }
+
+@media (max-width: 600px) {
+  .ideas-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.6rem; }
+  .card-input { padding: 20px; }
+  .card-image { height: 140px; }
+  .image-upload-header { flex-direction: column; align-items: stretch; }
+  .image-url-input-wrap { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>💡 创意池</h1>
+    <p>用最少的步骤，记录最好的想法</p>
+  </div>
+
+  <div class="card-input">
+    <form id="ideaForm">
+      <div class="form-group">
+        <label for="author">创意者名称 *</label>
+        <input type="text" id="author" placeholder="你的名字" required>
+      </div>
+      <div class="form-group">
+        <label for="rawText">创意描述 *</label>
+        <textarea id="rawText" placeholder="尽情描述你的创意吧，支持 Markdown 格式！
+
+例如：
+# 水果忍者体感版
+
+我想做一个**体感休闲游戏**，类似水果忍者的玩法，用体感手柄挥砍水果。
+
+- 适合年龄：6-12岁
+- 游戏人数：单人
+- 操作方式：体感
+
+参考原型：http://example.com" required></textarea>
+        <div class="hint">支持 Markdown 格式。系统会自动提取：游戏类型、参考原型链接、建议年龄、游戏人数、操作方式。可直接在文本框中 Ctrl+V 粘贴截图。</div>
+      </div>
+
+      <!-- 图片上传区域 -->
+      <div class="form-group">
+        <label>📎 图片附件</label>
+        <div class="image-upload-area" id="imageUploadArea" tabindex="0">
+          <div class="image-upload-header">
+            <button type="button" class="image-upload-btn" onclick="document.getElementById('fileInput').click()">📁 选择文件</button>
+            <div class="image-url-input-wrap">
+              <input type="text" id="imageUrlInput" placeholder="粘贴图片链接 URL...">
+              <button type="button" class="image-url-add-btn" onclick="addImageUrl()">添加</button>
+            </div>
+          </div>
+          <div class="image-upload-paste-hint" id="pasteHint">
+            <div class="paste-icon">📋</div>
+            <div class="paste-text">
+              <strong>直接 Ctrl+V 粘贴图片</strong>
+              <small>截图 / 网页图片 / 复制图片地址均可（页面任意位置）</small>
+            </div>
+          </div>
+          <div class="image-preview-list" id="imagePreviewList"></div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFileSelect(event)">
+        <div class="hint">支持方式：① 点击选择文件 ② 拖拽图片到上方 ③ 粘贴 URL 链接 ④ 复制网页图片后 Ctrl+V</div>
+      </div>
+
+      <button type="submit" class="btn-primary">🚀 提交创意</button>
+    </form>
+  </div>
+
+  <div class="section-title">📋 已收集的创意</div>
+  <div id="ideasList" class="ideas-grid">
+    <div class="empty-state">暂无创意，快来提交第一个吧！</div>
+  </div>
+  <div class="footer-actions" id="footerActions" style="display:none;">
+    <button class="btn-export" onclick="exportData()">📥 导出 JSON</button>
+    <button class="btn-export" onclick="clearAll()">🗑️ 清空全部</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">提交成功！</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close">&times;</span>
+  <img id="lightboxImg" src="">
+</div>
+
+<script>
+const STORAGE_KEY = 'creative_ideas_v3';
+const NEXT_ID_KEY = 'creative_next_id_v3';
+
+// 当前表单中已添加的图片（未提交）
+let pendingImages = [];
+
+// 后端 API 地址（配置后启用后端上传，否则使用 base64 本地存储）
+const API_BASE_URL = ''; // 例如: 'http://localhost:3001' 或 'https://your-backend.com'
+
+// 上传文件到后端
+async function uploadFileToBackend(file, name) {
+  if (!API_BASE_URL) return null;
+  try {
+    showToast('正在上传图片到网盘...');
+    const formData = new FormData();
+    formData.append('image', file, name);
+    const res = await fetch(`${API_BASE_URL}/api/upload`, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`图片已上传到网盘 (${data.source === 'disk' ? '网盘' : '本地'})`);
+      return data.url;
+    }
+    throw new Error(data.error || '上传失败');
+  } catch (err) {
+    showToast(`后端上传失败: ${err.message}`, true);
+    return null;
+  }
+}
+
+// 上传 base64 到后端
+async function uploadBase64ToBackend(base64, name) {
+  if (!API_BASE_URL) return null;
+  try {
+    showToast('正在上传图片到网盘...');
+    const res = await fetch(`${API_BASE_URL}/api/upload-base64`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64, name })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`图片已上传到网盘 (${data.source === 'disk' ? '网盘' : '本地'})`);
+      return data.url;
+    }
+    throw new Error(data.error || '上传失败');
+  } catch (err) {
+    showToast(`后端上传失败: ${err.message}`, true);
+    return null;
+  }
+}
+
+// ===== 自适应高度文本框 =====
+const rawTextArea = document.getElementById('rawText');
+function autoResizeTextarea(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.max(60, el.scrollHeight + 2) + 'px';
+}
+rawTextArea.addEventListener('input', function() {
+  autoResizeTextarea(this);
+});
+
+// 监听粘贴事件：支持从网页复制图片直接粘贴到文本框
+rawTextArea.addEventListener('paste', function(e) {
+  const cd = e.clipboardData;
+  if (!cd) return;
+
+  let handled = false;
+
+  // 方案1：从 clipboardData.files 获取图片（截图工具等）
+  if (cd.files && cd.files.length > 0) {
+    for (const file of cd.files) {
+      if (file.type.startsWith('image/')) {
+        handled = true;
+        e.preventDefault();
+        addImageBlob(file, '粘贴图片');
+      }
+    }
+  }
+
+  // 方案2：从 clipboardData.items 获取图片（网页右键复制图片）
+  if (!handled && cd.items) {
+    for (let i = 0; i < cd.items.length; i++) {
+      const item = cd.items[i];
+      if (item.type.indexOf('image') !== -1) {
+        const blob = item.getAsFile();
+        if (blob) {
+          handled = true;
+          e.preventDefault();
+          addImageBlob(blob, '粘贴图片');
+        }
+      }
+    }
+  }
+
+  // 方案3：从 text/html 中提取图片 URL（某些浏览器复制图片时会粘贴 HTML）
+  if (!handled) {
+    const html = cd.getData('text/html');
+    if (html) {
+      const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (imgMatch && imgMatch[1]) {
+        const imgUrl = imgMatch[1];
+        if (imgUrl.startsWith('http')) {
+          handled = true;
+          e.preventDefault();
+          pendingImages.push({ type: 'url', src: imgUrl, name: '粘贴图片' });
+          renderPendingImages();
+          showToast('已从网页复制图片');
+        }
+      }
+    }
+  }
+
+  // 方案4：从纯文本中提取图片 URL
+  if (!handled) {
+    const text = cd.getData('text/plain');
+    if (text) {
+      const imgUrlMatch = text.match(/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/i);
+      if (imgUrlMatch) {
+        handled = true;
+        e.preventDefault();
+        pendingImages.push({ type: 'url', src: imgUrlMatch[0], name: '粘贴图片' });
+        renderPendingImages();
+        showToast('已从网页复制图片');
+      }
+    }
+  }
+
+  setTimeout(() => autoResizeTextarea(this), 0);
+});
+
+// 统一处理图片 blob
+function addImageBlob(blob, name) {
+  if (API_BASE_URL) {
+    // 使用后端上传
+    uploadFileToBackend(blob, 'paste.png').then(url => {
+      if (url) {
+        pendingImages.push({ type: 'url', src: url, name: name });
+        renderPendingImages();
+      }
+    });
+  } else {
+    // 本地 base64
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      pendingImages.push({ type: 'base64', src: evt.target.result, name: name });
+      renderPendingImages();
+    };
+    reader.readAsDataURL(blob);
+  }
+  showToast('图片已粘贴到附件区');
+}
+
+// 初始化一次
+autoResizeTextarea(rawTextArea);
+
+// ===== 全局粘贴监听：页面上任何位置 Ctrl+V 都能识别图片 =====
+// 即使焦点不在 textarea 或文件输入框，也能捕获剪贴板中的图片
+document.addEventListener('paste', function(e) {
+  // 如果焦点在输入框（比如创意者名称、URL 输入框）且不是图片，忽略
+  const target = e.target;
+  const isTextInput = target.tagName === 'INPUT' && target.type === 'text';
+  const isTextarea = target.tagName === 'TEXTAREA';
+  const isUrlInput = target.id === 'imageUrlInput';
+  const isAuthorInput = target.id === 'author';
+
+  // 如果在文本输入框中粘贴文字，让浏览器默认行为接管
+  if ((isTextInput || isTextarea) && !isUrlInput && !isAuthorInput) return;
+  if (isUrlInput || isAuthorInput) {
+    // URL/作者输入框允许文字粘贴，浏览器默认处理
+    return;
+  }
+
+  const cd = e.clipboardData;
+  if (!cd) return;
+
+  let handled = false;
+
+  // 检测图片文件
+  if (cd.files && cd.files.length > 0) {
+    for (const file of cd.files) {
+      if (file.type.startsWith('image/')) {
+        handled = true;
+        e.preventDefault();
+        addImageBlob(file, '粘贴图片');
+      }
+    }
+  }
+
+  if (!handled && cd.items) {
+    for (let i = 0; i < cd.items.length; i++) {
+      const item = cd.items[i];
+      if (item.type.indexOf('image') !== -1) {
+        const blob = item.getAsFile();
+        if (blob) {
+          handled = true;
+          e.preventDefault();
+          addImageBlob(blob, '粘贴图片');
+        }
+      }
+    }
+  }
+
+  if (!handled) {
+    const html = cd.getData('text/html');
+    if (html) {
+      const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (imgMatch && imgMatch[1]) {
+        const imgUrl = imgMatch[1];
+        if (imgUrl.startsWith('http')) {
+          handled = true;
+          e.preventDefault();
+          pendingImages.push({ type: 'url', src: imgUrl, name: '粘贴图片' });
+          renderPendingImages();
+          showToast('已从网页复制图片');
+        }
+      }
+    }
+  }
+
+  if (!handled) {
+    const text = cd.getData('text/plain');
+    if (text) {
+      const imgUrlMatch = text.match(/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/i);
+      if (imgUrlMatch) {
+        handled = true;
+        e.preventDefault();
+        pendingImages.push({ type: 'url', src: imgUrlMatch[0], name: '粘贴图片' });
+        renderPendingImages();
+        showToast('已从网页复制图片');
+      }
+    }
+  }
+});
+
+// ===== 图片处理 =====
+function addImageUrl() {
+  const input = document.getElementById('imageUrlInput');
+  const url = input.value.trim();
+  if (!url) return;
+  if (!/^https?:\/\//i.test(url)) {
+    showToast('⚠️ 请输入有效的 URL（以 http:// 或 https:// 开头）', true);
+    return;
+  }
+  pendingImages.push({ type: 'url', src: url, name: '图片链接' });
+  input.value = '';
+  renderPendingImages();
+  showToast('图片链接已添加');
+}
+
+// ===== 图片上传区：点击聚焦 + Ctrl+V 提示 =====
+const pasteHint = document.getElementById('pasteHint');
+if (pasteHint) {
+  pasteHint.addEventListener('click', (e) => {
+    // 点击提示区时聚焦到图片上传框
+    document.getElementById('imageUploadArea').focus();
+    // 给个反馈：模拟闪烁边框
+    pasteHint.classList.add('paste-active');
+    setTimeout(() => pasteHint.classList.remove('paste-active'), 800);
+    showToast('已就绪，按 Ctrl+V 粘贴剪贴板中的图片');
+  });
+}
+
+// ===== 全局快捷键：Ctrl+V 任意位置触发图片粘贴提示 =====
+// 监测全局 Ctrl+V 事件，提示用户当前在哪个位置可粘贴
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+    // 如果焦点在文本输入框、URL 输入框、作者输入框中，忽略（让浏览器默认处理）
+    const t = e.target;
+    if (t && (t.id === 'author' || t.id === 'imageUrlInput')) return;
+    if (t && t.tagName === 'TEXTAREA' && t.id === 'rawText') {
+      // 描述文本框允许默认粘贴（不阻止）
+      return;
+    }
+    // 其他位置（页面空白、卡片等）闪烁提示
+    if (pasteHint) {
+      pasteHint.classList.add('paste-active');
+      setTimeout(() => pasteHint.classList.remove('paste-active'), 1200);
+    }
+  }
+});
+
+function handleFileSelect(event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    if (API_BASE_URL) {
+      // 使用后端上传
+      uploadFileToBackend(file, file.name).then(url => {
+        if (url) {
+          pendingImages.push({ type: 'url', src: url, name: file.name });
+          renderPendingImages();
+        }
+      });
+    } else {
+      // 本地 base64
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        pendingImages.push({ type: 'base64', src: e.target.result, name: file.name });
+        renderPendingImages();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  event.target.value = '';
+  showToast(`已添加 ${files.length} 张图片`);
+}
+
+function removePendingImage(index) {
+  pendingImages.splice(index, 1);
+  renderPendingImages();
+}
+
+function renderPendingImages() {
+  const list = document.getElementById('imagePreviewList');
+  if (pendingImages.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = pendingImages.map((img, i) => `
+    <div class="image-preview-item">
+      <img src="${img.src}" alt="${escapeHtml(img.name)}">
+      <button type="button" class="remove-btn" onclick="removePendingImage(${i})" title="移除">&times;</button>
+    </div>
+  `).join('');
+}
+
+// 拖拽上传
+const uploadArea = document.getElementById('imageUploadArea');
+uploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.classList.remove('dragover');
+});
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if (!files || files.length === 0) return;
+  let added = 0;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    if (API_BASE_URL) {
+      uploadFileToBackend(file, file.name).then(url => {
+        if (url) {
+          pendingImages.push({ type: 'url', src: url, name: file.name });
+          renderPendingImages();
+        }
+      });
+    } else {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        pendingImages.push({ type: 'base64', src: evt.target.result, name: file.name });
+        renderPendingImages();
+      };
+      reader.readAsDataURL(file);
+    }
+    added++;
+  }
+  if (added > 0) showToast(`已添加 ${added} 张图片`);
+});
+
+// Enter 键在图片 URL 输入框中触发添加
+document.getElementById('imageUrlInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); addImageUrl(); }
+});
+
+// ===== Markdown 渲染器 =====
+function renderMarkdown(text) {
+  let html = escapeHtml(text);
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+  html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
+  html = html.replace(/^&gt; (.*$)/gim, '<blockquote>$1</blockquote>');
+  html = html.replace(/^---$/gim, '<hr>');
+  html = html.replace(/^\*\*\*$/gim, '<hr>');
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  html = html.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+  html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+  html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+  html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+  html = html.replace(/<ul>(.*?)<\/ul>/gs, (match) => match.replace(/<\/li>\n<li>/g, '</li><li>'));
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p><(h[1-4]|pre|ul|blockquote|hr)/g, '<$1');
+  html = html.replace(/<\/(h[1-4]|pre|ul|blockquote|hr)><\/p>/g, '</$1>');
+  html = html.replace(/<p><\/p>/g, '');
+  html = html.replace(/<\/p>\n?<(h[1-4]|pre|ul|blockquote|hr)/g, '<$1');
+  return html;
+}
+
+function extractImagesFromText(text) {
+  const images = [];
+  const mdImgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  let m;
+  while ((m = mdImgRegex.exec(text)) !== null) {
+    images.push({ src: m[2], alt: m[1], source: 'markdown' });
+  }
+  const imgUrlRegex = /https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/gi;
+  while ((m = imgUrlRegex.exec(text)) !== null) {
+    if (!images.some(img => img.src === m[0])) {
+      images.push({ src: m[0], alt: '', source: 'url' });
+    }
+  }
+  return images;
+}
+
+// ===== 提取逻辑（未识别返回空字符串） =====
+function extractGameType(text) {
+  const types = ['休闲游戏','射击游戏','解谜游戏','益智游戏','塔防游戏','动作游戏','跑酷游戏','竞速游戏','卡牌游戏','音游','音乐游戏','沙盒游戏','模拟经营','角色扮演','RPG','格斗游戏','策略游戏','恐怖游戏','冒险游戏','体感游戏','派对游戏'];
+  for (const t of types) { if (text.includes(t)) return t; }
+  if (/体感/.test(text)) return '体感游戏';
+  if (/休闲|放松|简单/.test(text)) return '休闲游戏';
+  if (/射击|枪|瞄准/.test(text)) return '射击游戏';
+  if (/解谜|谜题/.test(text)) return '解谜游戏';
+  if (/益智|智力/.test(text)) return '益智游戏';
+  if (/塔防|防御/.test(text)) return '塔防游戏';
+  if (/动作|战斗/.test(text)) return '动作游戏';
+  if (/跑酷|跑|跳跃/.test(text)) return '跑酷游戏';
+  if (/竞速|赛车|速度/.test(text)) return '竞速游戏';
+  if (/卡牌|卡片/.test(text)) return '卡牌游戏';
+  if (/音乐|节奏|音游|音符/.test(text)) return '音游';
+  if (/沙盒|创造|建造/.test(text)) return '沙盒游戏';
+  if (/模拟|经营|养成/.test(text)) return '模拟经营';
+  if (/角色|剧情|故事/.test(text)) return '角色扮演';
+  if (/格斗|拳|武术/.test(text)) return '格斗游戏';
+  if (/策略|计谋|战术/.test(text)) return '策略游戏';
+  if (/恐怖|惊悚|鬼/.test(text)) return '恐怖游戏';
+  if (/冒险|探索|探险/.test(text)) return '冒险游戏';
+  if (/派对|聚会|多人同屏/.test(text)) return '派对游戏';
+  return '';
+}
+
+function extractUrls(text) {
+  const imgUrls = new Set(extractImagesFromText(text).map(i => i.src));
+  const urlRegex = /https?:\/\/[^\s]+|www\.[^\s]+/gi;
+  const matches = text.match(urlRegex);
+  if (!matches) return [];
+  return matches
+    .map(u => u.replace(/[.,;!?]$/, ''))
+    .filter(u => !imgUrls.has(u) && !/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?|$)/i.test(u));
+}
+
+function extractAge(text) {
+  // 范围格式优先：9+、6~9、4~6、6-12、全年龄
+  const rangePatterns = [
+    /(\d+)\s*[\-~到至]\s*(\d+)\s*岁?/g,           // 6-12 / 6~9 / 4-6
+    /(\d+)\s*[+＋]\s*岁?/g,                       // 9+ / 12+
+    /(\d+)\s*以上/g,                              // 6岁以上
+    /(\d+)\s*以下/g,                              // 12岁以下
+  ];
+  for (const re of rangePatterns) {
+    const m = text.match(re);
+    if (m) {
+      // 去重
+      const uniq = [...new Set(m.map(s => s.replace(/\s*岁?$/, '').trim()))];
+      return uniq.join(' / ');
+    }
+  }
+  // 单独岁数 → 转化为 n+ 形式
+  const single = text.match(/(\d+)\s*岁/);
+  if (single) return single[1] + '+';
+  // 全年龄
+  if (/全年龄|全龄|老少皆宜|所有人|all ages/i.test(text)) return '全年龄';
+  return '';
+}
+
+function extractPlayers(text) {
+  // 范围格式：1~4人、2-4人
+  const rangeMatch = text.match(/(\d+)\s*[~\-到至]\s*(\d+)\s*人/);
+  if (rangeMatch) return `${rangeMatch[1]}~${rangeMatch[2]}人`;
+
+  // "仅限" / "限定" / "支持" / "最多" / "至少" 后跟数字
+  const limitMatch = text.match(/(?:仅限|限定|支持|最多|至少)\s*(\d+)\s*人/);
+  if (limitMatch) return `仅限${limitMatch[1]}人`;
+
+  // 数字 + 人
+  const numMatch = text.match(/(\d+)\s*人(?!\s*[以之])/);
+  if (numMatch) return `${numMatch[1]}人`;
+
+  // 关键词兜底
+  if (/单人|一个人|solo/i.test(text)) return '1人';
+  if (/双人|两个人|对战/i.test(text)) return '2人';
+  if (/三人|3\s*人|3P/.test(text)) return '3人';
+  if (/四人|4\s*人/.test(text)) return '4人';
+  if (/多人|团队|组队|在线|联机/.test(text)) return '多人';
+
+  return '';
+}
+
+function extractControl(text) {
+  // 体感优先：再细分为身体部位
+  if (/体感|kinect|ps\s*move|动作捕捉|body\s*tracking/i.test(text)) {
+    // 提取具体身体部位
+    if (/双手|两手|双臂|双侧/.test(text)) return '体感（双手）';
+    if (/单手|一手|单臂|单侧/.test(text)) return '体感（单手）';
+    if (/上肢|手臂|胳膊/.test(text)) return '体感（上肢）';
+    if (/下肢|腿部|脚部|脚步|脚/.test(text)) return '体感（下肢）';
+    if (/全身|身体|整体/.test(text)) return '体感（全身）';
+    if (/头部|脑袋|脸/.test(text)) return '体感（头部）';
+    if (/手指|指|手势/.test(text)) return '体感（手指）';
+    if (/挥手|挥砍|挥动|挥臂/.test(text)) return '体感（上肢）';
+    if (/踢|踩|跳|蹦/.test(text)) return '体感（下肢）';
+    return '体感';
+  }
+  // VR
+  if (/vr|虚拟现实|头显|vr\s*手柄|oculus|vive|quest/i.test(text)) {
+    if (/手柄|controller/.test(text)) return 'VR（手柄）';
+    if (/手势|hand/i.test(text)) return 'VR（手势）';
+    if (/眼动|eye|视线/i.test(text)) return 'VR（眼动）';
+    return 'VR';
+  }
+  // 手柄 - 区分身体部位
+  if (/手柄|controller|摇杆|gamepad|joycon|joy-stick/i.test(text)) {
+    if (/双手|两手/.test(text)) return '手柄（双手）';
+    if (/单手|一手/.test(text)) return '手柄（单手）';
+    return '手柄';
+  }
+  // 触摸 - 区分身体部位
+  if (/触摸|触屏|触|swipe|pinch|touchscreen/i.test(text)) {
+    if (/双手|两手|两指/.test(text)) return '触摸（双手）';
+    if (/单手|一手|单指/.test(text)) return '触摸（单手）';
+    if (/手指/.test(text)) return '触摸（手指）';
+    return '触摸';
+  }
+  if (/点击|鼠标|mouse/i.test(text)) return '点击/鼠标';
+  if (/按键|键盘|keyboard|key|按钮/i.test(text)) return '按键/键盘';
+  if (/语音|声控|说话|voice/i.test(text)) return '语音';
+  if (/陀螺仪|重力感应|倾斜|accelerometer/i.test(text)) return '陀螺仪';
+  if (/眼动|眼球|视线|eye/i.test(text)) return '眼动';
+  if (/脑波|脑机|bci|mind/i.test(text)) return '脑波';
+  return '';
+}
+
+function extractTitle(text) {
+  const h1 = text.match(/^#\s+(.+)$/m);
+  if (h1) return h1[1].trim().substring(0, 50);
+  const m = text.match(/^(.*?)(?:[,，.。!！?？]|\n)/);
+  if (m) return m[1].trim().substring(0, 50);
+  return text.trim().substring(0, 50);
+}
+
+function getNextId() {
+  let nextId = parseInt(localStorage.getItem(NEXT_ID_KEY));
+  if (!nextId || isNaN(nextId)) nextId = 2001;
+  return nextId;
+}
+
+function advanceId() {
+  const nextId = getNextId();
+  localStorage.setItem(NEXT_ID_KEY, nextId + 1);
+  return nextId;
+}
+
+// ===== 提交 =====
+document.getElementById('ideaForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const rawText = document.getElementById('rawText').value.trim();
+  const author = document.getElementById('author').value.trim();
+  if (!rawText || !author) return;
+
+  // 合并图片：描述中的 + 单独上传的
+  const textImages = extractImagesFromText(rawText);
+  const allImages = [...textImages];
+  for (const p of pendingImages) {
+    if (!allImages.some(img => img.src === p.src)) {
+      allImages.push({ src: p.src, alt: p.name, source: p.type === 'base64' ? 'upload' : 'url' });
+    }
+  }
+
+  const idea = {
+    id: advanceId(),
+    author: author,
+    title: extractTitle(rawText),
+    desc: rawText,
+    gameType: extractGameType(rawText),
+    urls: extractUrls(rawText),
+    age: extractAge(rawText),
+    players: extractPlayers(rawText),
+    control: extractControl(rawText),
+    images: allImages,
+    createdAt: new Date().toLocaleString('zh-CN')
+  };
+
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  ideas.unshift(idea);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+
+  showToast('✅ 创意提交成功！');
+  this.reset();
+  pendingImages = [];
+  renderPendingImages();
+  autoResizeTextarea(rawTextArea);
+  renderIdeas();
+});
+
+// ===== 渲染 =====
+function renderIdeas() {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const list = document.getElementById('ideasList');
+  const footer = document.getElementById('footerActions');
+
+  if (ideas.length === 0) {
+    list.innerHTML = '<div class="empty-state">暂无创意，快来提交第一个吧！</div>';
+    footer.style.display = 'none';
+    return;
+  }
+
+  footer.style.display = 'flex';
+  list.innerHTML = ideas.map(item => {
+    // 关键信息：固定5个字段，无值显示"待补充"
+    const emptyText = '<span class="empty">待补充</span>';
+    const formatVal = (val) => val ? escapeHtml(val) : emptyText;
+
+    // 参考原型链接特殊处理：可点击 + 多链接换行
+    let urlsHtml = emptyText;
+    if (item.urls && item.urls.length > 0) {
+      urlsHtml = '<div class="mutil-link">' +
+        item.urls.map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener">🔗 ${escapeHtml(u)}</a>`).join('') +
+        '</div>';
+    }
+
+    const metaGrid = `
+      <div class="card-meta-grid">
+        <div class="card-meta-item">
+          <span class="meta-label">🎮 游戏类型</span>
+          <span class="meta-value ${item.gameType ? '' : 'empty'}">${formatVal(item.gameType)}</span>
+        </div>
+        <div class="card-meta-item">
+          <span class="meta-label">👶 建议年龄</span>
+          <span class="meta-value ${item.age ? '' : 'empty'}">${formatVal(item.age)}</span>
+        </div>
+        <div class="card-meta-item">
+          <span class="meta-label">👥 游戏人数</span>
+          <span class="meta-value ${item.players ? '' : 'empty'}">${formatVal(item.players)}</span>
+        </div>
+        <div class="card-meta-item">
+          <span class="meta-label">🕹️ 操作方式</span>
+          <span class="meta-value ${item.control ? '' : 'empty'}">${formatVal(item.control)}</span>
+        </div>
+        <div class="card-meta-item" style="grid-column: 1 / -1;">
+          <span class="meta-label">🔗 参考原型</span>
+          <span class="meta-value ${item.urls && item.urls.length > 0 ? '' : 'empty'}">${urlsHtml}</span>
+        </div>
+      </div>
+    `;
+
+    const imagesHtml = item.images && item.images.length > 0
+      ? `<div class="card-images">
+           <div class="card-images-label">📎 图片 (${item.images.length})</div>
+           <div class="card-images-grid">
+             ${item.images.map((img, idx) => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="openLightbox('${escapeHtml(img.src)}')" data-idx="${idx}">`).join('')}
+           </div>
+         </div>`
+      : '';
+
+    const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
+
+    return `
+      <div class="idea-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-id-badge">创意 #${item.id}</div>
+            <div class="card-author-badge">
+              <span class="avatar">${authorInitial}</span>
+              ${escapeHtml(item.author)}
+            </div>
+          </div>
+          <div class="card-date">${item.createdAt}</div>
+        </div>
+        ${metaGrid}
+        <div class="card-body">
+          <div class="card-desc">${renderMarkdown(item.desc)}</div>
+        </div>
+        ${imagesHtml}
+        <div class="card-footer">
+          <button class="btn-del" onclick="deleteItem(${item.id})">删除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function deleteItem(id) {
+  if (!confirm('确定删除这条创意吗？')) return;
+  let ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  ideas = ideas.filter(i => i.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  renderIdeas();
+  showToast('已删除');
+}
+
+function exportData() {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const blob = new Blob([JSON.stringify(ideas, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `creative_ideas_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 导出成功！');
+}
+
+function clearAll() {
+  if (!confirm('确定清空所有创意数据吗？此操作不可恢复！')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(NEXT_ID_KEY);
+  renderIdeas();
+  showToast('已清空全部数据');
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openLightbox(url) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = url;
+  lb.classList.add('active');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+renderIdeas();
+</script>
+
+</body>
+</html>
