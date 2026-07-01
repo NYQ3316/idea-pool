@@ -91,7 +91,7 @@ NYQ3316/idea-pool
 - 状态：本地项目，无版本控制
 - 缺失：README.md（根目录）
 
-### 2026-07-01：GitHub 迁移（本次任务）
+### 2026-07-01：GitHub 迁移 + 后端重构
 | 步骤 | 内容 |
 |---|---|
 | 1 | 配置 Git 全局身份（NYQ3316）|
@@ -103,7 +103,10 @@ NYQ3316/idea-pool
 | 7 | 推送 gh-pages 分支（托管 dist/）|
 | 8 | GitHub Pages 自动启用并构建完成 |
 | 9 | 创建 PROJECT_LOG.md（本文）|
-| 10 | 添加 GitHub Actions 自动部署 |
+| 10 | 添加 GitHub Actions 自动部署（peaceiris/actions-gh-pages）|
+| 11 | 重构后端：用 GitHub Contents API 替代 youdoogo.com 网盘 |
+| 12 | 端到端验证：上传测试图片 → raw.githubusercontent.com 可访问 |
+| 13 | 更新 .env.example 环境变量模板 |
 
 ---
 
@@ -125,23 +128,33 @@ NYQ3316/idea-pool
 - **本次**：手动推送 gh-pages
 - **后续**：已添加 Actions，后续 push main 自动同步（见 `.github/workflows/`）
 
+### 决策 5：网盘 vs. GitHub 仓库存图（2026-07-01）
+- **选择**：放弃 youdoogo.com 网盘，改用 GitHub Contents API 直接上传到仓库 `uploads/` 目录
+- **理由**：
+  - 无需依赖第三方网盘（API 未知、认证复杂）
+  - 图片和代码同仓，单一数据源
+  - raw.githubusercontent.com 直接提供可访问 URL
+  - 单人项目无需额外基础设施
+
 ---
 
 ## 📝 后续 TODO 清单
 
 ### 🔥 P0：核心功能
 
-- [ ] **后端网盘集成**
-  - [ ] 调研 youdoogo.com 的 API 类型（群晖/NextCloud/Seafile/自研）
-  - [ ] 实现 `loginToDisk()` 函数
-  - [ ] 实现 `uploadToDisk()` 函数
-  - [ ] 处理 Cookie/Token 会话管理
-  - [ ] 单元测试：上传成功/失败/超时 各种场景
+- [x] ~~**后端网盘集成**~~ → **改为 GitHub 仓库存储**（已完成）
+  - [x] 用 GitHub Contents API 上传图片到 `uploads/YYYYMM/` 目录
+  - [x] 返回 raw.githubusercontent.com 可访问 URL
+  - [x] 降级机制：GitHub 失败时回退到 base64
 
-- [ ] **环境变量管理**
-  - [ ] 引入 `dotenv` 包
-  - [ ] 创建 `.env.example` 模板
-  - [ ] 文档化所有配置项
+- [x] **环境变量管理**（已完成）
+  - [x] 创建 `.env.example` 模板
+  - [x] 文档化 GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO / GITHUB_BRANCH / UPLOAD_DIR / PORT
+
+- [ ] **后端部署**
+  - [ ] 选择部署平台：Vercel / CloudBase / Railway / 自有服务器
+  - [ ] 配置 CI/CD 自动部署
+  - [ ] 配置 HTTPS + 自定义域名
 
 ### 🟡 P1：体验优化
 
@@ -203,7 +216,7 @@ NYQ3316/idea-pool
 | 编号 | 问题 | 影响 | 优先级 |
 |---|---|---|---|
 | #1 | localStorage 容量限制（5-10MB）| 大量图片会撑爆 | P0（已有降级方案：转 base64 后存后端）|
-| #2 | `loginToDisk` / `uploadToDisk` 是占位实现 | 后端无法真正工作 | P0 |
+| #2 | ~~`loginToDisk` / `uploadToDisk` 是占位实现~~ | ~~后端无法真正工作~~ | ✅ 已解决（用 GitHub Contents API 替代）|
 | #3 | Markdown 渲染器是手写简化版 | 不支持表格、任务列表等高级语法 | P2 |
 | #4 | 无后端时图片以 base64 存储 | 性能较差 | P1 |
 | #5 | 单语言（中文）| 海外用户无法使用 | P3 |
