@@ -697,14 +697,20 @@ const NEXT_ID_KEY = 'creative_next_id_v3';
 // 当前表单中已添加的图片（未提交）
 let pendingImages = [];
 
-// 后端 API 地址（配置后启用后端上传，否则使用 base64 本地存储）
-const API_BASE_URL = ''; // 例如: 'http://localhost:3001' 或 'https://your-backend.com'
+// 后端 API 地址
+// 本地开发时用 http://localhost:3001
+// 部署后改为你的后端地址，例如 https://your-app.vercel.app
+const API_BASE_URL = (function() {
+  // 从当前页面 URL 自动推断：如果是 Pages 部署，尝试同域 3001 端口
+  // 也可以手动修改这里
+  return ''; // ← 留空则用 localStorage 存 base64，填上地址则走后端上传
+})();
 
 // 上传文件到后端
 async function uploadFileToBackend(file, name) {
   if (!API_BASE_URL) return null;
   try {
-    showToast('正在上传图片到网盘...');
+    showToast('正在上传图片...');
     const formData = new FormData();
     formData.append('image', file, name);
     const res = await fetch(`${API_BASE_URL}/api/upload`, {
@@ -713,12 +719,12 @@ async function uploadFileToBackend(file, name) {
     });
     const data = await res.json();
     if (data.success) {
-      showToast(`图片已上传到网盘 (${data.source === 'disk' ? '网盘' : '本地'})`);
+      showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`);
       return data.url;
     }
     throw new Error(data.error || '上传失败');
   } catch (err) {
-    showToast(`后端上传失败: ${err.message}`, true);
+    showToast(`上传失败: ${err.message}`, true);
     return null;
   }
 }
@@ -727,7 +733,7 @@ async function uploadFileToBackend(file, name) {
 async function uploadBase64ToBackend(base64, name) {
   if (!API_BASE_URL) return null;
   try {
-    showToast('正在上传图片到网盘...');
+    showToast('正在上传图片...');
     const res = await fetch(`${API_BASE_URL}/api/upload-base64`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -735,12 +741,12 @@ async function uploadBase64ToBackend(base64, name) {
     });
     const data = await res.json();
     if (data.success) {
-      showToast(`图片已上传到网盘 (${data.source === 'disk' ? '网盘' : '本地'})`);
+      showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`);
       return data.url;
     }
     throw new Error(data.error || '上传失败');
   } catch (err) {
-    showToast(`后端上传失败: ${err.message}`, true);
+    showToast(`上传失败: ${err.message}`, true);
     return null;
   }
 }
@@ -1150,26 +1156,44 @@ function extractUrls(text) {
 }
 
 function extractAge(text) {
-  // 范围格式优先：9+、6~9、4~6、6-12、全年龄
-  const rangePatterns = [
-    /(\d+)\s*[\-~到至]\s*(\d+)\s*岁?/g,           // 6-12 / 6~9 / 4-6
-    /(\d+)\s*[+＋]\s*岁?/g,                       // 9+ / 12+
-    /(\d+)\s*以上/g,                              // 6岁以上
-    /(\d+)\s*以下/g,                              // 12岁以下
+  // 全年龄（优先）
+  if (/全年龄|全龄|老少皆宜|所有人|all\s*ages/i.test(text)) return '全年龄';
+
+  // 精确匹配：必须有"岁"字或明确年龄关键词的上下文
+  // 格式：XX岁~YY岁、XX-YY岁、XX~YY岁、XX岁以上/以下、适合XX岁、建议XX岁、年龄XX
+  const agePatterns = [
+    // 范围：适合6-12岁、建议4~6岁
+    /(?:适合|建议|年龄|适用|针对)\s*(\d{1,2})\s*[-~到至]\s*(\d{1,2})\s*岁/g,
+    // 范围：6-12岁、4~6岁（前后有年龄上下文）
+    /(\d{1,2})\s*[-~到至]\s*(\d{1,2})\s*岁/g,
+    // XX岁以上、XX岁以下、XX岁及以上
+    /(\d{1,2})\s*岁\s*(?:以上|及以上|以下|及以下)/g,
+    // XX+、XX＋（年龄上下文）
+    /(\d{1,2})\s*[+＋](?:\s*岁)?(?:\s|$)/g,
+    // 单独：XX岁（前后有"适合/建议/年龄/适用"等词）
+    /(?:适合|建议|年龄|适用|针对)\s*(\d{1,2})\s*[岁+＋]/g,
+    // 兜底：单独的"XX岁"，但必须在相关行中
+    /(\d{1,2})\s*岁(?:\s|$)/g,
   ];
-  for (const re of rangePatterns) {
-    const m = text.match(re);
-    if (m) {
-      // 去重
-      const uniq = [...new Set(m.map(s => s.replace(/\s*岁?$/, '').trim()))];
-      return uniq.join(' / ');
+
+  for (const re of agePatterns) {
+    const matches = text.matchAll(re);
+    const results = [];
+    for (const m of matches) {
+      if (m.length >= 3) {
+        // 范围格式：提取 2 个数字
+        results.push(`${m[1]}~${m[2]}`);
+      } else if (m.length === 2) {
+        results.push(m[1]);
+      }
+    }
+    if (results.length > 0) {
+      const uniq = [...new Set(results)];
+      // 单个年龄 → X+，范围 → X~Y
+      return uniq.map(r => r.includes('~') ? `${r}岁` : `${r}+`).join(' / ');
     }
   }
-  // 单独岁数 → 转化为 n+ 形式
-  const single = text.match(/(\d+)\s*岁/);
-  if (single) return single[1] + '+';
-  // 全年龄
-  if (/全年龄|全龄|老少皆宜|所有人|all ages/i.test(text)) return '全年龄';
+
   return '';
 }
 
@@ -1261,45 +1285,85 @@ function advanceId() {
 }
 
 // ===== 提交 =====
-document.getElementById('ideaForm').addEventListener('submit', function(e) {
+document.getElementById('ideaForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const rawText = document.getElementById('rawText').value.trim();
   const author = document.getElementById('author').value.trim();
   if (!rawText || !author) return;
 
-  // 合并图片：描述中的 + 单独上传的
-  const textImages = extractImagesFromText(rawText);
-  const allImages = [...textImages];
-  for (const p of pendingImages) {
-    if (!allImages.some(img => img.src === p.src)) {
-      allImages.push({ src: p.src, alt: p.name, source: p.type === 'base64' ? 'upload' : 'url' });
+  // 显示提交中状态
+  const submitBtn = this.querySelector('button[type="submit"]');
+  const originalText = submitBtn.textContent;
+  submitBtn.textContent = '⏳ 正在上传图片...';
+  submitBtn.disabled = true;
+
+  try {
+    // 第一步：先上传所有待处理图片到后端（获取远程 URL）
+    const uploadedImages = [];
+    for (const img of pendingImages) {
+      if (img.type === 'base64' && API_BASE_URL) {
+        // 本地图片 → 上传到后端
+        const url = await uploadBase64ToBackend(img.src, img.name);
+        if (url) {
+          uploadedImages.push({ src: url, alt: img.name, source: 'github' });
+        } else {
+          // 上传失败，降级为 base64
+          uploadedImages.push({ src: img.src, alt: img.name, source: 'upload' });
+        }
+      } else if (img.type === 'url') {
+        // URL 类型的图片直接保留
+        uploadedImages.push({ src: img.src, alt: img.name, source: 'url' });
+      } else {
+        // 没有后端或未知类型，保留原始
+        uploadedImages.push({ src: img.src, alt: img.name, source: img.type || 'unknown' });
+      }
     }
+
+    // 第二步：合并描述中的图片 + 已上传的图片
+    const textImages = extractImagesFromText(rawText);
+    const allImages = [...textImages];
+    for (const p of uploadedImages) {
+      if (!allImages.some(img => img.src === p.src)) {
+        allImages.push(p);
+      }
+    }
+
+    const idea = {
+      id: advanceId(),
+      author: author,
+      title: extractTitle(rawText),
+      desc: rawText,
+      gameType: extractGameType(rawText),
+      urls: extractUrls(rawText),
+      age: extractAge(rawText),
+      players: extractPlayers(rawText),
+      control: extractControl(rawText),
+      images: allImages,
+      createdAt: new Date().toLocaleString('zh-CN')
+    };
+
+    const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    ideas.unshift(idea);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+
+    const uploadCount = allImages.filter(i => i.source === 'github').length;
+    const base64Count = allImages.filter(i => i.source === 'upload' || i.src.startsWith('data:')).length;
+    let msg = '✅ 创意提交成功！';
+    if (uploadCount > 0) msg += ` (${uploadCount} 张图片已上传 GitHub)`;
+    if (base64Count > 0) msg += ` (${base64Count} 张本地)`;
+    showToast(msg);
+
+    this.reset();
+    pendingImages = [];
+    renderPendingImages();
+    autoResizeTextarea(rawTextArea);
+    renderIdeas();
+  } catch (err) {
+    showToast('提交失败: ' + err.message, true);
+  } finally {
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
   }
-
-  const idea = {
-    id: advanceId(),
-    author: author,
-    title: extractTitle(rawText),
-    desc: rawText,
-    gameType: extractGameType(rawText),
-    urls: extractUrls(rawText),
-    age: extractAge(rawText),
-    players: extractPlayers(rawText),
-    control: extractControl(rawText),
-    images: allImages,
-    createdAt: new Date().toLocaleString('zh-CN')
-  };
-
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  ideas.unshift(idea);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-
-  showToast('✅ 创意提交成功！');
-  this.reset();
-  pendingImages = [];
-  renderPendingImages();
-  autoResizeTextarea(rawTextArea);
-  renderIdeas();
 });
 
 // ===== 渲染 =====
