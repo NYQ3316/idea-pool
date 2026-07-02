@@ -651,20 +651,75 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
     cleanDesc = cleanDesc.replace(/\s+https?:\/\/[^\s]+\s*/g, ' ').trim();
     cleanDesc = cleanDesc.replace(/\n{3,}/g, '\n\n');
 
+    // 自动提取年龄
+    let ageMin = '', ageMax = '', ageDisplay = '';
+    const ageRange = rawText.match(/(?:建议年龄|年龄|适合)[：:\s]*(\d{1,2})\s*[~\-～到至]\s*(\d{1,2})\s*岁?/);
+    if (ageRange) {
+      ageMin = ageRange[1]; ageMax = ageRange[2];
+      ageDisplay = `${ageMin}~${ageMax}岁`;
+    } else {
+      const agePlus = rawText.match(/(?:建议年龄|年龄|适合)[：:\s]*(\d{1,2})\s*[+＋]/);
+      if (agePlus) {
+        ageMin = agePlus[1]; ageDisplay = `${ageMin}+`;
+      } else {
+        const ageSingle = rawText.match(/(?:建议年龄|年龄|适合)[：:\s]*(\d{1,2})\s*岁/);
+        if (ageSingle) { ageMin = ageSingle[1]; ageDisplay = `${ageMin}+`; }
+      }
+    }
+
+    // 自动提取人数
+    let playersMin = '', playersMax = '', playersDisplay = '';
+    const playersRange = rawText.match(/(?:游戏人数|人数|玩家)[：:\s]*(\d+)\s*[~\-～到至]\s*(\d+)\s*人?/);
+    if (playersRange) {
+      playersMin = playersRange[1]; playersMax = playersRange[2];
+      playersDisplay = `${playersMin}~${playersMax}人`;
+    } else {
+      const playersNum = rawText.match(/(?:游戏人数|人数|玩家)[：:\s]*(\d+)\s*人?/);
+      if (playersNum) {
+        playersMin = playersNum[1]; playersMax = playersNum[1];
+        playersDisplay = `${playersMin}人`;
+      } else {
+        if (/单人|一个人/i.test(rawText)) { playersMin = '1'; playersMax = '1'; playersDisplay = '1人'; }
+        else if (/双人|两个人/i.test(rawText)) { playersMin = '2'; playersMax = '2'; playersDisplay = '2人'; }
+        else if (/多人|团队|联机/i.test(rawText)) { playersMin = '2'; playersDisplay = '多人'; }
+      }
+    }
+
+    // 自动提取操作方式
+    let controls = [];
+    const ctrlMapping = {
+      '手臂': /手臂|胳膊|上肢|挥手|挥砍|挥动|双手|两手|双臂|摊开双手/,
+      '上半身晃动': /上半身|身体晃动|倾斜身体|左右倾斜/,
+      '腿部': /腿部|下肢|脚部|脚步|脚|踢|踩/,
+      '跳': /跳|跃|蹦/,
+      '蹲': /蹲|下蹲/,
+      '左右移动': /左右移动|侧移|横移/,
+      '陀螺仪': /陀螺仪|重力感应/,
+      '手势': /手势|手指|合拳/,
+      '头部': /头部|脑袋|脸/,
+    };
+    for (const [key, re] of Object.entries(ctrlMapping)) {
+      if (re.test(rawText)) controls.push(key);
+    }
+
+    // 自动提取游戏类型
+    const allTypes = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
+    const gameTypes = allTypes.filter(t => rawText.includes(t));
+
     const idea = {
       id: advanceId(),
       author: author,
       title: extractTitle(rawText),
       desc: cleanDesc,
-      gameTypes: [],
+      gameTypes: gameTypes,
       urls: extractUrls(rawText),
-      ageMin: '',
-      ageMax: '',
-      ageDisplay: '',
-      playersMin: '',
-      playersMax: '',
-      playersDisplay: '',
-      controls: [],
+      ageMin: ageMin,
+      ageMax: ageMax,
+      ageDisplay: ageDisplay,
+      playersMin: playersMin,
+      playersMax: playersMax,
+      playersDisplay: playersDisplay,
+      controls: controls,
       images: allImages,
       createdAt: new Date().toLocaleString('zh-CN')
     };
