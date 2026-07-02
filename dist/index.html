@@ -700,6 +700,7 @@ function saveCardData(id, updates) {
 }
 
 function startEditGameType(id, el) {
+  if (el.querySelector('.card-inline-tags')) return;
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
@@ -723,6 +724,7 @@ function startEditGameType(id, el) {
 }
 
 function startEditControl(id, el) {
+  if (el.querySelector('.card-inline-tags')) return;
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
@@ -746,16 +748,18 @@ function startEditControl(id, el) {
 }
 
 function startEditAge(id, el) {
+  if (el.querySelector('.card-inline-edit')) return;
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
   el.innerHTML = `<div class="card-inline-edit">
-    <input type="text" value="${escapeHtml(item.ageMin || '')}" placeholder="最小" maxlength="3" onfocus="this.select()">
+    <input type="text" value="${escapeHtml(item.ageMin || '')}" placeholder="最小" maxlength="3">
     <span class="card-inline-edit-sep">~</span>
-    <input type="text" value="${escapeHtml(item.ageMax || '')}" placeholder="最大" maxlength="3" onfocus="this.select()">
+    <input type="text" value="${escapeHtml(item.ageMax || '')}" placeholder="最大" maxlength="3">
   </div>`;
   const inputs = el.querySelectorAll('input');
   inputs[0].focus();
+  inputs[0].select();
   const doSave = () => {
     const min = inputs[0].value.trim();
     const max = inputs[1].value.trim();
@@ -772,16 +776,18 @@ function startEditAge(id, el) {
 }
 
 function startEditPlayers(id, el) {
+  if (el.querySelector('.card-inline-edit')) return;
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
   el.innerHTML = `<div class="card-inline-edit">
-    <input type="text" value="${escapeHtml(item.playersMin || '')}" placeholder="最少" maxlength="3" onfocus="this.select()">
+    <input type="text" value="${escapeHtml(item.playersMin || '')}" placeholder="最少" maxlength="3">
     <span class="card-inline-edit-sep">~</span>
-    <input type="text" value="${escapeHtml(item.playersMax || '')}" placeholder="最多" maxlength="3" onfocus="this.select()">
+    <input type="text" value="${escapeHtml(item.playersMax || '')}" placeholder="最多" maxlength="3">
   </div>`;
   const inputs = el.querySelectorAll('input');
   inputs[0].focus();
+  inputs[0].select();
   const doSave = () => {
     const min = inputs[0].value.trim();
     const max = inputs[1].value.trim();
