@@ -124,6 +124,18 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 }
 .card-date { font-size: 0.75rem; color: rgba(255,255,255,0.35); white-space: nowrap; padding-top: 4px; }
 
+/* 状态标签 */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; margin-right: 8px;
+  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); border: 1px dashed rgba(255,255,255,0.15);
+}
+.status-badge:hover { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); color: rgba(255,255,255,0.7); }
+.status-badge.adopt { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; }
+.status-badge.pending { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d; }
+.status-badge.archive { background: rgba(156, 163, 175, 0.2); border-color: rgba(156, 163, 175, 0.3); color: #d1d5db; }
+.status-note { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-weight: 400; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .card-meta-grid {
   padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
   display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 20px;
@@ -137,7 +149,8 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 .card-meta-item .meta-value.empty { color: rgba(255,255,255,0.25); font-weight: 400; font-style: italic; }
 .card-meta-item .meta-value a { color: #93c5fd; text-decoration: none; font-weight: 500; }
 .card-meta-item .meta-value a:hover { text-decoration: underline; }
-.card-meta-item .meta-value.mutil-link { display: flex; flex-direction: column; gap: 2px; }
+.card-meta-item .meta-value.mutil-link { display: flex; flex-direction: column; gap: 4px; }
+.mutil-link a { word-break: break-all; overflow-wrap: anywhere; }
 
 /* 内联编辑 */
 .card-meta-editable {
@@ -186,7 +199,8 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 .card-desc blockquote { border-left: 3px solid #7c3aed; padding-left: 12px; margin: 10px 0; color: rgba(255,255,255,0.6); }
 .card-desc hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 14px 0; }
 
-.card-images { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 8px; }
+.card-images { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 8px; border-radius: 8px; transition: all 0.2s; }
+.card-images:focus, .card-images.paste-active { background: rgba(124, 58, 237, 0.08); outline: 1px dashed rgba(124, 58, 237, 0.3); }
 .card-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
 .card-image {
   width: 100%; height: 160px; object-fit: cover; border-radius: 10px;
@@ -412,6 +426,8 @@ autoResizeTextarea(rawTextArea);
 // ===== 全局粘贴监听 =====
 document.addEventListener('paste', function(e) {
   const target = e.target;
+  // 跳过卡片图片区域的粘贴（由专门的 handler 处理）
+  if (target.closest('.card-images')) return;
   const isTextInput = target.tagName === 'INPUT' && target.type === 'text';
   const isTextarea = target.tagName === 'TEXTAREA';
   const isUrlInput = target.id === 'imageUrlInput';
@@ -721,6 +737,8 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
       playersDisplay: playersDisplay,
       controls: controls,
       images: allImages,
+      status: '',
+      statusNote: '',
       createdAt: new Date().toLocaleString('zh-CN')
     };
 
@@ -940,6 +958,121 @@ function saveEditImages(id, btn) {
   showToast('图片已更新');
 }
 
+// ===== 内联编辑：状态标签 =====
+function startEditStatus(id, el) {
+  if (el.querySelector('select')) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  const current = item.status || '';
+  const note = item.statusNote || '';
+  el.innerHTML = `<div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <select style="padding:4px 8px;border-radius:6px;border:1px solid rgba(124,58,237,0.5);background:rgba(0,0,0,0.3);color:#e0e0e0;font-family:inherit;font-size:0.8rem;">
+      <option value="">未设置</option>
+      <option value="adopt"${current==='adopt'?' selected':''}>采用</option>
+      <option value="pending"${current==='pending'?' selected':''}>待定</option>
+      <option value="archive"${current==='archive'?' selected':''}>留档</option>
+    </select>
+    <input type="text" value="${escapeHtml(note)}" placeholder="说明(20字内)" maxlength="20" style="width:120px;padding:4px 6px;border-radius:6px;border:1px solid rgba(124,58,237,0.3);background:rgba(0,0,0,0.3);color:#e0e0e0;font-family:inherit;font-size:0.75rem;">
+  </div>`;
+  el.querySelector('select').focus();
+  const handler = (e) => {
+    if (!el.contains(e.target)) {
+      const sel = el.querySelector('select').value;
+      const txt = el.querySelector('input').value.trim();
+      saveCardData(id, { status: sel, statusNote: txt });
+      renderIdeas();
+      showToast('状态已更新');
+      document.removeEventListener('click', handler, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', handler, true), 0);
+}
+
+// ===== 卡片图片粘贴 =====
+document.addEventListener('paste', function(e) {
+  const target = e.target;
+  // 检查是否在卡片的图片区域内
+  const cardImages = target.closest('.card-images');
+  if (!cardImages) return;
+  // 如果正在编辑（textarea），不处理
+  if (cardImages.querySelector('textarea')) return;
+
+  const cd = e.clipboardData;
+  if (!cd) return;
+  let handledImage = false;
+
+  // 从 card-images 的 onclick 获取卡片 id
+  const onclick = cardImages.getAttribute('onclick') || '';
+  const idMatch = onclick.match(/startEditImages\((\d+)/);
+  if (!idMatch) return;
+  const id = parseInt(idMatch[1]);
+
+  if (cd.files && cd.files.length > 0) {
+    for (const file of cd.files) {
+      if (file.type.startsWith('image/')) {
+        handledImage = true;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          const idx = ideas.findIndex(i => i.id === id);
+          if (idx >= 0) {
+            ideas[idx].images = ideas[idx].images || [];
+            ideas[idx].images.push({ src: evt.target.result, alt: '', source: 'base64' });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+            renderIdeas();
+            showToast('图片已添加');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+  if (cd.items) {
+    for (let i = 0; i < cd.items.length; i++) {
+      const item = cd.items[i];
+      if (item.type.indexOf('image') !== -1) {
+        const blob = item.getAsFile();
+        if (blob) {
+          handledImage = true;
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const idx = ideas.findIndex(i => i.id === id);
+            if (idx >= 0) {
+              ideas[idx].images = ideas[idx].images || [];
+              ideas[idx].images.push({ src: evt.target.result, alt: '', source: 'base64' });
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+              renderIdeas();
+              showToast('图片已添加');
+            }
+          };
+          reader.readAsDataURL(blob);
+        }
+      }
+    }
+  }
+  if (!handledImage) {
+    const text = cd.getData('text/plain');
+    if (text) {
+      const imgUrlMatch = text.match(/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/i);
+      if (imgUrlMatch) {
+        handledImage = true;
+        const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        const idx = ideas.findIndex(i => i.id === id);
+        if (idx >= 0) {
+          ideas[idx].images = ideas[idx].images || [];
+          ideas[idx].images.push({ src: imgUrlMatch[0], alt: '', source: 'url' });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+          renderIdeas();
+          showToast('图片已添加');
+        }
+      }
+    }
+  }
+  if (handledImage) { e.preventDefault(); e.stopPropagation(); }
+});
+
 // ===== 渲染 =====
 function renderIdeas() {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -1010,15 +1143,26 @@ function renderIdeas() {
     `;
 
     const imagesHtml = item.images && item.images.length > 0
-      ? `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)">
-           <div class="card-images-label">📎 图片 (${item.images.length}) <span style="color:rgba(124,58,237,0.6);font-size:0.65rem;">点击编辑</span></div>
+      ? `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)" tabindex="0">
+           <div class="card-images-label">📎 图片 (${item.images.length}) <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击编辑 / Ctrl+V粘贴</span></div>
            <div class="card-images-grid">
              ${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="event.stopPropagation();openLightbox('${escapeHtml(img.src)}')">`).join('')}
            </div>
          </div>`
-      : `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)" style="cursor:pointer;">
-           <div class="card-images-label">📎 图片 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击添加</span></div>
+      : `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)" style="cursor:pointer;" tabindex="0">
+           <div class="card-images-label">📎 图片 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击添加 / Ctrl+V粘贴</span></div>
          </div>`;
+
+    // 状态标签
+    const status = item.status || '';
+    let statusHtml = '';
+    if (status) {
+      const label = { adopt: '采用', pending: '待定', archive: '留档' }[status] || status;
+      const note = item.statusNote || '';
+      statusHtml = `<span class="status-badge ${status}" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">${label}${note ? ` <span class="status-note" title="${escapeHtml(note)}">${escapeHtml(note)}</span>` : ''}</span>`;
+    } else {
+      statusHtml = `<span class="status-badge" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">+ 标签</span>`;
+    }
 
     const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
 
@@ -1027,6 +1171,7 @@ function renderIdeas() {
         <div class="card-header">
           <div class="card-header-left">
             <div class="card-id-badge">创意 #${item.id}</div>
+            ${statusHtml}
             <div class="card-author-badge">
               <span class="avatar">${authorInitial}</span>
               ${escapeHtml(item.author)}
@@ -1119,6 +1264,8 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLight
         playersDisplay: item.playersDisplay || item.players || '',
         controls: item.controls || (item.control ? item.control.split('、') : []),
         images: item.images || [],
+        status: item.status || '',
+        statusNote: item.statusNote || '',
         createdAt: item.createdAt || ''
       }));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
