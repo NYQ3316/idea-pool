@@ -149,7 +149,7 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 .card-meta-item .meta-value.empty { color: rgba(255,255,255,0.25); font-weight: 400; font-style: italic; }
 .card-meta-item .meta-value a { color: #93c5fd; text-decoration: none; font-weight: 500; }
 .card-meta-item .meta-value a:hover { text-decoration: underline; }
-.card-meta-item .meta-value.mutil-link { display: flex; flex-direction: column; gap: 4px; }
+.mutil-link { display: flex; flex-direction: column; gap: 4px; }
 .mutil-link a { word-break: break-all; overflow-wrap: anywhere; }
 
 /* 内联编辑 */
@@ -1114,7 +1114,7 @@ document.addEventListener('paste', function(e) {
       }
     }
   }
-  if (cd.items) {
+  if (!handledImage && cd.items) {
     for (let i = 0; i < cd.items.length; i++) {
       const item = cd.items[i];
       if (item.type.indexOf('image') !== -1) {
