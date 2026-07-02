@@ -879,7 +879,6 @@ function startEditDesc(id, el) {
 }
 
 function cancelEditDesc(id, btn) {
-  saveCardData(id, { desc: null }); // 不实际保存，只触发重新渲染
   renderIdeas();
 }
 
