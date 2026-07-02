@@ -134,7 +134,7 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 .status-badge.adopt { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; }
 .status-badge.pending { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d; }
 .status-badge.archive { background: rgba(156, 163, 175, 0.2); border-color: rgba(156, 163, 175, 0.3); color: #d1d5db; }
-.status-note { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-weight: 400; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-note { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-weight: 400; }
 
 .card-meta-grid {
   padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -935,27 +935,109 @@ function saveEditUrls(id, btn) {
 
 // ===== 内联编辑：图片 =====
 function startEditImages(id, el) {
-  if (el.querySelector('textarea')) return;
+  if (el.querySelector('.card-images-edit-panel')) return;
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
-  const imgText = (item.images || []).map(img => img.src).join('\n');
-  el.innerHTML = `<textarea placeholder="每行一个图片URL（支持 http 链接或 data: base64）" style="width:100%;min-height:60px;padding:8px 10px;border:1px solid rgba(124,58,237,0.5);border-radius:8px;background:rgba(0,0,0,0.3);color:#e0e0e0;font-family:inherit;font-size:0.85rem;line-height:1.5;resize:vertical;outline:none;">${escapeHtml(imgText)}</textarea>
-    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;">
-      <button onclick="event.stopPropagation();renderIdeas()" style="padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.08);color:#b0b0d0;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:inherit;font-size:0.8rem;">取消</button>
-      <button onclick="event.stopPropagation();saveEditImages(${id}, this)" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">保存</button>
-    </div>`;
-  el.querySelector('textarea').focus();
+  const images = item.images || [];
+  
+  const gridHtml = images.length > 0
+    ? `<div class="card-images-grid" id="editGrid-${id}">
+        ${images.map((img, idx) => `
+          <div style="position:relative;">
+            <img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}">
+            <button onclick="event.stopPropagation();removeCardImage(${id}, ${idx})" style="position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,0.85);color:white;border:none;font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
+          </div>
+        `).join('')}
+      </div>`
+    : `<div style="color:rgba(255,255,255,0.3);font-size:0.85rem;padding:10px 0;">暂无图片，点击下方区域粘贴</div>`;
+  
+  el.innerHTML = `
+    <div class="card-images-edit-panel" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card-images-label">📎 图片编辑 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">Ctrl+V 粘贴 / 拖拽 / 选择文件</span></div>
+      ${gridHtml}
+      <div class="image-upload-paste-hint" id="cardPasteHint-${id}" style="margin-top:0;">
+        <div class="paste-icon">📋</div>
+        <div class="paste-text">
+          <strong>按 Ctrl+V 粘贴图片</strong>
+          <small>支持截图、复制图片、拖拽文件至此</small>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="event.stopPropagation();document.getElementById('cardFileInput-${id}').click()" style="padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.08);color:#b0b0d0;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:inherit;font-size:0.8rem;">选择文件</button>
+        <button onclick="event.stopPropagation();finishEditImages(${id})" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">完成</button>
+      </div>
+      <input type="file" id="cardFileInput-${id}" accept="image/*" multiple style="display:none" onchange="handleCardFileSelect(event, ${id})">
+    </div>
+  `;
+  
+  const hint = document.getElementById(`cardPasteHint-${id}`);
+  if (hint) {
+    hint.addEventListener('dragover', (e) => { e.preventDefault(); hint.classList.add('paste-active'); });
+    hint.addEventListener('dragleave', () => { hint.classList.remove('paste-active'); });
+    hint.addEventListener('drop', (e) => {
+      e.preventDefault(); hint.classList.remove('paste-active');
+      const files = e.dataTransfer.files;
+      if (!files) return;
+      let added = 0;
+      for (const file of files) {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(evt) { addImageToCard(id, evt.target.result); };
+          reader.readAsDataURL(file);
+          added++;
+        }
+      }
+      if (added > 0) showToast(`已添加 ${added} 张图片`);
+    });
+  }
+  
+  el.focus();
 }
 
-function saveEditImages(id, btn) {
-  const textarea = btn.parentElement.parentElement.querySelector('textarea');
-  if (!textarea) return;
-  const lines = textarea.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-  const newImages = lines.map(src => ({ src: src, alt: '', source: src.startsWith('http') ? 'url' : 'base64' }));
-  saveCardData(id, { images: newImages });
+function addImageToCard(id, src) {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  ideas[idx].images = ideas[idx].images || [];
+  ideas[idx].images.push({ src: src, alt: '', source: 'base64' });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
   renderIdeas();
-  showToast('图片已更新');
+  const newCardImages = document.querySelector(`#card-${id} .card-images`);
+  if (newCardImages) startEditImages(id, newCardImages);
+  showToast('图片已添加');
+}
+
+function removeCardImage(id, imgIndex) {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const idx = ideas.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  ideas[idx].images.splice(imgIndex, 1);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+  renderIdeas();
+  const newCardImages = document.querySelector(`#card-${id} .card-images`);
+  if (newCardImages) startEditImages(id, newCardImages);
+  showToast('图片已删除');
+}
+
+function handleCardFileSelect(event, id) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+  let added = 0;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const reader = new FileReader();
+    reader.onload = function(evt) { addImageToCard(id, evt.target.result); };
+    reader.readAsDataURL(file);
+    added++;
+  }
+  event.target.value = '';
+  if (added > 0) showToast(`已添加 ${added} 张图片`);
+}
+
+function finishEditImages(id) {
+  renderIdeas();
+  showToast('图片编辑完成');
 }
 
 // ===== 内联编辑：状态标签 =====
@@ -992,21 +1074,25 @@ function startEditStatus(id, el) {
 // ===== 卡片图片粘贴 =====
 document.addEventListener('paste', function(e) {
   const target = e.target;
-  // 检查是否在卡片的图片区域内
   const cardImages = target.closest('.card-images');
   if (!cardImages) return;
-  // 如果正在编辑（textarea），不处理
   if (cardImages.querySelector('textarea')) return;
 
   const cd = e.clipboardData;
   if (!cd) return;
   let handledImage = false;
 
-  // 从 card-images 的 onclick 获取卡片 id
-  const onclick = cardImages.getAttribute('onclick') || '';
-  const idMatch = onclick.match(/startEditImages\((\d+)/);
-  if (!idMatch) return;
-  const id = parseInt(idMatch[1]);
+  const id = parseInt(cardImages.dataset.cardId);
+  if (isNaN(id)) return;
+
+  function refreshOrEdit() {
+    const wasEditing = !!document.querySelector(`#card-${id} .card-images-edit-panel`);
+    renderIdeas();
+    if (wasEditing) {
+      const newCardImages = document.querySelector(`#card-${id} .card-images`);
+      if (newCardImages) startEditImages(id, newCardImages);
+    }
+  }
 
   if (cd.files && cd.files.length > 0) {
     for (const file of cd.files) {
@@ -1020,7 +1106,7 @@ document.addEventListener('paste', function(e) {
             ideas[idx].images = ideas[idx].images || [];
             ideas[idx].images.push({ src: evt.target.result, alt: '', source: 'base64' });
             localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-            renderIdeas();
+            refreshOrEdit();
             showToast('图片已添加');
           }
         };
@@ -1043,7 +1129,7 @@ document.addEventListener('paste', function(e) {
               ideas[idx].images = ideas[idx].images || [];
               ideas[idx].images.push({ src: evt.target.result, alt: '', source: 'base64' });
               localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-              renderIdeas();
+              refreshOrEdit();
               showToast('图片已添加');
             }
           };
@@ -1064,7 +1150,7 @@ document.addEventListener('paste', function(e) {
           ideas[idx].images = ideas[idx].images || [];
           ideas[idx].images.push({ src: imgUrlMatch[0], alt: '', source: 'url' });
           localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-          renderIdeas();
+          refreshOrEdit();
           showToast('图片已添加');
         }
       }
@@ -1149,7 +1235,7 @@ function renderIdeas() {
              ${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="event.stopPropagation();openLightbox('${escapeHtml(img.src)}')">`).join('')}
            </div>
          </div>`
-      : `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)" style="cursor:pointer;" tabindex="0">
+      : `<div class="card-images" data-card-id="${item.id}" onclick="event.stopPropagation();startEditImages(${item.id}, this)" style="cursor:pointer;" tabindex="0">
            <div class="card-images-label">📎 图片 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击添加 / Ctrl+V粘贴</span></div>
          </div>`;
 
@@ -1169,14 +1255,16 @@ function renderIdeas() {
     return `
       <div class="idea-card" id="card-${item.id}">
         <div class="card-header">
-          <div class="card-header-left">
-            <div class="card-id-badge">创意 #${item.id}</div>
-            ${statusHtml}
+        <div class="card-header-left">
+          <div class="card-id-badge">创意 #${item.id}</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <div class="card-author-badge">
               <span class="avatar">${authorInitial}</span>
               ${escapeHtml(item.author)}
             </div>
+            ${statusHtml}
           </div>
+        </div>
           <div class="card-date">${item.createdAt}</div>
         </div>
         ${metaGrid}
