@@ -12,24 +12,10 @@ body {
   min-height: 100vh;
   padding: 40px 20px;
 }
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.header {
-  text-align: center;
-  color: #e0e0e0;
-  margin-bottom: 30px;
-}
-.header h1 {
-  font-size: 2.2rem;
-  margin-bottom: 6px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-.header p {
-  font-size: 0.95rem;
-  opacity: 0.7;
-}
+.container { max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; color: #e0e0e0; margin-bottom: 30px; }
+.header h1 { font-size: 2.2rem; margin-bottom: 6px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.header p { font-size: 0.95rem; opacity: 0.7; }
 
 .card-input {
   background: rgba(255,255,255,0.06);
@@ -39,396 +25,154 @@ body {
   backdrop-filter: blur(10px);
   margin-bottom: 32px;
 }
-
-.form-group {
-  margin-bottom: 20px;
+.form-group { margin-bottom: 20px; }
+label { display: block; color: #b0b0d0; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+input[type="text"], textarea {
+  width: 100%; padding: 12px 14px; border: 2px solid rgba(255,255,255,0.15); border-radius: 10px;
+  font-size: 1rem; font-family: inherit; transition: all 0.2s;
+  background: rgba(0,0,0,0.2); color: #e0e0e0; line-height: 1.6;
 }
-label {
-  display: block;
-  color: #b0b0d0;
-  font-weight: 600;
-  margin-bottom: 6px;
-  font-size: 0.9rem;
-}
-input[type="text"],
-textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: all 0.2s;
-  background: rgba(0,0,0,0.2);
-  color: #e0e0e0;
-  line-height: 1.6;
-}
-input::placeholder, textarea::placeholder {
-  color: rgba(255,255,255,0.3);
-}
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
 input:focus, textarea:focus {
-  outline: none;
-  border-color: #7c3aed;
-  background: rgba(0,0,0,0.3);
+  outline: none; border-color: #7c3aed; background: rgba(0,0,0,0.3);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
 }
-textarea {
-  resize: none;
-  overflow: hidden;
-  min-height: 60px;
-  field-sizing: content;
-}
+textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: content; }
+.hint { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 6px; line-height: 1.5; }
 
-.hint {
-  color: rgba(255,255,255,0.4);
-  font-size: 0.8rem;
-  margin-top: 6px;
-  line-height: 1.5;
-}
-
-/* ===== 图片上传区域 ===== */
+/* 图片上传 */
 .image-upload-area {
-  border: 2px dashed rgba(255,255,255,0.15);
-  border-radius: 12px;
-  padding: 20px;
-  background: rgba(0,0,0,0.15);
-  transition: all 0.2s;
-  margin-top: 8px;
+  border: 2px dashed rgba(255,255,255,0.15); border-radius: 12px; padding: 20px;
+  background: rgba(0,0,0,0.15); transition: all 0.2s; margin-top: 8px;
 }
-.image-upload-area.dragover {
-  border-color: #7c3aed;
-  background: rgba(124, 58, 237, 0.1);
-}
-.image-upload-header {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
+.image-upload-area.dragover { border-color: #7c3aed; background: rgba(124, 58, 237, 0.1); }
+.image-upload-header { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
 .image-upload-btn {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  font-family: inherit;
-  transition: all 0.2s;
-  background: rgba(124, 58, 237, 0.2);
-  color: #c4b5fd;
-  border: 1px solid rgba(124, 58, 237, 0.3);
+  padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  border: none; font-family: inherit; transition: all 0.2s;
+  background: rgba(124, 58, 237, 0.2); color: #c4b5fd; border: 1px solid rgba(124, 58, 237, 0.3);
 }
-.image-upload-btn:hover {
-  background: rgba(124, 58, 237, 0.35);
-}
-.image-url-input-wrap {
-  display: flex;
-  gap: 8px;
-  flex: 1;
-  min-width: 200px;
-}
+.image-upload-btn:hover { background: rgba(124, 58, 237, 0.35); }
+.image-url-input-wrap { display: flex; gap: 8px; flex: 1; min-width: 200px; }
 .image-url-input-wrap input {
-  flex: 1;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(0,0,0,0.2);
-  color: #e0e0e0;
-  font-family: inherit;
-  font-size: 0.9rem;
+  flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.2); color: #e0e0e0; font-family: inherit; font-size: 0.9rem;
 }
-.image-url-input-wrap input:focus {
-  outline: none;
-  border-color: #7c3aed;
-}
+.image-url-input-wrap input:focus { outline: none; border-color: #7c3aed; }
 .image-url-add-btn {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  font-family: inherit;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  color: white;
-  white-space: nowrap;
+  padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  border: none; font-family: inherit; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; white-space: nowrap;
 }
-.image-upload-hint {
-  color: rgba(255,255,255,0.35);
-  font-size: 0.75rem;
-  text-align: center;
-  margin-top: 8px;
-}
-
-.image-upload-area:focus {
-  outline: none;
-  border-color: #7c3aed;
-}
-
 .image-upload-paste-hint {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(79, 70, 229, 0.1));
-  border: 1px dashed rgba(124, 58, 237, 0.3);
-  border-radius: 10px;
-  margin-top: 12px;
-  transition: all 0.2s;
-  user-select: none;
+  border: 1px dashed rgba(124, 58, 237, 0.3); border-radius: 10px; margin-top: 12px; transition: all 0.2s; user-select: none;
 }
-
 .image-upload-paste-hint.paste-active {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(79, 70, 229, 0.25));
-  border-color: #7c3aed;
-  border-style: solid;
-  transform: scale(1.01);
+  border-color: #7c3aed; border-style: solid; transform: scale(1.01);
 }
-
-.paste-icon {
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.paste-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.paste-text strong {
-  color: #c4b5fd;
-  font-size: 0.9rem;
-}
-
-.paste-text small {
-  color: rgba(255,255,255,0.45);
-  font-size: 0.7rem;
-}
-
-/* 图片预览列表 */
-.image-preview-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
-}
+.paste-icon { font-size: 1.8rem; line-height: 1; }
+.paste-text { display: flex; flex-direction: column; gap: 2px; }
+.paste-text strong { color: #c4b5fd; font-size: 0.9rem; }
+.paste-text small { color: rgba(255,255,255,0.45); font-size: 0.7rem; }
+.image-preview-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .image-preview-item {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(0,0,0,0.2);
+  position: relative; width: 100px; height: 100px; border-radius: 10px;
+  overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);
 }
-.image-preview-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
 .image-preview-item .remove-btn {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(239, 68, 68, 0.85);
-  color: white;
-  border: none;
-  font-size: 0.75rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+  position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(239, 68, 68, 0.85); color: white; border: none; font-size: 0.75rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
 }
-.image-preview-item .remove-btn:hover {
-  background: rgba(239, 68, 68, 1);
-  transform: scale(1.1);
-}
+.image-preview-item .remove-btn:hover { background: rgba(239, 68, 68, 1); transform: scale(1.1); }
 
 .btn-primary {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  color: white;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 1.1rem;
+  font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
-}
-.btn-primary:active {
-  transform: translateY(0);
-}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4); }
+.btn-primary:active { transform: translateY(0); }
 
-.section-title {
-  color: #b0b0d0;
-  font-size: 1.2rem;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.ideas-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+.section-title { color: #b0b0d0; font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.ideas-grid { display: flex; flex-direction: column; gap: 18px; }
 
 .idea-card {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 0;
-  backdrop-filter: blur(10px);
-  transition: all 0.25s;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 0; backdrop-filter: blur(10px); transition: all 0.25s;
+  position: relative; overflow: visible; display: flex; flex-direction: column;
 }
-.idea-card:hover {
-  background: rgba(255,255,255,0.1);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
-}
+.idea-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
 
-.card-header {
-  padding: 18px 20px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-.card-header-left {
-  flex: 1;
-  min-width: 0;
-}
+.card-header { padding: 18px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.card-header-left { flex: 1; min-width: 0; }
 .card-id-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: white; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 8px; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
 }
 .card-author-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,0.1);
-  color: #e0e0e0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.15);
+  display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1);
+  color: #e0e0e0; font-size: 0.85rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15);
 }
 .card-author-badge .avatar {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-  color: white;
-  font-weight: 700;
-  flex-shrink: 0;
+  width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ef4444);
+  display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: white; font-weight: 700; flex-shrink: 0;
 }
-.card-date {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.35);
-  white-space: nowrap;
-  padding-top: 4px;
-}
+.card-date { font-size: 0.75rem; color: rgba(255,255,255,0.35); white-space: nowrap; padding-top: 4px; }
 
 .card-meta-grid {
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px 20px;
+  padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 20px;
 }
-.card-meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-height: 40px;
-}
+.card-meta-item { display: flex; flex-direction: column; gap: 3px; min-height: 40px; }
 .card-meta-item .meta-label {
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.4);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  font-size: 0.7rem; color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;
 }
-.card-meta-item .meta-value {
-  font-size: 0.92rem;
-  color: #ffffff;
-  font-weight: 600;
-  word-break: break-all;
-  line-height: 1.4;
+.card-meta-item .meta-value { font-size: 0.92rem; color: #ffffff; font-weight: 600; word-break: break-all; line-height: 1.4; }
+.card-meta-item .meta-value.empty { color: rgba(255,255,255,0.25); font-weight: 400; font-style: italic; }
+.card-meta-item .meta-value a { color: #93c5fd; text-decoration: none; font-weight: 500; }
+.card-meta-item .meta-value a:hover { text-decoration: underline; }
+.card-meta-item .meta-value.mutil-link { display: flex; flex-direction: column; gap: 2px; }
+
+/* 内联编辑 */
+.card-meta-editable {
+  cursor: pointer; transition: all 0.15s; border-radius: 6px; padding: 4px 8px; margin: -4px -8px; display: inline-block;
 }
-.card-meta-item .meta-value.empty {
-  color: rgba(255,255,255,0.25);
-  font-weight: 400;
-  font-style: italic;
+.card-meta-editable:hover { background: rgba(124, 58, 237, 0.15); outline: 1px dashed rgba(124, 58, 237, 0.4); }
+.card-inline-edit {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
+  background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 8px;
 }
-.card-meta-item .meta-value a {
-  color: #93c5fd;
-  text-decoration: none;
-  font-weight: 500;
+.card-inline-edit input {
+  width: 50px; padding: 4px 6px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+  background: rgba(0,0,0,0.3); color: #fff; text-align: center; font-family: inherit; font-size: 0.85rem;
 }
-.card-meta-item .meta-value a:hover {
-  text-decoration: underline;
-}
-.card-meta-item .meta-value.mutil-link {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.card-inline-edit input:focus { outline: none; border-color: #7c3aed; }
+.card-inline-edit-sep { color: rgba(255,255,255,0.5); font-weight: 700; font-size: 0.9rem; }
+.card-inline-tags {
+  display: flex; flex-wrap: wrap; gap: 4px; padding: 6px;
+  background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 8px; max-width: 100%;
 }
 
-.card-body {
-  padding: 14px 20px 16px;
-  flex: 1;
+/* 标签芯片 */
+.tag-chip {
+  display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.12);
 }
-.card-desc {
-  color: rgba(255,255,255,0.75);
-  font-size: 0.9rem;
-  line-height: 1.7;
-}
-.card-desc h1, .card-desc h2, .card-desc h3, .card-desc h4 {
-  color: #ffffff;
-  margin: 14px 0 8px;
-  font-weight: 700;
-}
-.card-desc h1 { font-size: 1.15rem; }
-.card-desc h2 { font-size: 1.05rem; }
-.card-desc h3 { font-size: 0.95rem; }
+.tag-chip:hover { background: rgba(124, 58, 237, 0.15); border-color: rgba(124, 58, 237, 0.3); color: rgba(255,255,255,0.8); }
+.tag-chip.active { background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4)); border-color: #7c3aed; color: #ffffff; box-shadow: 0 0 12px rgba(124, 58, 237, 0.3); }
+.tag-chip.card-tag { cursor: default; background: rgba(124, 58, 237, 0.25); border-color: rgba(124, 58, 237, 0.3); color: #c4b5fd; }
+
+.card-body { padding: 14px 20px 16px; flex: 1; }
+.card-desc { color: rgba(255,255,255,0.75); font-size: 0.9rem; line-height: 1.7; }
+.card-desc h1, .card-desc h2, .card-desc h3, .card-desc h4 { color: #ffffff; margin: 14px 0 8px; font-weight: 700; }
+.card-desc h1 { font-size: 1.15rem; } .card-desc h2 { font-size: 1.05rem; } .card-desc h3 { font-size: 0.95rem; }
 .card-desc p { margin-bottom: 10px; }
 .card-desc strong { color: #ffffff; font-weight: 700; }
 .card-desc em { color: #c4b5fd; }
@@ -436,390 +180,57 @@ textarea {
 .card-desc li { margin-bottom: 4px; }
 .card-desc a { color: #93c5fd; text-decoration: none; }
 .card-desc a:hover { text-decoration: underline; }
-.card-desc code {
-  background: rgba(0,0,0,0.3);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: 'SF Mono', monospace;
-  font-size: 0.85em;
-  color: #f9a8d4;
-}
-.card-desc pre {
-  background: rgba(0,0,0,0.3);
-  padding: 12px;
-  border-radius: 8px;
-  overflow-x: auto;
-  margin: 10px 0;
-}
+.card-desc code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', monospace; font-size: 0.85em; color: #f9a8d4; }
+.card-desc pre { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 10px 0; }
 .card-desc pre code { background: none; padding: 0; }
-.card-desc blockquote {
-  border-left: 3px solid #7c3aed;
-  padding-left: 12px;
-  margin: 10px 0;
-  color: rgba(255,255,255,0.6);
-}
-.card-desc hr {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  margin: 14px 0;
-}
+.card-desc blockquote { border-left: 3px solid #7c3aed; padding-left: 12px; margin: 10px 0; color: rgba(255,255,255,0.6); }
+.card-desc hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 14px 0; }
 
-.card-images {
-  padding: 0 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.card-images-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 8px;
-}
+.card-images { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 8px; }
+.card-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
 .card-image {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer;
-  transition: transform 0.2s;
-  background: rgba(0,0,0,0.2);
+  width: 100%; height: 160px; object-fit: cover; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: transform 0.2s; background: rgba(0,0,0,0.2);
 }
-.card-image:hover {
-  transform: scale(1.02);
-  border-color: rgba(124, 58, 237, 0.5);
-}
-.card-images-label {
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.3);
-  margin-bottom: 4px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-weight: 600;
-}
+.card-image:hover { transform: scale(1.02); border-color: rgba(124, 58, 237, 0.5); }
+.card-images-label { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
 
-.card-footer {
-  padding: 12px 20px 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  justify-content: flex-end;
-}
+.card-footer { padding: 12px 20px 16px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: flex-end; }
 .btn-del {
-  background: rgba(239, 68, 68, 0.1);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
+  background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
-.btn-del:hover {
-  background: rgba(239, 68, 68, 0.25);
-}
+.btn-del:hover { background: rgba(239, 68, 68, 0.25); }
 
-/* ===== 标签复选框 ===== */
-.tag-checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.tag-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.55);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-.tag-chip:hover {
-  background: rgba(124, 58, 237, 0.15);
-  border-color: rgba(124, 58, 237, 0.3);
-  color: rgba(255,255,255,0.8);
-}
-.tag-chip.active {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4));
-  border-color: #7c3aed;
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
-}
-.tag-chip.card-tag {
-  padding: 3px 10px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  cursor: default;
-  background: rgba(124, 58, 237, 0.25);
-  border-color: rgba(124, 58, 237, 0.3);
-  color: #c4b5fd;
-}
-
-/* ===== 区间输入 ===== */
-.range-input-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.range-input {
-  width: 100px;
-  padding: 10px 12px;
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  font-size: 1rem;
-  font-family: inherit;
-  background: rgba(0,0,0,0.2);
-  color: #e0e0e0;
-  text-align: center;
-  transition: all 0.2s;
-}
-.range-input:focus {
-  outline: none;
-  border-color: #7c3aed;
-  background: rgba(0,0,0,0.3);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-}
-.range-input::placeholder {
-  color: rgba(255,255,255,0.25);
-}
-.range-sep {
-  color: rgba(255,255,255,0.4);
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-/* ===== 卡片内联编辑 ===== */
-.card-meta-editable {
-  cursor: pointer;
-  transition: all 0.15s;
-  border-radius: 6px;
-  padding: 4px 8px;
-  margin: -4px -8px;
-  display: inline-block;
-  min-height: 20px;
-}
-.card-meta-editable:hover {
-  background: rgba(124, 58, 237, 0.15);
-  outline: 1px dashed rgba(124, 58, 237, 0.4);
-}
-.card-inline-edit {
-  display: inline-block;
-  padding: 4px 8px;
-  background: rgba(124, 58, 237, 0.1);
-  border: 1px solid rgba(124, 58, 237, 0.4);
-  border-radius: 8px;
-}
-.card-inline-edit input {
-  width: 50px;
-  padding: 4px 6px;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 4px;
-  background: rgba(0,0,0,0.3);
-  color: #fff;
-  text-align: center;
-  font-family: inherit;
-  font-size: 0.85rem;
-}
-.card-inline-edit input:focus {
-  outline: none;
-  border-color: #7c3aed;
-}
-.card-inline-edit-sep {
-  color: rgba(255,255,255,0.5);
-  margin: 0 4px;
-  font-weight: 700;
-}
-.card-inline-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px;
-  background: rgba(124, 58, 237, 0.1);
-  border: 1px solid rgba(124, 58, 237, 0.4);
-  border-radius: 8px;
-  max-width: 100%;
-}
-.card-inline-tags .tag-chip {
-  padding: 2px 8px;
-  font-size: 0.7rem;
-  background: rgba(255,255,255,0.05);
-}
-.card-inline-tags .tag-chip.active {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4));
-}
-.card-edit-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 1500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s;
-}
-.card-edit-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-.card-edit-panel {
-  background: #1a1a3e;
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-.card-edit-panel h3 {
-  color: #fff;
-  margin-bottom: 16px;
-  font-size: 1.1rem;
-}
-.card-edit-panel .form-group {
-  margin-bottom: 16px;
-}
-.card-edit-panel label {
-  font-size: 0.8rem;
-  margin-bottom: 6px;
-}
-.card-edit-btns {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-.card-edit-btns button {
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  border: none;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-.btn-save {
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  color: white;
-}
-.btn-save:hover { box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
-.btn-cancel {
-  background: rgba(255,255,255,0.08);
-  color: #b0b0d0;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.btn-cancel:hover { background: rgba(255,255,255,0.14); color: white; }
-.btn-edit-card {
-  background: rgba(124, 58, 237, 0.1);
-  color: #c4b5fd;
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  margin-right: 8px;
-}
-.btn-edit-card:hover { background: rgba(124, 58, 237, 0.25); }
-
-.empty-state {
-  text-align: center;
-  color: rgba(255,255,255,0.3);
-  padding: 50px 20px;
-  font-size: 0.95rem;
-  border: 2px dashed rgba(255,255,255,0.1);
-  border-radius: 14px;
-  grid-column: 1 / -1;
-}
+.empty-state { text-align: center; color: rgba(255,255,255,0.3); padding: 50px 20px; font-size: 0.95rem; border: 2px dashed rgba(255,255,255,0.1); border-radius: 14px; grid-column: 1 / -1; }
 
 .toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #10b981;
-  color: white;
-  padding: 14px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  transform: translateX(150%);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1000;
+  position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 14px 24px;
+  border-radius: 12px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000;
 }
 .toast.show { transform: translateX(0); }
 .toast.error { background: #ef4444; }
 
-.footer-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 20px;
-}
+.footer-actions { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
 .btn-export {
-  background: rgba(255,255,255,0.08);
-  color: #b0b0d0;
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
+  background: rgba(255,255,255,0.08); color: #b0b0d0; border: 1px solid rgba(255,255,255,0.15);
+  padding: 10px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
-.btn-export:hover {
-  background: rgba(255,255,255,0.14);
-  color: white;
-}
+.btn-export:hover { background: rgba(255,255,255,0.14); color: white; }
 
 .lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;
+  z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
 }
-.lightbox.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-.lightbox img {
-  max-width: 90vw;
-  max-height: 85vh;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-.lightbox-close {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
+.lightbox.active { opacity: 1; pointer-events: auto; }
+.lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; opacity: 0.7; }
 .lightbox-close:hover { opacity: 1; }
 
 @media (max-width: 600px) {
-  .ideas-grid { grid-template-columns: 1fr; }
   .header h1 { font-size: 1.6rem; }
   .card-input { padding: 20px; }
   .card-image { height: 140px; }
@@ -849,49 +260,10 @@ textarea {
 例如：
 # 水果忍者体感版
 
-我想做一个**体感休闲游戏**，类似水果忍者的玩法，用体感手柄挥砍水果。
+我想做一个体感游戏，类似水果忍者的玩法，用体感手柄挥砍水果。
 
 参考原型：http://example.com" required></textarea>
-        <div class="hint">支持 Markdown 格式。系统会自动提取参考原型链接。可直接在文本框中 Ctrl+V 粘贴截图。</div>
-      </div>
-
-      <!-- 游戏类型 - 多选标签 -->
-      <div class="form-group">
-        <label>🎮 游戏类型</label>
-        <div class="tag-checkbox-group" id="gameTypeTags">
-          <span class="tag-chip" data-val="竞技">竞技</span><span class="tag-chip" data-val="动作">动作</span><span class="tag-chip" data-val="滑雪">滑雪</span><span class="tag-chip" data-val="射击">射击</span><span class="tag-chip" data-val="球类">球类</span><span class="tag-chip" data-val="合作">合作</span><span class="tag-chip" data-val="舞蹈">舞蹈</span><span class="tag-chip" data-val="科普">科普</span><span class="tag-chip" data-val="亲子">亲子</span><span class="tag-chip" data-val="派对">派对</span><span class="tag-chip" data-val="节奏">节奏</span><span class="tag-chip" data-val="教育">教育</span><span class="tag-chip" data-val="益智">益智</span><span class="tag-chip" data-val="赛车">赛车</span><span class="tag-chip" data-val="动画">动画</span><span class="tag-chip" data-val="反应">反应</span><span class="tag-chip" data-val="健身">健身</span><span class="tag-chip" data-val="艺术">艺术</span><span class="tag-chip" data-val="竞速">竞速</span><span class="tag-chip" data-val="解谜">解谜</span><span class="tag-chip" data-val="模拟">模拟</span>
-        </div>
-      </div>
-
-      <!-- 建议年龄 - 区间输入 -->
-      <div class="form-group">
-        <label>👶 建议年龄</label>
-        <div class="range-input-row">
-          <input type="text" id="ageMin" placeholder="最小年龄" class="range-input" maxlength="3">
-          <span class="range-sep">~</span>
-          <input type="text" id="ageMax" placeholder="最大年龄" class="range-input" maxlength="3">
-        </div>
-        <div class="hint">留空表示不限。系统会自动从描述中提取。</div>
-      </div>
-
-      <!-- 游戏人数 - 区间输入 -->
-      <div class="form-group">
-        <label>👥 游戏人数</label>
-        <div class="range-input-row">
-          <input type="text" id="playersMin" placeholder="最少人数" class="range-input" maxlength="3">
-          <span class="range-sep">~</span>
-          <input type="text" id="playersMax" placeholder="最多人数" class="range-input" maxlength="3">
-        </div>
-        <div class="hint">留空表示不限。系统会自动从描述中提取。</div>
-      </div>
-
-      <!-- 操作方式 - 多选标签 -->
-      <div class="form-group">
-        <label>🕹️ 操作方式</label>
-        <div class="tag-checkbox-group" id="controlTags">
-          <span class="tag-chip" data-val="手臂">手臂</span><span class="tag-chip" data-val="上半身晃动">上半身晃动</span><span class="tag-chip" data-val="腿部">腿部</span><span class="tag-chip" data-val="跳">跳</span><span class="tag-chip" data-val="蹲">蹲</span><span class="tag-chip" data-val="左右移动">左右移动</span><span class="tag-chip" data-val="陀螺仪">陀螺仪</span><span class="tag-chip" data-val="手势">手势</span><span class="tag-chip" data-val="头部">头部</span>
-        </div>
-        <div class="hint">系统会自动从描述中提取，也可手动勾选。</div>
+        <div class="hint">支持 Markdown 格式。提交后可在卡片上手动调整：游戏类型、建议年龄、游戏人数、操作方式。可直接在文本框中 Ctrl+V 粘贴截图。</div>
       </div>
 
       <!-- 图片上传区域 -->
@@ -933,98 +305,56 @@ textarea {
 </div>
 
 <div class="toast" id="toast">提交成功！</div>
-
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <span class="lightbox-close">&times;</span>
   <img id="lightboxImg" src="">
 </div>
 
-<!-- 卡片编辑弹窗 -->
-<div class="card-edit-overlay" id="cardEditOverlay">
-  <div class="card-edit-panel" id="cardEditPanel"></div>
-</div>
-
 <script>
-const STORAGE_KEY = 'creative_ideas_v4';
-const NEXT_ID_KEY = 'creative_next_id_v4';
+const STORAGE_KEY = 'creative_ideas_v5';
+const NEXT_ID_KEY = 'creative_next_id_v5';
 
-// 当前表单中已添加的图片（未提交）
 let pendingImages = [];
-
-// 后端 API 地址
 const API_BASE_URL = '';
 
-// 上传文件到后端
 async function uploadFileToBackend(file, name) {
   if (!API_BASE_URL) return null;
   try {
-    showToast('正在上传图片...');
     const formData = new FormData();
     formData.append('image', file, name);
     const res = await fetch(`${API_BASE_URL}/api/upload`, { method: 'POST', body: formData });
     const data = await res.json();
-    if (data.success) { showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`); return data.url; }
+    if (data.success) return data.url;
     throw new Error(data.error || '上传失败');
-  } catch (err) { showToast(`上传失败: ${err.message}`, true); return null; }
+  } catch (err) { showToast('上传失败: ' + err.message, true); return null; }
 }
 
 async function uploadBase64ToBackend(base64, name) {
   if (!API_BASE_URL) return null;
   try {
-    showToast('正在上传图片...');
-    const res = await fetch(`${API_BASE_URL}/api/upload-base64`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ base64, name }) });
+    const res = await fetch(`${API_BASE_URL}/api/upload-base64`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64, name })
+    });
     const data = await res.json();
-    if (data.success) { showToast(`图片已上传 (${data.source === 'github' ? 'GitHub' : '本地'})`); return data.url; }
+    if (data.success) return data.url;
     throw new Error(data.error || '上传失败');
-  } catch (err) { showToast(`上传失败: ${err.message}`, true); return null; }
+  } catch (err) { showToast('上传失败: ' + err.message, true); return null; }
 }
 
-// ===== 标签芯片初始化 =====
-function initTagChips(containerId, activeValues) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const active = activeValues || [];
-  container.querySelectorAll('.tag-chip').forEach(chip => {
-    const val = chip.dataset.val;
-    if (active.includes(val)) chip.classList.add('active');
-    chip.addEventListener('click', () => chip.classList.toggle('active'));
-  });
-}
-function getTagChipValues(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return [];
-  const vals = [];
-  container.querySelectorAll('.tag-chip.active').forEach(chip => vals.push(chip.dataset.val));
-  return vals;
-}
-function setTagChipValues(containerId, values) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.querySelectorAll('.tag-chip').forEach(chip => {
-    if (values.includes(chip.dataset.val)) chip.classList.add('active'); else chip.classList.remove('active');
-  });
-}
-
-// 初始化表单标签
-initTagChips('gameTypeTags', []);
-initTagChips('controlTags', []);
-
-// ===== 自适应高度文本框 =====
+// ===== 文本框自适应 =====
 const rawTextArea = document.getElementById('rawText');
 function autoResizeTextarea(el) {
   el.style.height = 'auto';
   el.style.height = Math.max(60, el.scrollHeight + 2) + 'px';
 }
-rawTextArea.addEventListener('input', function() {
-  autoResizeTextarea(this);
-});
+rawTextArea.addEventListener('input', function() { autoResizeTextarea(this); });
 
-// 监听粘贴事件：支持从网页复制图片直接粘贴到文本框
+// ===== 粘贴图片 =====
 rawTextArea.addEventListener('paste', function(e) {
   const cd = e.clipboardData;
   if (!cd) return;
   let hasImage = false;
-
   if (cd.files && cd.files.length > 0) {
     for (const file of cd.files) {
       if (file.type.startsWith('image/')) { hasImage = true; addImageBlob(file, '粘贴图片'); }
@@ -1068,105 +398,62 @@ rawTextArea.addEventListener('paste', function(e) {
   setTimeout(() => autoResizeTextarea(this), 0);
 });
 
-// 统一处理图片 blob
 function addImageBlob(blob, name) {
-  if (API_BASE_URL) {
-    // 使用后端上传
-    uploadFileToBackend(blob, 'paste.png').then(url => {
-      if (url) {
-        pendingImages.push({ type: 'url', src: url, name: name });
-        renderPendingImages();
-      }
-    });
-  } else {
-    // 本地 base64
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      pendingImages.push({ type: 'base64', src: evt.target.result, name: name });
-      renderPendingImages();
-    };
-    reader.readAsDataURL(blob);
-  }
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    pendingImages.push({ type: 'base64', src: evt.target.result, name: name });
+    renderPendingImages();
+  };
+  reader.readAsDataURL(blob);
   showToast('图片已粘贴到附件区');
 }
-
-// 初始化一次
 autoResizeTextarea(rawTextArea);
 
-// ===== 全局粘贴监听：页面上任何位置 Ctrl+V 都能识别图片 =====
-// 即使焦点不在 textarea 或文件输入框，也能捕获剪贴板中的图片
+// ===== 全局粘贴监听 =====
 document.addEventListener('paste', function(e) {
-  // 如果焦点在输入框（比如创意者名称、URL 输入框）且不是图片，忽略
   const target = e.target;
   const isTextInput = target.tagName === 'INPUT' && target.type === 'text';
   const isTextarea = target.tagName === 'TEXTAREA';
   const isUrlInput = target.id === 'imageUrlInput';
   const isAuthorInput = target.id === 'author';
-
-  // 如果在文本输入框中粘贴文字，让浏览器默认行为接管
   if ((isTextInput || isTextarea) && !isUrlInput && !isAuthorInput) return;
-  if (isUrlInput || isAuthorInput) {
-    // URL/作者输入框允许文字粘贴，浏览器默认处理
-    return;
-  }
-
+  if (isUrlInput || isAuthorInput) return;
   const cd = e.clipboardData;
   if (!cd) return;
-
   let handled = false;
-
-  // 检测图片文件
   if (cd.files && cd.files.length > 0) {
     for (const file of cd.files) {
-      if (file.type.startsWith('image/')) {
-        handled = true;
-        e.preventDefault();
-        addImageBlob(file, '粘贴图片');
-      }
+      if (file.type.startsWith('image/')) { handled = true; e.preventDefault(); addImageBlob(file, '粘贴图片'); }
     }
   }
-
   if (!handled && cd.items) {
     for (let i = 0; i < cd.items.length; i++) {
       const item = cd.items[i];
       if (item.type.indexOf('image') !== -1) {
         const blob = item.getAsFile();
-        if (blob) {
-          handled = true;
-          e.preventDefault();
-          addImageBlob(blob, '粘贴图片');
-        }
+        if (blob) { handled = true; e.preventDefault(); addImageBlob(blob, '粘贴图片'); }
       }
     }
   }
-
   if (!handled) {
     const html = cd.getData('text/html');
     if (html) {
       const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (imgMatch && imgMatch[1]) {
-        const imgUrl = imgMatch[1];
-        if (imgUrl.startsWith('http')) {
-          handled = true;
-          e.preventDefault();
-          pendingImages.push({ type: 'url', src: imgUrl, name: '粘贴图片' });
-          renderPendingImages();
-          showToast('已从网页复制图片');
-        }
+      if (imgMatch && imgMatch[1] && imgMatch[1].startsWith('http')) {
+        handled = true; e.preventDefault();
+        pendingImages.push({ type: 'url', src: imgMatch[1], name: '粘贴图片' });
+        renderPendingImages(); showToast('已从网页复制图片');
       }
     }
   }
-
   if (!handled) {
     const text = cd.getData('text/plain');
     if (text) {
       const imgUrlMatch = text.match(/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/i);
       if (imgUrlMatch) {
-        handled = true;
-        e.preventDefault();
+        handled = true; e.preventDefault();
         pendingImages.push({ type: 'url', src: imgUrlMatch[0], name: '粘贴图片' });
-        renderPendingImages();
-        showToast('已从网页复制图片');
+        renderPendingImages(); showToast('已从网页复制图片');
       }
     }
   }
@@ -1177,106 +464,62 @@ function addImageUrl() {
   const input = document.getElementById('imageUrlInput');
   const url = input.value.trim();
   if (!url) return;
-  if (!/^https?:\/\//i.test(url)) {
-    showToast('⚠️ 请输入有效的 URL（以 http:// 或 https:// 开头）', true);
-    return;
-  }
+  if (!/^https?:\/\//i.test(url)) { showToast('⚠️ 请输入有效的 URL', true); return; }
   pendingImages.push({ type: 'url', src: url, name: '图片链接' });
   input.value = '';
   renderPendingImages();
   showToast('图片链接已添加');
 }
-
-// ===== 图片上传区：点击聚焦 + Ctrl+V 提示 =====
 const pasteHint = document.getElementById('pasteHint');
 if (pasteHint) {
   pasteHint.addEventListener('click', (e) => {
-    // 点击提示区时聚焦到图片上传框
     document.getElementById('imageUploadArea').focus();
-    // 给个反馈：模拟闪烁边框
     pasteHint.classList.add('paste-active');
     setTimeout(() => pasteHint.classList.remove('paste-active'), 800);
     showToast('已就绪，按 Ctrl+V 粘贴剪贴板中的图片');
   });
 }
-
-// ===== 全局快捷键：Ctrl+V 任意位置触发图片粘贴提示 =====
-// 监测全局 Ctrl+V 事件，提示用户当前在哪个位置可粘贴
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
-    // 如果焦点在文本输入框、URL 输入框、作者输入框中，忽略（让浏览器默认处理）
     const t = e.target;
     if (t && (t.id === 'author' || t.id === 'imageUrlInput')) return;
-    if (t && t.tagName === 'TEXTAREA' && t.id === 'rawText') {
-      // 描述文本框允许默认粘贴（不阻止）
-      return;
-    }
-    // 其他位置（页面空白、卡片等）闪烁提示
-    if (pasteHint) {
-      pasteHint.classList.add('paste-active');
-      setTimeout(() => pasteHint.classList.remove('paste-active'), 1200);
-    }
+    if (t && t.tagName === 'TEXTAREA' && t.id === 'rawText') return;
+    if (pasteHint) { pasteHint.classList.add('paste-active'); setTimeout(() => pasteHint.classList.remove('paste-active'), 1200); }
   }
 });
-
 function handleFileSelect(event) {
   const files = event.target.files;
   if (!files || files.length === 0) return;
   for (const file of files) {
     if (!file.type.startsWith('image/')) continue;
     if (API_BASE_URL) {
-      // 使用后端上传
       uploadFileToBackend(file, file.name).then(url => {
-        if (url) {
-          pendingImages.push({ type: 'url', src: url, name: file.name });
-          renderPendingImages();
-        }
+        if (url) { pendingImages.push({ type: 'url', src: url, name: file.name }); renderPendingImages(); }
       });
     } else {
-      // 本地 base64
       const reader = new FileReader();
-      reader.onload = function(e) {
-        pendingImages.push({ type: 'base64', src: e.target.result, name: file.name });
-        renderPendingImages();
-      };
+      reader.onload = function(e) { pendingImages.push({ type: 'base64', src: e.target.result, name: file.name }); renderPendingImages(); };
       reader.readAsDataURL(file);
     }
   }
   event.target.value = '';
   showToast(`已添加 ${files.length} 张图片`);
 }
-
-function removePendingImage(index) {
-  pendingImages.splice(index, 1);
-  renderPendingImages();
-}
-
+function removePendingImage(index) { pendingImages.splice(index, 1); renderPendingImages(); }
 function renderPendingImages() {
   const list = document.getElementById('imagePreviewList');
-  if (pendingImages.length === 0) {
-    list.innerHTML = '';
-    return;
-  }
+  if (pendingImages.length === 0) { list.innerHTML = ''; return; }
   list.innerHTML = pendingImages.map((img, i) => `
     <div class="image-preview-item">
       <img src="${img.src}" alt="${escapeHtml(img.name)}">
       <button type="button" class="remove-btn" onclick="removePendingImage(${i})" title="移除">&times;</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
-
-// 拖拽上传
 const uploadArea = document.getElementById('imageUploadArea');
-uploadArea.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  uploadArea.classList.add('dragover');
-});
-uploadArea.addEventListener('dragleave', () => {
-  uploadArea.classList.remove('dragover');
-});
+uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('dragover'); });
 uploadArea.addEventListener('drop', (e) => {
-  e.preventDefault();
-  uploadArea.classList.remove('dragover');
+  e.preventDefault(); uploadArea.classList.remove('dragover');
   const files = e.dataTransfer.files;
   if (!files || files.length === 0) return;
   let added = 0;
@@ -1284,30 +527,20 @@ uploadArea.addEventListener('drop', (e) => {
     if (!file.type.startsWith('image/')) continue;
     if (API_BASE_URL) {
       uploadFileToBackend(file, file.name).then(url => {
-        if (url) {
-          pendingImages.push({ type: 'url', src: url, name: file.name });
-          renderPendingImages();
-        }
+        if (url) { pendingImages.push({ type: 'url', src: url, name: file.name }); renderPendingImages(); }
       });
     } else {
       const reader = new FileReader();
-      reader.onload = function(evt) {
-        pendingImages.push({ type: 'base64', src: evt.target.result, name: file.name });
-        renderPendingImages();
-      };
+      reader.onload = function(evt) { pendingImages.push({ type: 'base64', src: evt.target.result, name: file.name }); renderPendingImages(); };
       reader.readAsDataURL(file);
     }
     added++;
   }
   if (added > 0) showToast(`已添加 ${added} 张图片`);
 });
+document.getElementById('imageUrlInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addImageUrl(); } });
 
-// Enter 键在图片 URL 输入框中触发添加
-document.getElementById('imageUrlInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); addImageUrl(); }
-});
-
-// ===== Markdown 渲染器 =====
+// ===== Markdown =====
 function renderMarkdown(text) {
   let html = escapeHtml(text);
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
@@ -1332,7 +565,6 @@ function renderMarkdown(text) {
   html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
   html = html.replace(/<ul>(.*?)<\/ul>/gs, (match) => match.replace(/<\/li>\n<li>/g, '</li><li>'));
-  // 处理换行：双换行 = 新段落，单换行 = <br>
   html = html.replace(/\n\n/g, '</p><p>');
   html = html.replace(/\n/g, '<br>');
   html = '<p>' + html + '</p>';
@@ -1347,22 +579,12 @@ function extractImagesFromText(text) {
   const images = [];
   const mdImgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
   let m;
-  while ((m = mdImgRegex.exec(text)) !== null) {
-    images.push({ src: m[2], alt: m[1], source: 'markdown' });
-  }
+  while ((m = mdImgRegex.exec(text)) !== null) { images.push({ src: m[2], alt: m[1], source: 'markdown' }); }
   const imgUrlRegex = /https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp)(?:\?[^\s]*)?/gi;
   while ((m = imgUrlRegex.exec(text)) !== null) {
-    if (!images.some(img => img.src === m[0])) {
-      images.push({ src: m[0], alt: '', source: 'url' });
-    }
+    if (!images.some(img => img.src === m[0])) { images.push({ src: m[0], alt: '', source: 'url' }); }
   }
   return images;
-}
-
-// ===== 提取逻辑 =====
-function extractGameTypes(text) {
-  const types = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
-  return types.filter(t => text.includes(t));
 }
 
 function extractUrls(text) {
@@ -1370,50 +592,7 @@ function extractUrls(text) {
   const urlRegex = /https?:\/\/[^\s\)\]\>]+/gi;
   const matches = text.match(urlRegex);
   if (!matches) return [];
-  return matches
-    .map(u => u.replace(/[.,;!?]$/, ''))
-    .filter(u => !imgUrls.has(u) && !/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u));
-}
-
-function extractAge(text) {
-  if (/全年龄|全龄|老少皆宜|所有人|all\s*ages/i.test(text)) return { min: '', max: '', display: '全年龄' };
-  const rangeMatch = text.match(/(?:适合|建议|年龄|适用|针对)?\s*(\d{1,2})\s*[-~到至]\s*(\d{1,2})\s*岁/);
-  if (rangeMatch) return { min: rangeMatch[1], max: rangeMatch[2], display: `${rangeMatch[1]}~${rangeMatch[2]}岁` };
-  const plusMatch = text.match(/(?:适合|建议|年龄|适用|针对)?\s*(\d{1,2})\s*[+＋](?:\s*岁)?/);
-  if (plusMatch) return { min: plusMatch[1], max: '', display: `${plusMatch[1]}+` };
-  const singleMatch = text.match(/(\d{1,2})\s*岁/);
-  if (singleMatch) return { min: singleMatch[1], max: '', display: `${singleMatch[1]}+` };
-  return { min: '', max: '', display: '' };
-}
-
-function extractPlayers(text) {
-  const rangeMatch = text.match(/(\d+)\s*[~\-～−—到至]\s*(\d+)\s*人?/);
-  if (rangeMatch) return { min: rangeMatch[1], max: rangeMatch[2], display: `${rangeMatch[1]}~${rangeMatch[2]}人` };
-  const numMatch = text.match(/(\d+)\s*人/);
-  if (numMatch) return { min: numMatch[1], max: numMatch[1], display: `${numMatch[1]}人` };
-  if (/单人|一个人|solo/i.test(text)) return { min: '1', max: '1', display: '1人' };
-  if (/双人|两个人|对战/i.test(text)) return { min: '2', max: '2', display: '2人' };
-  if (/多人|团队|组队|在线|联机/i.test(text)) return { min: '2', max: '', display: '多人' };
-  return { min: '', max: '', display: '' };
-}
-
-function extractControl(text) {
-  const mapping = {
-    '手臂': /手臂|胳膊|上肢|挥手|挥砍|挥动|挥臂|双手|两手|双臂|双侧|单手|一手|单臂/,
-    '上半身晃动': /上半身|身体晃动|倾斜身体|左右倾斜/,
-    '腿部': /腿部|下肢|脚部|脚步|脚|踢|踩|蹦/,
-    '跳': /跳|跃|蹦/,
-    '蹲': /蹲|下蹲/,
-    '左右移动': /左右移动|侧移|横移/,
-    '陀螺仪': /陀螺仪|重力感应/,
-    '手势': /手势|手指/,
-    '头部': /头部|脑袋|脸|头部/,
-  };
-  const result = [];
-  for (const [key, re] of Object.entries(mapping)) {
-    if (re.test(text)) result.push(key);
-  }
-  return result;
+  return matches.map(u => u.replace(/[.,;!?]$/, '')).filter(u => !imgUrls.has(u) && !/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u));
 }
 
 function extractTitle(text) {
@@ -1429,52 +608,13 @@ function getNextId() {
   if (!nextId || isNaN(nextId)) nextId = 2001;
   return nextId;
 }
-
 function advanceId() {
   const nextId = getNextId();
   localStorage.setItem(NEXT_ID_KEY, nextId + 1);
   return nextId;
 }
 
-// ===== 自动预填：描述输入后自动提取并填到表单 =====
-rawTextArea.addEventListener('blur', function() {
-  const text = this.value.trim();
-  if (!text) return;
-
-  // 游戏类型：自动选中匹配的标签
-  const gTypes = extractGameTypes(text);
-  if (gTypes.length > 0) {
-    const container = document.getElementById('gameTypeTags');
-    container.querySelectorAll('.tag-chip').forEach(chip => {
-      if (gTypes.includes(chip.dataset.val)) chip.classList.add('active');
-    });
-  }
-
-  // 年龄
-  const ageInfo = extractAge(text);
-  if (ageInfo.min) {
-    document.getElementById('ageMin').value = ageInfo.min;
-    document.getElementById('ageMax').value = ageInfo.max;
-  }
-
-  // 人数
-  const pInfo = extractPlayers(text);
-  if (pInfo.min) {
-    document.getElementById('playersMin').value = pInfo.min;
-    document.getElementById('playersMax').value = pInfo.max;
-  }
-
-  // 操作方式
-  const ctrl = extractControl(text);
-  if (ctrl.length > 0) {
-    const container = document.getElementById('controlTags');
-    container.querySelectorAll('.tag-chip').forEach(chip => {
-      if (ctrl.includes(chip.dataset.val)) chip.classList.add('active');
-    });
-  }
-});
-
-// ===== 提交 =====
+// ===== 提交（仅3项） =====
 document.getElementById('ideaForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const rawText = document.getElementById('rawText').value.trim();
@@ -1511,37 +651,20 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
     cleanDesc = cleanDesc.replace(/\s+https?:\/\/[^\s]+\s*/g, ' ').trim();
     cleanDesc = cleanDesc.replace(/\n{3,}/g, '\n\n');
 
-    // 从表单获取用户手动选择的标签和输入
-    const gameTypes = getTagChipValues('gameTypeTags');
-    const ageMin = document.getElementById('ageMin').value.trim();
-    const ageMax = document.getElementById('ageMax').value.trim();
-    const playersMin = document.getElementById('playersMin').value.trim();
-    const playersMax = document.getElementById('playersMax').value.trim();
-    const controls = getTagChipValues('controlTags');
-
-    // 格式化显示文本
-    let ageDisplay = '';
-    if (ageMin && ageMax) ageDisplay = `${ageMin}~${ageMax}岁`;
-    else if (ageMin) ageDisplay = `${ageMin}+`;
-
-    let playersDisplay = '';
-    if (playersMin && playersMax && playersMin !== playersMax) playersDisplay = `${playersMin}~${playersMax}人`;
-    else if (playersMin) playersDisplay = `${playersMin}人`;
-
     const idea = {
       id: advanceId(),
       author: author,
       title: extractTitle(rawText),
       desc: cleanDesc,
-      gameTypes: gameTypes,
+      gameTypes: [],
       urls: extractUrls(rawText),
-      ageMin: ageMin,
-      ageMax: ageMax,
-      ageDisplay: ageDisplay,
-      playersMin: playersMin,
-      playersMax: playersMax,
-      playersDisplay: playersDisplay,
-      controls: controls,
+      ageMin: '',
+      ageMax: '',
+      ageDisplay: '',
+      playersMin: '',
+      playersMax: '',
+      playersDisplay: '',
+      controls: [],
       images: allImages,
       createdAt: new Date().toLocaleString('zh-CN')
     };
@@ -1555,9 +678,6 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
     this.reset();
     pendingImages = [];
     renderPendingImages();
-    // 重置标签
-    initTagChips('gameTypeTags', []);
-    initTagChips('controlTags', []);
     autoResizeTextarea(rawTextArea);
     renderIdeas();
   } catch (err) {
@@ -1568,290 +688,113 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
   }
 });
 
-// ===== 卡片编辑弹窗 =====
-let editingCardId = null;
+// ===== 内联编辑 =====
 
-function openCardEditor(id) {
+function saveCardData(id, updates) {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const item = ideas.find(i => i.id === id);
-  if (!item) return;
-  editingCardId = id;
-
-  const allGameTypes = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
-  const allControls = ['手臂','上半身晃动','腿部','跳','蹲','左右移动','陀螺仪','手势','头部'];
-
-  const currentTypes = item.gameTypes || (item.gameType ? [item.gameType] : []);
-  const currentControls = item.controls || (item.control ? item.control.split('、') : []);
-
-  const gameTypeChips = allGameTypes.map(t => `<span class="tag-chip${currentTypes.includes(t)?' active':''}" data-val="${t}" onclick="this.classList.toggle('active')">${t}</span>`).join('');
-  const controlChips = allControls.map(t => `<span class="tag-chip${currentControls.includes(t)?' active':''}" data-val="${t}" onclick="this.classList.toggle('active')">${t}</span>`).join('');
-
-  document.getElementById('cardEditPanel').innerHTML = `
-    <h3>编辑创意 #${id}</h3>
-    <div class="form-group">
-      <label>🎮 游戏类型</label>
-      <div class="tag-checkbox-group" id="editGameTypeTags">${gameTypeChips}</div>
-    </div>
-    <div class="form-group">
-      <label>👶 建议年龄</label>
-      <div class="range-input-row">
-        <input type="text" id="editAgeMin" class="range-input" placeholder="最小" value="${escapeHtml(item.ageMin || '')}" maxlength="3">
-        <span class="range-sep">~</span>
-        <input type="text" id="editAgeMax" class="range-input" placeholder="最大" value="${escapeHtml(item.ageMax || '')}" maxlength="3">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>👥 游戏人数</label>
-      <div class="range-input-row">
-        <input type="text" id="editPlayersMin" class="range-input" placeholder="最少" value="${escapeHtml(item.playersMin || '')}" maxlength="3">
-        <span class="range-sep">~</span>
-        <input type="text" id="editPlayersMax" class="range-input" placeholder="最多" value="${escapeHtml(item.playersMax || '')}" maxlength="3">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>🕹️ 操作方式</label>
-      <div class="tag-checkbox-group" id="editControlTags">${controlChips}</div>
-    </div>
-    <div class="card-edit-btns">
-      <button class="btn-cancel" onclick="closeCardEditor()">取消</button>
-      <button class="btn-save" onclick="saveCardEdit()">保存</button>
-    </div>
-  `;
-  document.getElementById('cardEditOverlay').classList.add('active');
-}
-
-function closeCardEditor() {
-  document.getElementById('cardEditOverlay').classList.remove('active');
-  editingCardId = null;
-}
-
-function saveCardEdit() {
-  if (!editingCardId) return;
-
-  const gameTypes = [];
-  document.querySelectorAll('#editGameTypeTags .tag-chip.active').forEach(chip => gameTypes.push(chip.dataset.val));
-
-  const controls = [];
-  document.querySelectorAll('#editControlTags .tag-chip.active').forEach(chip => controls.push(chip.dataset.val));
-
-  const ageMin = document.getElementById('editAgeMin').value.trim();
-  const ageMax = document.getElementById('editAgeMax').value.trim();
-  const playersMin = document.getElementById('editPlayersMin').value.trim();
-  const playersMax = document.getElementById('editPlayersMax').value.trim();
-
-  let ageDisplay = '';
-  if (ageMin && ageMax) ageDisplay = `${ageMin}~${ageMax}岁`;
-  else if (ageMin) ageDisplay = `${ageMin}+`;
-
-  let playersDisplay = '';
-  if (playersMin && playersMax && playersMin !== playersMax) playersDisplay = `${playersMin}~${playersMax}人`;
-  else if (playersMin) playersDisplay = `${playersMin}人`;
-
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const idx = ideas.findIndex(i => i.id === editingCardId);
+  const idx = ideas.findIndex(i => i.id === id);
   if (idx >= 0) {
-    ideas[idx].gameTypes = gameTypes;
-    ideas[idx].controls = controls;
-    ideas[idx].ageMin = ageMin;
-    ideas[idx].ageMax = ageMax;
-    ideas[idx].ageDisplay = ageDisplay;
-    ideas[idx].playersMin = playersMin;
-    ideas[idx].playersMax = playersMax;
-    ideas[idx].playersDisplay = playersDisplay;
+    Object.assign(ideas[idx], updates);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
   }
-
-  closeCardEditor();
-  renderIdeas();
-  showToast('卡片已更新');
 }
 
-// 点击遮罩关闭
-document.getElementById('cardEditOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeCardEditor();
-});
-
-// ===== 内联编辑：游戏类型 =====
-function startEditGameType(id) {
-  const el = document.getElementById('gt-' + id);
-  if (!el) return;
+function startEditGameType(id, el) {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
-  const current = item.gameTypes || (item.gameType ? [item.gameType] : []);
+  const current = item.gameTypes || [];
   const allTypes = ['竞技','动作','滑雪','射击','球类','合作','舞蹈','科普','亲子','派对','节奏','教育','益智','赛车','动画','反应','健身','艺术','竞速','解谜','模拟'];
   el.innerHTML = '<div class="card-inline-tags">' + allTypes.map(t => `<span class="tag-chip${current.includes(t) ? ' active' : ''}" data-val="${t}">${t}</span>`).join('') + '</div>';
   el.querySelectorAll('.tag-chip').forEach(chip => {
-    chip.addEventListener('click', e => {
-      e.stopPropagation();
-      chip.classList.toggle('active');
-    });
+    chip.addEventListener('click', (e) => { e.stopPropagation(); chip.classList.toggle('active'); });
   });
-  // 点击外部保存
-  const saveHandler = (e) => {
+  const handler = (e) => {
     if (!el.contains(e.target)) {
-      saveEditGameType(id);
-      document.removeEventListener('click', saveHandler, true);
+      const selected = [];
+      el.querySelectorAll('.tag-chip.active').forEach(chip => selected.push(chip.dataset.val));
+      saveCardData(id, { gameTypes: selected });
+      renderIdeas();
+      showToast('已保存');
+      document.removeEventListener('click', handler, true);
     }
   };
-  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
+  setTimeout(() => document.addEventListener('click', handler, true), 0);
 }
 
-function saveEditGameType(id) {
-  const el = document.getElementById('gt-' + id);
-  if (!el) return;
-  const selected = [];
-  el.querySelectorAll('.tag-chip.active').forEach(chip => selected.push(chip.dataset.val));
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const idx = ideas.findIndex(i => i.id === id);
-  if (idx >= 0) {
-    ideas[idx].gameTypes = selected;
-    delete ideas[idx].gameType;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-  }
-  renderIdeas();
-  showToast('已保存');
-}
-
-// ===== 内联编辑：操作方式 =====
-function startEditControl(id) {
-  const el = document.getElementById('ct-' + id);
-  if (!el) return;
+function startEditControl(id, el) {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
-  const current = item.controls || (item.control ? item.control.split('、') : []);
+  const current = item.controls || [];
   const allCtrl = ['手臂','上半身晃动','腿部','跳','蹲','左右移动','陀螺仪','手势','头部'];
   el.innerHTML = '<div class="card-inline-tags">' + allCtrl.map(t => `<span class="tag-chip${current.includes(t) ? ' active' : ''}" data-val="${t}">${t}</span>`).join('') + '</div>';
   el.querySelectorAll('.tag-chip').forEach(chip => {
-    chip.addEventListener('click', e => {
-      e.stopPropagation();
-      chip.classList.toggle('active');
-    });
+    chip.addEventListener('click', (e) => { e.stopPropagation(); chip.classList.toggle('active'); });
   });
-  const saveHandler = (e) => {
+  const handler = (e) => {
     if (!el.contains(e.target)) {
-      saveEditControl(id);
-      document.removeEventListener('click', saveHandler, true);
+      const selected = [];
+      el.querySelectorAll('.tag-chip.active').forEach(chip => selected.push(chip.dataset.val));
+      saveCardData(id, { controls: selected });
+      renderIdeas();
+      showToast('已保存');
+      document.removeEventListener('click', handler, true);
     }
   };
-  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
+  setTimeout(() => document.addEventListener('click', handler, true), 0);
 }
 
-function saveEditControl(id) {
-  const el = document.getElementById('ct-' + id);
-  if (!el) return;
-  const selected = [];
-  el.querySelectorAll('.tag-chip.active').forEach(chip => selected.push(chip.dataset.val));
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const idx = ideas.findIndex(i => i.id === id);
-  if (idx >= 0) {
-    ideas[idx].controls = selected;
-    delete ideas[idx].control;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-  }
-  renderIdeas();
-  showToast('已保存');
-}
-
-// ===== 内联编辑：年龄 =====
-function startEditAge(id) {
-  const el = document.getElementById('ag-' + id);
-  if (!el) return;
+function startEditAge(id, el) {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
   el.innerHTML = `<div class="card-inline-edit">
-    <input type="text" id="ag-min-${id}" value="${escapeHtml(item.ageMin || '')}" placeholder="最小" maxlength="3">
+    <input type="text" value="${escapeHtml(item.ageMin || '')}" placeholder="最小" maxlength="3" onfocus="this.select()">
     <span class="card-inline-edit-sep">~</span>
-    <input type="text" id="ag-max-${id}" value="${escapeHtml(item.ageMax || '')}" placeholder="最大" maxlength="3">
+    <input type="text" value="${escapeHtml(item.ageMax || '')}" placeholder="最大" maxlength="3" onfocus="this.select()">
   </div>`;
-  const minInput = document.getElementById(`ag-min-${id}`);
-  const maxInput = document.getElementById(`ag-max-${id}`);
-  minInput.focus();
-  minInput.select();
-  const saveHandler = (e) => {
-    if (!el.contains(e.target)) {
-      saveEditAge(id);
-      document.removeEventListener('click', saveHandler, true);
-    }
+  const inputs = el.querySelectorAll('input');
+  inputs[0].focus();
+  const doSave = () => {
+    const min = inputs[0].value.trim();
+    const max = inputs[1].value.trim();
+    let display = '';
+    if (min && max) display = `${min}~${max}岁`;
+    else if (min) display = `${min}+`;
+    saveCardData(id, { ageMin: min, ageMax: max, ageDisplay: display });
+    renderIdeas();
+    showToast('已保存');
   };
-  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
-  [minInput, maxInput].forEach(inp => {
-    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveEditAge(id); document.removeEventListener('click', saveHandler, true); } });
-  });
+  inputs.forEach(inp => { inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doSave(); } }); });
+  const handler = (e) => { if (!el.contains(e.target)) { doSave(); document.removeEventListener('click', handler, true); } };
+  setTimeout(() => document.addEventListener('click', handler, true), 0);
 }
 
-function saveEditAge(id) {
-  const minInput = document.getElementById(`ag-min-${id}`);
-  const maxInput = document.getElementById(`ag-max-${id}`);
-  if (!minInput || !maxInput) return;
-  const min = minInput.value.trim();
-  const max = maxInput.value.trim();
-  let display = '';
-  if (min && max) display = `${min}~${max}岁`;
-  else if (min) display = `${min}+`;
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const idx = ideas.findIndex(i => i.id === id);
-  if (idx >= 0) {
-    ideas[idx].ageMin = min;
-    ideas[idx].ageMax = max;
-    ideas[idx].ageDisplay = display;
-    delete ideas[idx].age;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-  }
-  renderIdeas();
-  showToast('已保存');
-}
-
-// ===== 内联编辑：人数 =====
-function startEditPlayers(id) {
-  const el = document.getElementById('pl-' + id);
-  if (!el) return;
+function startEditPlayers(id, el) {
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   const item = ideas.find(i => i.id === id);
   if (!item) return;
   el.innerHTML = `<div class="card-inline-edit">
-    <input type="text" id="pl-min-${id}" value="${escapeHtml(item.playersMin || '')}" placeholder="最少" maxlength="3">
+    <input type="text" value="${escapeHtml(item.playersMin || '')}" placeholder="最少" maxlength="3" onfocus="this.select()">
     <span class="card-inline-edit-sep">~</span>
-    <input type="text" id="pl-max-${id}" value="${escapeHtml(item.playersMax || '')}" placeholder="最多" maxlength="3">
+    <input type="text" value="${escapeHtml(item.playersMax || '')}" placeholder="最多" maxlength="3" onfocus="this.select()">
   </div>`;
-  const minInput = document.getElementById(`pl-min-${id}`);
-  const maxInput = document.getElementById(`pl-max-${id}`);
-  minInput.focus();
-  minInput.select();
-  const saveHandler = (e) => {
-    if (!el.contains(e.target)) {
-      saveEditPlayers(id);
-      document.removeEventListener('click', saveHandler, true);
-    }
+  const inputs = el.querySelectorAll('input');
+  inputs[0].focus();
+  const doSave = () => {
+    const min = inputs[0].value.trim();
+    const max = inputs[1].value.trim();
+    let display = '';
+    if (min && max && min !== max) display = `${min}~${max}人`;
+    else if (min) display = `${min}人`;
+    saveCardData(id, { playersMin: min, playersMax: max, playersDisplay: display });
+    renderIdeas();
+    showToast('已保存');
   };
-  setTimeout(() => document.addEventListener('click', saveHandler, true), 0);
-  [minInput, maxInput].forEach(inp => {
-    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveEditPlayers(id); document.removeEventListener('click', saveHandler, true); } });
-  });
-}
-
-function saveEditPlayers(id) {
-  const minInput = document.getElementById(`pl-min-${id}`);
-  const maxInput = document.getElementById(`pl-max-${id}`);
-  if (!minInput || !maxInput) return;
-  const min = minInput.value.trim();
-  const max = maxInput.value.trim();
-  let display = '';
-  if (min && max && min !== max) display = `${min}~${max}人`;
-  else if (min) display = `${min}人`;
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const idx = ideas.findIndex(i => i.id === id);
-  if (idx >= 0) {
-    ideas[idx].playersMin = min;
-    ideas[idx].playersMax = max;
-    ideas[idx].playersDisplay = display;
-    delete ideas[idx].players;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
-  }
-  renderIdeas();
-  showToast('已保存');
+  inputs.forEach(inp => { inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doSave(); } }); });
+  const handler = (e) => { if (!el.contains(e.target)) { doSave(); document.removeEventListener('click', handler, true); } };
+  setTimeout(() => document.addEventListener('click', handler, true), 0);
 }
 
 // ===== 渲染 =====
@@ -1870,24 +813,16 @@ function renderIdeas() {
   list.innerHTML = ideas.map(item => {
     const emptyText = '<span class="empty">待补充</span>';
 
-    // 游戏类型 - 渲染为可点击编辑的标签
-    const gTypes = item.gameTypes || (item.gameType ? [item.gameType] : []);
-    let gameTypeHtml = emptyText;
-    if (gTypes.length > 0) {
-      gameTypeHtml = '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + gTypes.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>';
-    }
-    const gameTypeDisplay = gTypes.length > 0
-      ? gameTypeHtml
+    // 游戏类型
+    const gTypes = item.gameTypes || [];
+    const gTypeDisplay = gTypes.length > 0
+      ? '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + gTypes.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>'
       : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击选择</span>';
 
     // 操作方式
-    const ctrls = item.controls || (item.control ? item.control.split('、') : []);
-    let controlHtml = emptyText;
-    if (ctrls.length > 0) {
-      controlHtml = '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + ctrls.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>';
-    }
-    const controlDisplay = ctrls.length > 0
-      ? controlHtml
+    const ctrls = item.controls || [];
+    const ctrlDisplay = ctrls.length > 0
+      ? '<div style="display:flex;flex-wrap:wrap;gap:4px;">' + ctrls.map(t => `<span class="tag-chip card-tag">${escapeHtml(t)}</span>`).join('') + '</div>'
       : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击选择</span>';
 
     // 年龄
@@ -1898,7 +833,7 @@ function renderIdeas() {
     const playersVal = item.playersDisplay || item.players || '';
     const playersDisplay = playersVal ? escapeHtml(playersVal) : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击设置</span>';
 
-    // 参考原型链接
+    // 参考原型
     let urlsHtml = emptyText;
     if (item.urls && item.urls.length > 0) {
       urlsHtml = '<div class="mutil-link">' +
@@ -1910,19 +845,19 @@ function renderIdeas() {
       <div class="card-meta-grid">
         <div class="card-meta-item">
           <span class="meta-label">🎮 游戏类型</span>
-          <span class="meta-value" id="gt-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditGameType(${item.id})">${gameTypeDisplay}</span></span>
+          <span class="meta-value" onclick="event.stopPropagation();startEditGameType(${item.id}, this)"><span class="card-meta-editable">${gTypeDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">👶 建议年龄</span>
-          <span class="meta-value" id="ag-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditAge(${item.id})">${ageDisplay}</span></span>
+          <span class="meta-value" onclick="event.stopPropagation();startEditAge(${item.id}, this)"><span class="card-meta-editable">${ageDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">👥 游戏人数</span>
-          <span class="meta-value" id="pl-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditPlayers(${item.id})">${playersDisplay}</span></span>
+          <span class="meta-value" onclick="event.stopPropagation();startEditPlayers(${item.id}, this)"><span class="card-meta-editable">${playersDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">🕹️ 操作方式</span>
-          <span class="meta-value" id="ct-${item.id}"><span class="card-meta-editable" onclick="event.stopPropagation();startEditControl(${item.id})">${controlDisplay}</span></span>
+          <span class="meta-value" onclick="event.stopPropagation();startEditControl(${item.id}, this)"><span class="card-meta-editable">${ctrlDisplay}</span></span>
         </div>
         <div class="card-meta-item" style="grid-column: 1 / -1;">
           <span class="meta-label">🔗 参考原型</span>
@@ -1943,7 +878,7 @@ function renderIdeas() {
     const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
 
     return `
-      <div class="idea-card">
+      <div class="idea-card" id="card-${item.id}">
         <div class="card-header">
           <div class="card-header-left">
             <div class="card-id-badge">创意 #${item.id}</div>
@@ -2010,18 +945,43 @@ function escapeHtml(str) {
 }
 
 function openLightbox(url) {
-  const lb = document.getElementById('lightbox');
   document.getElementById('lightboxImg').src = url;
-  lb.classList.add('active');
+  document.getElementById('lightbox').classList.add('active');
 }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('active');
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeLightbox();
-});
+// ===== 自动迁移 v4 数据 =====
+(function() {
+  const v4 = localStorage.getItem('creative_ideas_v4');
+  const v5 = localStorage.getItem(STORAGE_KEY);
+  if (v4 && !v5) {
+    try {
+      const oldData = JSON.parse(v4);
+      const migrated = oldData.map(item => ({
+        id: item.id,
+        author: item.author || '',
+        title: item.title || '',
+        desc: item.desc || '',
+        gameTypes: item.gameTypes || (item.gameType ? [item.gameType] : []),
+        urls: item.urls || [],
+        ageMin: item.ageMin || '',
+        ageMax: item.ageMax || '',
+        ageDisplay: item.ageDisplay || item.age || '',
+        playersMin: item.playersMin || '',
+        playersMax: item.playersMax || '',
+        playersDisplay: item.playersDisplay || item.players || '',
+        controls: item.controls || (item.control ? item.control.split('、') : []),
+        images: item.images || [],
+        createdAt: item.createdAt || ''
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+      const nextId = parseInt(localStorage.getItem('creative_next_id_v4'));
+      if (nextId && !isNaN(nextId)) localStorage.setItem(NEXT_ID_KEY, nextId);
+      console.log('已迁移 v4 → v5 数据:', migrated.length, '条');
+    } catch(e) { console.log('数据迁移失败:', e); }
+  }
+})();
 
 renderIdeas();
 </script>
