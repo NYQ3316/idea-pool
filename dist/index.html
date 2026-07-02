@@ -761,12 +761,15 @@ function startEditAge(id, el) {
   inputs[0].focus();
   inputs[0].select();
   const doSave = () => {
-    const min = inputs[0].value.trim();
-    const max = inputs[1].value.trim();
+    let v1 = inputs[0].value.trim();
+    let v2 = inputs[1].value.trim();
+    // 自动排序：小值放左，大值放右
+    const n1 = parseInt(v1), n2 = parseInt(v2);
+    if (!isNaN(n1) && !isNaN(n2) && n1 > n2) { [v1, v2] = [v2, v1]; }
     let display = '';
-    if (min && max) display = `${min}~${max}岁`;
-    else if (min) display = `${min}+`;
-    saveCardData(id, { ageMin: min, ageMax: max, ageDisplay: display });
+    if (v1 && v2) display = `${v1}~${v2}岁`;
+    else if (v1) display = `${v1}+`;
+    saveCardData(id, { ageMin: v1, ageMax: v2, ageDisplay: display });
     renderIdeas();
     showToast('已保存');
   };
@@ -789,18 +792,98 @@ function startEditPlayers(id, el) {
   inputs[0].focus();
   inputs[0].select();
   const doSave = () => {
-    const min = inputs[0].value.trim();
-    const max = inputs[1].value.trim();
+    let v1 = inputs[0].value.trim();
+    let v2 = inputs[1].value.trim();
+    // 自动排序：小值放左，大值放右
+    const n1 = parseInt(v1), n2 = parseInt(v2);
+    if (!isNaN(n1) && !isNaN(n2) && n1 > n2) { [v1, v2] = [v2, v1]; }
     let display = '';
-    if (min && max && min !== max) display = `${min}~${max}人`;
-    else if (min) display = `${min}人`;
-    saveCardData(id, { playersMin: min, playersMax: max, playersDisplay: display });
+    if (v1 && v2 && v1 !== v2) display = `${v1}~${v2}人`;
+    else if (v1) display = `${v1}人`;
+    saveCardData(id, { playersMin: v1, playersMax: v2, playersDisplay: display });
     renderIdeas();
     showToast('已保存');
   };
   inputs.forEach(inp => { inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doSave(); } }); });
   const handler = (e) => { if (!el.contains(e.target)) { doSave(); document.removeEventListener('click', handler, true); } };
   setTimeout(() => document.addEventListener('click', handler, true), 0);
+}
+
+// ===== 内联编辑：描述 =====
+function startEditDesc(id, el) {
+  if (el.querySelector('textarea')) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  el.innerHTML = `<textarea style="width:100%;min-height:80px;padding:8px 10px;border:1px solid rgba(124,58,237,0.5);border-radius:8px;background:rgba(0,0,0,0.3);color:#e0e0e0;font-family:inherit;font-size:0.85rem;line-height:1.5;resize:vertical;outline:none;">${escapeHtml(item.desc || '')}</textarea>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="event.stopPropagation();cancelEditDesc(${id}, this)" style="padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.08);color:#b0b0d0;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:inherit;font-size:0.8rem;">取消</button>
+      <button onclick="event.stopPropagation();saveEditDesc(${id}, this)" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">保存</button>
+    </div>`;
+  el.querySelector('textarea').focus();
+}
+
+function cancelEditDesc(id, btn) {
+  saveCardData(id, { desc: null }); // 不实际保存，只触发重新渲染
+  renderIdeas();
+}
+
+function saveEditDesc(id, btn) {
+  const textarea = btn.parentElement.parentElement.querySelector('textarea');
+  if (!textarea) return;
+  const newDesc = textarea.value.trim();
+  saveCardData(id, { desc: newDesc });
+  renderIdeas();
+  showToast('描述已更新');
+}
+
+// ===== 内联编辑：URLs =====
+function startEditUrls(id, el) {
+  if (el.querySelector('textarea')) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  const urlsText = (item.urls || []).join('\n');
+  el.innerHTML = `<textarea placeholder="每行一个链接" style="width:100%;min-height:60px;padding:8px 10px;border:1px solid rgba(124,58,237,0.5);border-radius:8px;background:rgba(0,0,0,0.3);color:#e0e0e0;font-family:inherit;font-size:0.85rem;line-height:1.5;resize:vertical;outline:none;">${escapeHtml(urlsText)}</textarea>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="event.stopPropagation();renderIdeas()" style="padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.08);color:#b0b0d0;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:inherit;font-size:0.8rem;">取消</button>
+      <button onclick="event.stopPropagation();saveEditUrls(${id}, this)" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">保存</button>
+    </div>`;
+  el.querySelector('textarea').focus();
+}
+
+function saveEditUrls(id, btn) {
+  const textarea = btn.parentElement.parentElement.querySelector('textarea');
+  if (!textarea) return;
+  const newUrls = textarea.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+  saveCardData(id, { urls: newUrls });
+  renderIdeas();
+  showToast('链接已更新');
+}
+
+// ===== 内联编辑：图片 =====
+function startEditImages(id, el) {
+  if (el.querySelector('textarea')) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === id);
+  if (!item) return;
+  const imgText = (item.images || []).map(img => img.src).join('\n');
+  el.innerHTML = `<textarea placeholder="每行一个图片URL（支持 http 链接或 data: base64）" style="width:100%;min-height:60px;padding:8px 10px;border:1px solid rgba(124,58,237,0.5);border-radius:8px;background:rgba(0,0,0,0.3);color:#e0e0e0;font-family:inherit;font-size:0.85rem;line-height:1.5;resize:vertical;outline:none;">${escapeHtml(imgText)}</textarea>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="event.stopPropagation();renderIdeas()" style="padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.08);color:#b0b0d0;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:inherit;font-size:0.8rem;">取消</button>
+      <button onclick="event.stopPropagation();saveEditImages(${id}, this)" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">保存</button>
+    </div>`;
+  el.querySelector('textarea').focus();
+}
+
+function saveEditImages(id, btn) {
+  const textarea = btn.parentElement.parentElement.querySelector('textarea');
+  if (!textarea) return;
+  const lines = textarea.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+  const newImages = lines.map(src => ({ src: src, alt: '', source: src.startsWith('http') ? 'url' : 'base64' }));
+  saveCardData(id, { images: newImages });
+  renderIdeas();
+  showToast('图片已更新');
 }
 
 // ===== 渲染 =====
@@ -839,7 +922,7 @@ function renderIdeas() {
     const playersVal = item.playersDisplay || item.players || '';
     const playersDisplay = playersVal ? escapeHtml(playersVal) : '<span style="color:rgba(255,255,255,0.3);font-style:italic;">点击设置</span>';
 
-    // 参考原型
+    // 参考原型 - 可编辑
     let urlsHtml = emptyText;
     if (item.urls && item.urls.length > 0) {
       urlsHtml = '<div class="mutil-link">' +
@@ -867,19 +950,21 @@ function renderIdeas() {
         </div>
         <div class="card-meta-item" style="grid-column: 1 / -1;">
           <span class="meta-label">🔗 参考原型</span>
-          <span class="meta-value ${item.urls && item.urls.length > 0 ? '' : 'empty'}">${urlsHtml}</span>
+          <span class="meta-value ${item.urls && item.urls.length > 0 ? '' : 'empty'}" onclick="event.stopPropagation();startEditUrls(${item.id}, this)"><span class="card-meta-editable">${urlsHtml}</span></span>
         </div>
       </div>
     `;
 
     const imagesHtml = item.images && item.images.length > 0
-      ? `<div class="card-images">
-           <div class="card-images-label">📎 图片 (${item.images.length})</div>
+      ? `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)">
+           <div class="card-images-label">📎 图片 (${item.images.length}) <span style="color:rgba(124,58,237,0.6);font-size:0.65rem;">点击编辑</span></div>
            <div class="card-images-grid">
-             ${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="openLightbox('${escapeHtml(img.src)}')">`).join('')}
+             ${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="event.stopPropagation();openLightbox('${escapeHtml(img.src)}')">`).join('')}
            </div>
          </div>`
-      : '';
+      : `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)" style="cursor:pointer;">
+           <div class="card-images-label">📎 图片 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击添加</span></div>
+         </div>`;
 
     const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
 
@@ -896,8 +981,9 @@ function renderIdeas() {
           <div class="card-date">${item.createdAt}</div>
         </div>
         ${metaGrid}
-        <div class="card-body">
-          <div class="card-desc">${renderMarkdown(item.desc)}</div>
+        <div class="card-body" onclick="event.stopPropagation();startEditDesc(${item.id}, this)">
+          <div class="card-desc" style="cursor:pointer;">${renderMarkdown(item.desc)}</div>
+          <div style="text-align:right;margin-top:6px;"><span style="color:rgba(124,58,237,0.4);font-size:0.65rem;">点击编辑描述</span></div>
         </div>
         ${imagesHtml}
         <div class="card-footer">
