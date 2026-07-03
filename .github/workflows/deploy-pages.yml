@@ -1,0 +1,82 @@
+name: Deploy dist/ to GitHub Pages
+
+# =============================================================
+# 工作流说明
+# -------------------------------------------------------------
+# 触发条件：
+#   - push 到 main 分支（修改了 dist/ 或此工作流文件）
+#   - 支持手动触发（workflow_dispatch）
+#
+# 作用：
+#   - 将 main 分支的 dist/ 目录同步到 gh-pages 分支
+#   - GitHub Pages 会自动从 gh-pages 构建并发布
+#
+# 实现方式：
+#   - 使用 peaceiris/actions-gh-pages（成熟稳定的 action）
+#   - 内部自动处理 Git 身份、token 认证
+# =============================================================
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'dist/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:    # 允许手动触发
+
+# 防止多个工作流并发推送 gh-pages 造成冲突
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 检出 main 分支
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: 添加 .nojekyll 标记
+        run: |
+          # .nojekyll 让 GitHub Pages 跳过 Jekyll 处理
+          # （Jekyll 会忽略以 _ 开头的文件，但我们有中文文件名等需要绕过）
+          touch dist/.nojekyll
+
+      - name: 部署到 gh-pages 分支
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # 部署源目录
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          # 部署时把 dist/.nojekyll 复制到 gh-pages 根目录
+          keep_files: false
+          # 提交信息
+          commit_message: "deploy: auto-sync dist/ from main @ ${{ github.sha }}"
+          # 强制推送（覆盖历史）
+          force_orphan: true
+          # 作者信息
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+      - name: 验证部署
+        if: success()
+        run: |
+          echo "✅ dist/ 已同步到 gh-pages 分支"
+          echo "🌐 访问地址: https://$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]' | sed 's|/|.github.io/|')/"
+          echo "📊 部署状态: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: 失败通知
+        if: failure()
+        run: |
+          echo "❌ 部署失败，请检查 Actions 日志"
+          echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"

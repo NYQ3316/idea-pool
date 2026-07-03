@@ -1,0 +1,54 @@
+# =========================
+# 创意池 (idea-pool) .gitignore
+# =========================
+
+# Node 依赖
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 后端运行时文件
+server/uploads/
+server/.env
+server/.env.local
+!server/.env.example
+server/*.log
+
+# 前端构建产物（如果以后有 dist 之外的输出）
+dist/build/
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# WorkBuddy 自身目录
+.workbuddy/
+
+# 环境变量与密钥（绝不入库）
+.env
+.env.*
+*.pem
+*.key
+
+# 日志
+logs/
+*.log
+*.log.err
+server.log
+server.log.err
+npm-debug.log*
+
+# 临时文件
+tmp/
+temp/
+.cache/
