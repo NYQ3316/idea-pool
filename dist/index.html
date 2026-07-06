@@ -85,122 +85,438 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 .section-title { color: #b0b0d0; font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .ideas-grid { display: flex; flex-direction: column; gap: 18px; }
 
+/* ========== 创意卡片样式（参考设计图） ========== */
 .idea-card {
-  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px; padding: 0; backdrop-filter: blur(10px); transition: all 0.25s;
-  position: relative; overflow: visible; display: flex; flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+  padding: 0;
+  backdrop-filter: none;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
-.idea-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
+.idea-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+}
 
-.card-header { padding: 18px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+/* 卡片顶部 */
+.card-header {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid #f0f2f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  background: linear-gradient(to bottom, #fafbfc, #ffffff);
+}
 .card-header-left { flex: 1; min-width: 0; }
 .card-id-badge {
-  display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  color: white; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; border-radius: 20px;
-  margin-bottom: 8px; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white; font-size: 0.82rem; font-weight: 700;
+  padding: 5px 14px; border-radius: 20px;
+  margin-bottom: 10px; letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
 }
 .card-author-badge {
-  display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1);
-  color: #e0e0e0; font-size: 0.85rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15);
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #f3f4f6; color: #374151;
+  font-size: 0.85rem; font-weight: 600;
+  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid #e5e7eb;
 }
 .card-author-badge .avatar {
-  width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ef4444);
-  display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: white; font-weight: 700; flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; color: white; font-weight: 700;
 }
-.card-date { font-size: 0.75rem; color: rgba(255,255,255,0.35); white-space: nowrap; padding-top: 4px; }
+.card-date {
+  font-size: 0.75rem; color: #9ca3af;
+  white-space: nowrap; padding-top: 4px;
+}
 
 /* 状态标签 */
 .status-badge {
-  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 20px;
-  font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; margin-right: 8px;
-  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); border: 1px dashed rgba(255,255,255,0.15);
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 20px;
+  font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  background: #f3f4f6; color: #9ca3af;
+  border: 1px dashed #d1d5db;
 }
-.status-badge:hover { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); color: rgba(255,255,255,0.7); }
-.status-badge.adopt { background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; }
-.status-badge.pending { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d; }
-.status-badge.archive { background: rgba(156, 163, 175, 0.2); border-color: rgba(156, 163, 175, 0.3); color: #d1d5db; }
-.status-note { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-weight: 400; }
+.status-badge:hover { background: #eef2ff; border-color: #a5b4fc; color: #6366f1; }
+.status-badge.adopt {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-color: #6ee7b7; color: #059669;
+}
+.status-badge.pending {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: #fcd34d; color: #d97706;
+}
+.status-badge.archive {
+  background: #f3f4f6; border-color: #d1d5db; color: #6b7280;
+}
+.status-note { font-size: 0.65rem; color: inherit; font-weight: 400; opacity: 0.8; }
 
+/* 卡片标题区 */
+.card-title-section {
+  padding: 16px 24px 12px;
+  text-align: center;
+  border-bottom: 1px solid #f0f2f5;
+}
+.card-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.card-title-icons {
+  display: flex; justify-content: center; align-items: center; gap: 8px;
+  margin-top: 6px;
+  font-size: 0.9rem; color: #fbbf24;
+}
+
+/* 主内容区 - 左右布局 */
+.card-main-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 0;
+  min-height: 280px;
+}
+@media (max-width: 800px) {
+  .card-main-layout { grid-template-columns: 1fr; }
+}
+
+/* 左侧图片区 */
+.card-image-showcase {
+  position: relative;
+  overflow: hidden;
+  background: #f9fafb;
+  border-right: 1px solid #f0f2f5;
+}
+.card-main-image {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.main-image {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+.card-image-showcase:hover .card-main-image {
+  transform: scale(1.03);
+}
+.card-no-image {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  color: #9ca3af; font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* 右侧属性网格 */
 .card-meta-grid {
-  padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 20px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #f0f2f5;
 }
-.card-meta-item { display: flex; flex-direction: column; gap: 3px; min-height: 40px; }
+.card-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .card-meta-item .meta-label {
-  font-size: 0.7rem; color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;
+  font-size: 0.78rem;
+  color: #6b7280;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-.card-meta-item .meta-value { font-size: 0.92rem; color: #ffffff; font-weight: 600; word-break: break-all; line-height: 1.4; }
-.card-meta-item .meta-value.empty { color: rgba(255,255,255,0.25); font-weight: 400; font-style: italic; }
-.card-meta-item .meta-value a { color: #93c5fd; text-decoration: none; font-weight: 500; }
-.card-meta-item .meta-value a:hover { text-decoration: underline; }
-.card-meta-item .meta-value.mutil-link { display: flex; flex-direction: column; gap: 4px; }
-.mutil-link a { word-break: break-all; overflow-wrap: anywhere; }
+.card-meta-item .meta-value {
+  font-size: 0.92rem;
+  color: #111827;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.card-meta-item .meta-value.empty {
+  color: #d1d5db;
+  font-style: italic;
+}
+.card-meta-item .meta-value a {
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.82rem;
+}
+.card-meta-item .meta-value a:hover {
+  text-decoration: underline;
+  color: #4f46e5;
+}
+.card-meta-item .meta-value.mutil-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mutil-link a {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+.mutil-link a:last-child { border-bottom: none; }
 
 /* 内联编辑 */
 .card-meta-editable {
-  cursor: pointer; transition: all 0.15s; border-radius: 6px; padding: 4px 8px; margin: -4px -8px; display: inline-block;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 6px;
+  padding: 3px 6px;
+  margin: -3px -6px;
+  display: inline-block;
 }
-.card-meta-editable:hover { background: rgba(124, 58, 237, 0.15); outline: 1px dashed rgba(124, 58, 237, 0.4); }
+.card-meta-editable:hover {
+  background: #eef2ff;
+  outline: 1px dashed #a5b4fc;
+}
 .card-inline-edit {
-  display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
-  background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #eef2ff;
+  border: 1px solid #a5b4fc;
+  border-radius: 8px;
 }
 .card-inline-edit input {
-  width: 50px; padding: 4px 6px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
-  background: rgba(0,0,0,0.3); color: #fff; text-align: center; font-family: inherit; font-size: 0.85rem;
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: white;
+  color: #111827;
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.85rem;
 }
-.card-inline-edit input:focus { outline: none; border-color: #7c3aed; }
-.card-inline-edit-sep { color: rgba(255,255,255,0.5); font-weight: 700; font-size: 0.9rem; }
+.card-inline-edit input:focus { outline: none; border-color: #6366f1; }
+.card-inline-edit-sep { color: #6b7280; font-weight: 700; font-size: 0.9rem; }
+
+/* 属性值标签芯片 */
 .card-inline-tags {
-  display: flex; flex-wrap: wrap; gap: 4px; padding: 6px;
-  background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 8px; max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  max-width: 100%;
 }
 
 /* 标签芯片 */
 .tag-chip {
-  display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
-  font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none;
-  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.12);
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
 }
-.tag-chip:hover { background: rgba(124, 58, 237, 0.15); border-color: rgba(124, 58, 237, 0.3); color: rgba(255,255,255,0.8); }
-.tag-chip.active { background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(79, 70, 229, 0.4)); border-color: #7c3aed; color: #ffffff; box-shadow: 0 0 12px rgba(124, 58, 237, 0.3); }
-.tag-chip.card-tag { cursor: default; background: rgba(124, 58, 237, 0.25); border-color: rgba(124, 58, 237, 0.3); color: #c4b5fd; }
+.tag-chip:hover {
+  background: #eef2ff;
+  border-color: #a5b4fc;
+  color: #6366f1;
+}
+.tag-chip.active {
+  background: linear-gradient(135deg, #c7d2fe, #a5b4fc);
+  border-color: #6366f1;
+  color: #3730a3;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+.tag-chip.card-tag {
+  cursor: default;
+  background: #ede9fe;
+  border-color: #ddd6fe;
+  color: #6d28d9;
+}
 
-.card-body { padding: 14px 20px 16px; flex: 1; }
-.card-desc { color: rgba(255,255,255,0.75); font-size: 0.9rem; line-height: 1.7; }
-.card-desc h1, .card-desc h2, .card-desc h3, .card-desc h4 { color: #ffffff; margin: 14px 0 8px; font-weight: 700; }
-.card-desc h1 { font-size: 1.15rem; } .card-desc h2 { font-size: 1.05rem; } .card-desc h3 { font-size: 0.95rem; }
+/* 描述区域 */
+.card-body {
+  padding: 18px 24px;
+  flex: 1;
+  background: #fafbfc;
+  border-bottom: 1px solid #f0f2f5;
+}
+.card-desc {
+  color: #4b5563;
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+.card-desc h1, .card-desc h2, .card-desc h3, .card-desc h4 {
+  color: #111827;
+  margin: 14px 0 8px;
+  font-weight: 700;
+}
+.card-desc h1 { font-size: 1.1rem; } .card-desc h2 { font-size: 1.02rem; } .card-desc h3 { font-size: 0.95rem; }
 .card-desc p { margin-bottom: 10px; }
-.card-desc strong { color: #ffffff; font-weight: 700; }
-.card-desc em { color: #c4b5fd; }
+.card-desc strong { color: #111827; font-weight: 700; }
+.card-desc em { color: #7c3aed; }
 .card-desc ul, .card-desc ol { margin: 8px 0 8px 18px; }
 .card-desc li { margin-bottom: 4px; }
-.card-desc a { color: #93c5fd; text-decoration: none; }
+.card-desc a { color: #6366f1; text-decoration: none; }
 .card-desc a:hover { text-decoration: underline; }
-.card-desc code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', monospace; font-size: 0.85em; color: #f9a8d4; }
-.card-desc pre { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 10px 0; }
-.card-desc pre code { background: none; padding: 0; }
-.card-desc blockquote { border-left: 3px solid #7c3aed; padding-left: 12px; margin: 10px 0; color: rgba(255,255,255,0.6); }
-.card-desc hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 14px 0; }
+.card-desc code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', monospace; font-size: 0.85em; color: #dc2626; }
+.card-desc pre { background: #f3f4f6; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 10px 0; }
+.card-desc pre code { background: none; padding: 0; color: #374151; }
+.card-desc blockquote { border-left: 3px solid #6366f1; padding-left: 12px; margin: 10px 0; color: #6b7280; }
+.card-desc hr { border: none; border-top: 1px solid #e5e7eb; margin: 14px 0; }
 
-.card-images { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 8px; border-radius: 8px; transition: all 0.2s; }
-.card-images:focus, .card-images.paste-active { background: rgba(124, 58, 237, 0.08); outline: 1px dashed rgba(124, 58, 237, 0.3); }
-.card-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
-.card-image {
-  width: 100%; height: 160px; object-fit: cover; border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: transform 0.2s; background: rgba(0,0,0,0.2);
+/* 图片轮播区域 */
+.card-images {
+  padding: 16px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 0 0 16px 16px;
+  transition: all 0.2s;
 }
-.card-image:hover { transform: scale(1.02); border-color: rgba(124, 58, 237, 0.5); }
-.card-images-label { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
+.card-images:focus, .card-images.paste-active { background: #fefefe; outline: 2px dashed #a5b4fc; outline-offset: -2px; }
+.card-images-label {
+  font-size: 0.78rem;
+  color: #6b7280;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
+}
+.card-images-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.carousel-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.carousel-btn:hover { background: #6366f1; border-color: #6366f1; color: white; }
+.carousel-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 4px 0;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+.carousel-track::-webkit-scrollbar { height: 4px; }
+.carousel-track::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+.carousel-item {
+  flex-shrink: 0;
+  position: relative;
+  width: 140px;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  background: #f3f4f6;
+}
+.carousel-item:hover { border-color: #a5b4fc; transform: translateY(-2px); }
+.carousel-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.carousel-item-info {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  padding: 6px 6px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.carousel-item-size {
+  font-size: 0.62rem;
+  color: white;
+  background: rgba(79,70,229,0.8);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.carousel-item-index {
+  font-size: 0.62rem;
+  color: white;
+  background: rgba(0,0,0,0.5);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.card-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.card-image {
+  width: 100%; height: 150px; object-fit: cover; border-radius: 10px;
+  border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s; background: #f9fafb;
+}
+.card-image:hover { transform: scale(1.02); border-color: #a5b4fc; box-shadow: 0 4px 12px rgba(99,102,241,0.15); }
 
-.card-footer { padding: 12px 20px 16px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: flex-end; }
+/* 卡片底部操作栏 */
+.card-footer {
+  padding: 12px 24px 16px;
+  border-top: 1px solid #f0f2f5;
+  display: flex;
+  justify-content: flex-end;
+  background: #fafbfc;
+  border-radius: 0 0 16px 16px;
+}
 .btn-del {
-  background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2);
-  padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+  background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
+  padding: 7px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
   cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
-.btn-del:hover { background: rgba(239, 68, 68, 0.25); }
+.btn-del:hover { background: #fee2e2; border-color: #fca5a5; }
 
 .empty-state { text-align: center; color: rgba(255,255,255,0.3); padding: 50px 20px; font-size: 0.95rem; border: 2px dashed rgba(255,255,255,0.1); border-radius: 14px; grid-column: 1 / -1; }
 
@@ -1133,6 +1449,38 @@ function renderIdeas() {
         '</div>';
     }
 
+    // 状态标签
+    const status = item.status || '';
+    let statusHtml = '';
+    if (status) {
+      const label = { adopt: '采用', pending: '待定', archive: '留档' }[status] || status;
+      const note = item.statusNote || '';
+      statusHtml = `<span class="status-badge ${status}" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">${label}${note ? ` <span class="status-note" title="${escapeHtml(note)}">${escapeHtml(note)}</span>` : ''}</span>`;
+    } else {
+      statusHtml = `<span class="status-badge" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">+ 标签</span>`;
+    }
+
+    // 提取标题（从desc的第一行或# 标题）
+    let cardTitle = item.title || '';
+    if (!cardTitle && item.desc) {
+      const lines = item.desc.split('\n');
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('# ')) { cardTitle = trimmed.replace(/^#+\s*/, ''); break; }
+        if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('-') && !trimmed.startsWith('*')) {
+          cardTitle = trimmed.substring(0, 50);
+          break;
+        }
+      }
+    }
+    cardTitle = cardTitle || '创意 #' + item.id;
+    
+    const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
+    
+    // 主图片（第一张）
+    const mainImage = item.images && item.images.length > 0 ? item.images[0] : null;
+
+    // 属性网格（右侧）
     const metaGrid = `
       <div class="card-meta-grid">
         <div class="card-meta-item">
@@ -1140,12 +1488,12 @@ function renderIdeas() {
           <span class="meta-value" onclick="event.stopPropagation();startEditGameType(${item.id}, this)"><span class="card-meta-editable">${gTypeDisplay}</span></span>
         </div>
         <div class="card-meta-item">
-          <span class="meta-label">👶 建议年龄</span>
-          <span class="meta-value" onclick="event.stopPropagation();startEditAge(${item.id}, this)"><span class="card-meta-editable">${ageDisplay}</span></span>
-        </div>
-        <div class="card-meta-item">
           <span class="meta-label">👥 游戏人数</span>
           <span class="meta-value" onclick="event.stopPropagation();startEditPlayers(${item.id}, this)"><span class="card-meta-editable">${playersDisplay}</span></span>
+        </div>
+        <div class="card-meta-item">
+          <span class="meta-label">👶 玩家年龄</span>
+          <span class="meta-value" onclick="event.stopPropagation();startEditAge(${item.id}, this)"><span class="card-meta-editable">${ageDisplay}</span></span>
         </div>
         <div class="card-meta-item">
           <span class="meta-label">🕹️ 操作方式</span>
@@ -1158,57 +1506,95 @@ function renderIdeas() {
       </div>
     `;
 
-    const imagesHtml = item.images && item.images.length > 0
+    // 图片轮播区域（底部）
+    let carouselHtml = '';
+    if (item.images && item.images.length > 1) {
+      carouselHtml = `
+        <div class="card-images-carousel">
+          <button class="carousel-btn" onclick="event.stopPropagation();scrollCarousel(this, -1)">‹</button>
+          <div class="carousel-track" id="carousel-${item.id}">
+            ${item.images.map((img, idx) => `
+              <div class="carousel-item" onclick="event.stopPropagation();openLightbox('${escapeHtml(img.src)}')">
+                <img src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt || ('图片'+(idx+1)))}">
+                <div class="carousel-item-info">
+                  <span class="carousel-item-index">0${idx + 1}</span>
+                  <span class="carousel-item-size">${img.size || ''}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="carousel-btn" onclick="event.stopPropagation();scrollCarousel(this, 1)">›</button>
+        </div>
+      `;
+    }
+    
+    const imagesSection = (item.images && item.images.length > 0)
       ? `<div class="card-images" onclick="event.stopPropagation();startEditImages(${item.id}, this)" tabindex="0">
-           <div class="card-images-label">📎 图片 (${item.images.length}) <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击编辑 / Ctrl+V粘贴</span></div>
-           <div class="card-images-grid">
-             ${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="event.stopPropagation();openLightbox('${escapeHtml(img.src)}')">`).join('')}
-           </div>
+           <div class="card-images-label">🖼️ 图片 (${item.images.length}) <span style="color:#9ca3af;font-size:0.68rem;">点击编辑 / Ctrl+V粘贴</span></div>
+           ${carouselHtml || `<div class="card-images-grid">${item.images.map(img => `<img class="card-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" onclick="event.stopPropagation();openLightbox('${escapeHtml(img.src)}')">`).join('')}</div>`}
          </div>`
       : `<div class="card-images" data-card-id="${item.id}" onclick="event.stopPropagation();startEditImages(${item.id}, this)" style="cursor:pointer;" tabindex="0">
-           <div class="card-images-label">📎 图片 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">点击添加 / Ctrl+V粘贴</span></div>
+           <div class="card-images-label">🖼️ 图片 <span style="color:#9ca3af;font-size:0.68rem;">点击添加 / Ctrl+V粘贴</span></div>
          </div>`;
-
-    // 状态标签
-    const status = item.status || '';
-    let statusHtml = '';
-    if (status) {
-      const label = { adopt: '采用', pending: '待定', archive: '留档' }[status] || status;
-      const note = item.statusNote || '';
-      statusHtml = `<span class="status-badge ${status}" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">${label}${note ? ` <span class="status-note" title="${escapeHtml(note)}">${escapeHtml(note)}</span>` : ''}</span>`;
-    } else {
-      statusHtml = `<span class="status-badge" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">+ 标签</span>`;
-    }
-
-    const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
 
     return `
       <div class="idea-card" id="card-${item.id}">
+        <!-- 卡片顶部 -->
         <div class="card-header">
-        <div class="card-header-left">
-          <div class="card-id-badge">创意 #${item.id}</div>
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <div class="card-author-badge">
-              <span class="avatar">${authorInitial}</span>
-              ${escapeHtml(item.author)}
+          <div class="card-header-left">
+            <div class="card-id-badge">⭐ 创意 #${String(item.id).padStart(4,'0')}</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div class="card-author-badge">
+                <span class="avatar">${authorInitial}</span>
+                ${escapeHtml(item.author)}
+              </div>
             </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
             ${statusHtml}
           </div>
         </div>
-          <div class="card-date">${item.createdAt}</div>
+
+        <!-- 标题区 -->
+        <div class="card-title-section">
+          <h2 class="card-title">${escapeHtml(cardTitle)}</h2>
+          <div class="card-title-icons">✨ 💡 🎯</div>
         </div>
-        ${metaGrid}
+
+        <!-- 主内容区：左侧大图 + 右侧属性 -->
+        <div class="card-main-layout">
+          <div class="card-image-showcase" onclick="event.stopPropagation();${mainImage ? `openLightbox('${escapeHtml(mainImage.src)}')` : `startEditImages(${item.id}, this)`}" style="cursor:pointer;">
+            ${mainImage 
+              ? `<img class="main-image" src="${escapeHtml(mainImage.src)}" alt="${escapeHtml(mainImage.alt)}">`
+              : `<div class="card-no-image">📷 点击添加图片<br><small>Ctrl+V 粘贴</small></div>`
+            }
+          </div>
+          ${metaGrid}
+        </div>
+
+        <!-- 描述区域 -->
         <div class="card-body" onclick="event.stopPropagation();startEditDesc(${item.id}, this)">
           <div class="card-desc" style="cursor:pointer;">${renderMarkdown(item.desc)}</div>
-          <div style="text-align:right;margin-top:6px;"><span style="color:rgba(124,58,237,0.4);font-size:0.65rem;">点击编辑描述</span></div>
         </div>
-        ${imagesHtml}
+
+        <!-- 图片轮播区 -->
+        ${imagesSection}
+
+        <!-- 底部操作栏 -->
         <div class="card-footer">
-          <button class="btn-del" onclick="deleteItem(${item.id})">删除</button>
+          <button class="btn-del" onclick="deleteItem(${item.id})">🗑️ 删除</button>
         </div>
       </div>
     `;
   }).join('');
+  
+  // 添加轮播滚动函数到全局
+  window.scrollCarousel = function(btn, direction) {
+    const track = btn.parentElement.querySelector('.carousel-track');
+    const scrollAmount = 150 * direction;
+    track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
+}
 }
 
 function deleteItem(id) {
