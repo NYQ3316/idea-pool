@@ -42,37 +42,44 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 
 /* 图片上传 */
 .image-upload-area {
-  border: 2px dashed rgba(255,255,255,0.15); border-radius: 12px; padding: 20px;
-  background: rgba(0,0,0,0.15); transition: all 0.2s; margin-top: 8px;
+  border: 2px dashed #d1d5db; border-radius: 12px; padding: 20px;
+  background: #f9fafb; transition: all 0.2s; margin-top: 8px;
 }
-.image-upload-area.dragover { border-color: #7c3aed; background: rgba(124, 58, 237, 0.1); }
+.image-upload-area:focus-within, .image-upload-area:hover {
+  border-color: #a5b4fc; box-shadow: 0 0 0 3px rgba(165, 191, 252, 0.15);
+}
+.image-upload-area.dragover { border-color: #6366f1; background: #eef2ff; }
 .image-upload-header { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
 
 .image-upload-paste-hint {
-  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(79, 70, 229, 0.1));
-  border: 1px dashed rgba(124, 58, 237, 0.3); border-radius: 10px; margin-top: 12px; transition: all 0.2s; user-select: none;
+  display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+  background: linear-gradient(135deg, #eef2ff, #ede9fe);
+  border: 2px dashed #a5b4fc; border-radius: 12px; margin-top: 14px; transition: all 0.25s; user-select: none; cursor: pointer;
+}
+.image-upload-paste-hint:hover {
+  background: linear-gradient(135deg, #ddd6fe, #c7d2fe);
+  border-color: #8b5cf6; transform: scale(1.01);
 }
 .image-upload-paste-hint.paste-active {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(79, 70, 229, 0.25));
-  border-color: #7c3aed; border-style: solid; transform: scale(1.01);
+  background: linear-gradient(135deg, #c7d2fe, #a78bfa);
+  border-color: #6366f1; border-style: solid; transform: scale(1.02); box-shadow: 0 4px 16px rgba(99,102,241,0.2);
 }
-.paste-icon { font-size: 1.8rem; line-height: 1; }
-.paste-text { display: flex; flex-direction: column; gap: 2px; }
-.paste-text strong { color: #c4b5fd; font-size: 0.9rem; }
-.paste-text small { color: rgba(255,255,255,0.45); font-size: 0.7rem; }
+.paste-icon { font-size: 2rem; line-height: 1; }
+.paste-text { display: flex; flex-direction: column; gap: 3px; }
+.paste-text strong { color: #4338ca; font-size: 0.95rem; font-weight: 700; }
+.paste-text small { color: #6b7280; font-size: 0.75rem; line-height: 1.4; }
 .image-preview-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .image-preview-item {
   position: relative; width: 100px; height: 100px; border-radius: 10px;
-  overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);
+  overflow: hidden; border: 2px solid #e5e7eb; background: #f3f4f6;
 }
 .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
 .image-preview-item .remove-btn {
   position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%;
-  background: rgba(239, 68, 68, 0.85); color: white; border: none; font-size: 0.75rem;
+  background: rgba(239, 68, 68, 0.9); color: white; border: none; font-size: 0.75rem;
   cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
 }
-.image-preview-item .remove-btn:hover { background: rgba(239, 68, 68, 1); transform: scale(1.1); }
+.image-preview-item .remove-btn:hover { background: rgba(220, 38, 38, 1); transform: scale(1.1); }
 
 .btn-primary {
   width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 1.1rem;
@@ -518,7 +525,11 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 }
 .btn-del:hover { background: #fee2e2; border-color: #fca5a5; }
 
-.empty-state { text-align: center; color: rgba(255,255,255,0.3); padding: 50px 20px; font-size: 0.95rem; border: 2px dashed rgba(255,255,255,0.1); border-radius: 14px; grid-column: 1 / -1; }
+.empty-state { 
+  text-align: center; color: #9ca3af; padding: 50px 20px; font-size: 1rem; 
+  border: 2px dashed #d1d5db; border-radius: 14px; grid-column: 1 / -1;
+  background: #f9fafb;
+}
 
 .toast {
   position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 14px 24px;
@@ -606,7 +617,8 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
     <div class="empty-state">暂无创意，快来提交第一个吧！</div>
   </div>
   <div class="footer-actions" id="footerActions" style="display:none;">
-    <button class="btn-export" onclick="exportData()">📥 导出 JSON</button>
+    <button class="btn-export" onclick="showImportDialog()">📥 导入数据</button>
+    <button class="btn-export" onclick="exportData()">💾 导出 JSON</button>
     <button class="btn-export" onclick="clearAll()">🗑️ 清空全部</button>
   </div>
 </div>
@@ -1217,7 +1229,7 @@ function startEditImages(id, el) {
   
   el.innerHTML = `
     <div class="card-images-edit-panel" style="display:flex;flex-direction:column;gap:10px;">
-      <div class="card-images-label">📎 图片编辑 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">Ctrl+V 粘贴 / 拖拽</span></div>
+      <div class="card-images-label">📎 图片编辑 <span style="color:#9ca3af;font-size:0.68rem;">Ctrl+V 粘贴 / 拖拽</span></div>
       ${gridHtml}
       <div class="image-upload-paste-hint" id="cardPasteHint-${id}" style="margin-top:0;">
         <div class="paste-icon">📋</div>
@@ -1227,7 +1239,7 @@ function startEditImages(id, el) {
         </div>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button onclick="event.stopPropagation();finishEditImages(${id})" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">完成</button>
+        <button onclick="event.stopPropagation();finishEditImages(${id})" style="padding:6px 16px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;">完成</button>
       </div>
     </div>
   `;
@@ -1624,6 +1636,93 @@ function clearAll() {
   localStorage.removeItem(NEXT_ID_KEY);
   renderIdeas();
   showToast('已清空全部数据');
+}
+
+// ===== 数据导入 =====
+function showImportDialog() {
+  const options = prompt(
+    '请选择导入方式：\n\n' +
+    '1 - 从JSON文件导入\n' +
+    '2 - 从剪贴板粘贴导入\n\n' +
+    '请输入数字 (1 或 2)：'
+  );
+  
+  if (!options) return;
+  
+  if (options === '1') {
+    // 文件导入
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          importData(JSON.parse(evt.target.result));
+        } catch(err) {
+          showToast('文件解析失败: ' + err.message, true);
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  } else if (options === '2') {
+    // 剪贴板粘贴
+    const jsonStr = prompt('请粘贴 JSON 数据：');
+    if (!jsonStr) return;
+    try {
+      const data = JSON.parse(jsonStr);
+      importData(data);
+    } catch(err) {
+      showToast('数据解析失败，请检查格式', true);
+    }
+  } else {
+    showToast('无效的选择', true);
+  }
+}
+
+function importData(data) {
+  if (!Array.isArray(data)) {
+    showToast('数据格式错误：需要数组格式', true);
+    return;
+  }
+  
+  if (data.length === 0) {
+    showToast('没有可导入的数据', true);
+    return;
+  }
+  
+  if (!confirm(`即将导入 ${data.length} 条创意数据。\n\n注意：这会与现有数据合并（相同ID会覆盖）。`)) {
+    return;
+  }
+  
+  const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  
+  // 合并数据
+  for (const item of data) {
+    const idx = existing.findIndex(e => e.id === item.id);
+    if (idx >= 0) {
+      existing[idx] = item; // 覆盖
+    } else {
+      existing.push(item); // 新增
+    }
+  }
+  
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+  
+  // 更新nextId
+  let maxId = parseInt(localStorage.getItem(NEXT_ID_KEY) || '2001');
+  for (const item of data) {
+    if (item.id && item.id >= maxId) {
+      maxId = item.id + 1;
+    }
+  }
+  localStorage.setItem(NEXT_ID_KEY, String(maxId));
+  
+  renderIdeas();
+  showToast(`✅ 成功导入 ${data.length} 条数据！`);
 }
 
 function showToast(msg, isError) {
