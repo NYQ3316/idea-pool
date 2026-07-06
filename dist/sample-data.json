@@ -1,0 +1,62 @@
+[
+  {
+    "id": 2001,
+    "author": "Nicholas",
+    "title": "大世界小城市",
+    "desc": "# 大世界小城市\n\n**建议年龄**：6-9岁\n\n**游戏人数**：1-4人\n\n**体感操作**：双臂、跑\n\n## 玩法\n\n玩家在大世界中探索不同的小城市，每个城市都有独特的主题和挑战。通过体感操作完成各种任务，收集城市徽章。\n\n## 聪明的话\n\n可以加入天气系统和昼夜循环，让游戏世界更加生动。城市之间可以设置隐藏路径和彩蛋，鼓励玩家探索。",
+    "gameTypes": ["竞技", "球类"],
+    "urls": [
+      "https://example.com/prototype1",
+      "https://example.com/prototype2"
+    ],
+    "ageMin": "6",
+    "ageMax": "9",
+    "ageDisplay": "6~9岁",
+    "playersMin": "1",
+    "playersMax": "4",
+    "playersDisplay": "1~4人",
+    "controls": ["双臂", "跑"],
+    "images": [],
+    "status": "adopt",
+    "statusNote": "已立项开发",
+    "createdAt": "2025-06-15 10:30"
+  },
+  {
+    "id": 2002,
+    "author": "Alice",
+    "title": "水果忍者体感版",
+    "desc": "# 水果忍者体感版\n\n用体感手柄挥砍水果，感受真实的切割快感！\n\n## 玩法\n\n- 挥动手柄模拟刀刃切割\n- 连击获得高分\n- 避开炸弹\n\n## 特色\n\n支持多人对战模式，最多4人同屏竞技。",
+    "gameTypes": ["休闲", "竞技"],
+    "urls": ["https://example.com/fruit-ninja"],
+    "ageMin": "5",
+    "ageMax": "12",
+    "ageDisplay": "5~12岁",
+    "playersMin": "1",
+    "playersMax": "4",
+    "playersDisplay": "1~4人",
+    "controls": ["挥砍", "体感手柄"],
+    "images": [],
+    "status": "pending",
+    "statusNote": "待评审",
+    "createdAt": "2025-06-20 14:22"
+  },
+  {
+    "id": 2003,
+    "author": "Bob",
+    "title": "太空漫步",
+    "desc": "# 太空漫步\n\n在零重力环境中漂浮、跳跃、收集星尘。\n\n**体感操作**：全身运动\n\n## 玩法\n\n玩家穿着体感服，在模拟太空舱中完成任务。需要协调身体平衡，躲避陨石，收集能量晶体。",
+    "gameTypes": ["冒险", "探索"],
+    "urls": [],
+    "ageMin": "8",
+    "ageMax": "15",
+    "ageDisplay": "8~15岁",
+    "playersMin": "1",
+    "playersMax": "2",
+    "playersDisplay": "1~2人",
+    "controls": ["全身", "跳跃"],
+    "images": [],
+    "status": "",
+    "statusNote": "",
+    "createdAt": "2025-06-25 09:15"
+  }
+]

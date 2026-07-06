@@ -560,8 +560,8 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
   .header h1 { font-size: 1.6rem; }
   .card-input { padding: 20px; }
   .card-image { height: 140px; }
-  .image-upload-header { flex-direction: column; align-items: stretch; }
-  .image-url-input-wrap { width: 100%; }
+  .card-main-layout { grid-template-columns: 1fr; }
+  .card-meta-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -1779,7 +1779,40 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLight
   }
 })();
 
-renderIdeas();
+// ===== 自动加载示例数据（当localStorage为空时） =====
+async function loadSampleDataIfEmpty() {
+  const existing = localStorage.getItem(STORAGE_KEY);
+  if (existing) {
+    try {
+      const parsed = JSON.parse(existing);
+      if (parsed && parsed.length > 0) return; // 已有数据，不加载
+    } catch(e) {}
+  }
+  // 尝试加载示例数据
+  try {
+    const response = await fetch('sample-data.json');
+    if (!response.ok) return;
+    const data = await response.json();
+    if (Array.isArray(data) && data.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      // 更新nextId
+      let maxId = 2001;
+      for (const item of data) {
+        if (item.id && item.id >= maxId) maxId = item.id + 1;
+      }
+      localStorage.setItem(NEXT_ID_KEY, String(maxId));
+      console.log('已自动加载示例数据:', data.length, '条');
+    }
+  } catch(e) {
+    console.log('加载示例数据失败:', e);
+  }
+}
+
+// 页面初始化
+(async function() {
+  await loadSampleDataIfEmpty();
+  renderIdeas();
+})();
 </script>
 
 </body>
