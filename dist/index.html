@@ -47,22 +47,7 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 }
 .image-upload-area.dragover { border-color: #7c3aed; background: rgba(124, 58, 237, 0.1); }
 .image-upload-header { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
-.image-upload-btn {
-  padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-  border: none; font-family: inherit; transition: all 0.2s;
-  background: rgba(124, 58, 237, 0.2); color: #c4b5fd; border: 1px solid rgba(124, 58, 237, 0.3);
-}
-.image-upload-btn:hover { background: rgba(124, 58, 237, 0.35); }
-.image-url-input-wrap { display: flex; gap: 8px; flex: 1; min-width: 200px; }
-.image-url-input-wrap input {
-  flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(0,0,0,0.2); color: #e0e0e0; font-family: inherit; font-size: 0.9rem;
-}
-.image-url-input-wrap input:focus { outline: none; border-color: #7c3aed; }
-.image-url-add-btn {
-  padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-  border: none; font-family: inherit; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white; white-space: nowrap;
-}
+
 .image-upload-paste-hint {
   display: flex; align-items: center; gap: 12px; padding: 14px 16px;
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(79, 70, 229, 0.1));
@@ -280,17 +265,10 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
         <div class="hint">支持 Markdown 格式。提交后可在卡片上手动调整：游戏类型、建议年龄、游戏人数、操作方式。可直接在文本框中 Ctrl+V 粘贴截图。</div>
       </div>
 
-      <!-- 图片上传区域 -->
+      <!-- 图片上传区域 - 简化版：只支持 Ctrl+V 粘贴 -->
       <div class="form-group">
         <label>📎 图片附件</label>
         <div class="image-upload-area" id="imageUploadArea" tabindex="0">
-          <div class="image-upload-header">
-            <button type="button" class="image-upload-btn" onclick="document.getElementById('fileInput').click()">📁 选择文件</button>
-            <div class="image-url-input-wrap">
-              <input type="text" id="imageUrlInput" placeholder="粘贴图片链接 URL...">
-              <button type="button" class="image-url-add-btn" onclick="addImageUrl()">添加</button>
-            </div>
-          </div>
           <div class="image-upload-paste-hint" id="pasteHint">
             <div class="paste-icon">📋</div>
             <div class="paste-text">
@@ -300,8 +278,7 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
           </div>
           <div class="image-preview-list" id="imagePreviewList"></div>
         </div>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFileSelect(event)">
-        <div class="hint">支持方式：① 点击选择文件 ② 拖拽图片到上方 ③ 粘贴 URL 链接 ④ 复制网页图片后 Ctrl+V</div>
+        <div class="hint">支持方式：Ctrl+V 粘贴图片，或从网页复制图片地址后粘贴</div>
       </div>
 
       <button type="submit" class="btn-primary">🚀 提交创意</button>
@@ -430,10 +407,9 @@ document.addEventListener('paste', function(e) {
   if (target.closest('.card-images')) return;
   const isTextInput = target.tagName === 'INPUT' && target.type === 'text';
   const isTextarea = target.tagName === 'TEXTAREA';
-  const isUrlInput = target.id === 'imageUrlInput';
   const isAuthorInput = target.id === 'author';
-  if ((isTextInput || isTextarea) && !isUrlInput && !isAuthorInput) return;
-  if (isUrlInput || isAuthorInput) return;
+  if ((isTextInput || isTextarea) && !isAuthorInput) return;
+  if (isAuthorInput) return;
   const cd = e.clipboardData;
   if (!cd) return;
   let handled = false;
@@ -476,16 +452,6 @@ document.addEventListener('paste', function(e) {
 });
 
 // ===== 图片处理 =====
-function addImageUrl() {
-  const input = document.getElementById('imageUrlInput');
-  const url = input.value.trim();
-  if (!url) return;
-  if (!/^https?:\/\//i.test(url)) { showToast('⚠️ 请输入有效的 URL', true); return; }
-  pendingImages.push({ type: 'url', src: url, name: '图片链接' });
-  input.value = '';
-  renderPendingImages();
-  showToast('图片链接已添加');
-}
 const pasteHint = document.getElementById('pasteHint');
 if (pasteHint) {
   pasteHint.addEventListener('click', (e) => {
@@ -498,29 +464,11 @@ if (pasteHint) {
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
     const t = e.target;
-    if (t && (t.id === 'author' || t.id === 'imageUrlInput')) return;
+    if (t && t.id === 'author') return;
     if (t && t.tagName === 'TEXTAREA' && t.id === 'rawText') return;
     if (pasteHint) { pasteHint.classList.add('paste-active'); setTimeout(() => pasteHint.classList.remove('paste-active'), 1200); }
   }
 });
-function handleFileSelect(event) {
-  const files = event.target.files;
-  if (!files || files.length === 0) return;
-  for (const file of files) {
-    if (!file.type.startsWith('image/')) continue;
-    if (API_BASE_URL) {
-      uploadFileToBackend(file, file.name).then(url => {
-        if (url) { pendingImages.push({ type: 'url', src: url, name: file.name }); renderPendingImages(); }
-      });
-    } else {
-      const reader = new FileReader();
-      reader.onload = function(e) { pendingImages.push({ type: 'base64', src: e.target.result, name: file.name }); renderPendingImages(); };
-      reader.readAsDataURL(file);
-    }
-  }
-  event.target.value = '';
-  showToast(`已添加 ${files.length} 张图片`);
-}
 function removePendingImage(index) { pendingImages.splice(index, 1); renderPendingImages(); }
 function renderPendingImages() {
   const list = document.getElementById('imagePreviewList');
@@ -554,7 +502,6 @@ uploadArea.addEventListener('drop', (e) => {
   }
   if (added > 0) showToast(`已添加 ${added} 张图片`);
 });
-document.getElementById('imageUrlInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addImageUrl(); } });
 
 // ===== Markdown =====
 function renderMarkdown(text) {
@@ -954,7 +901,7 @@ function startEditImages(id, el) {
   
   el.innerHTML = `
     <div class="card-images-edit-panel" style="display:flex;flex-direction:column;gap:10px;">
-      <div class="card-images-label">📎 图片编辑 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">Ctrl+V 粘贴 / 拖拽 / 选择文件</span></div>
+      <div class="card-images-label">📎 图片编辑 <span style="color:rgba(124,58,237,0.5);font-size:0.65rem;">Ctrl+V 粘贴 / 拖拽</span></div>
       ${gridHtml}
       <div class="image-upload-paste-hint" id="cardPasteHint-${id}" style="margin-top:0;">
         <div class="paste-icon">📋</div>
@@ -964,10 +911,8 @@ function startEditImages(id, el) {
         </div>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button onclick="event.stopPropagation();document.getElementById('cardFileInput-${id}').click()" style="padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.08);color:#b0b0d0;border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-family:inherit;font-size:0.8rem;">选择文件</button>
         <button onclick="event.stopPropagation();finishEditImages(${id})" style="padding:4px 12px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:0.8rem;">完成</button>
       </div>
-      <input type="file" id="cardFileInput-${id}" accept="image/*" multiple style="display:none" onchange="handleCardFileSelect(event, ${id})">
     </div>
   `;
   
@@ -1018,21 +963,6 @@ function removeCardImage(id, imgIndex) {
   const newCardImages = document.querySelector(`#card-${id} .card-images`);
   if (newCardImages) startEditImages(id, newCardImages);
   showToast('图片已删除');
-}
-
-function handleCardFileSelect(event, id) {
-  const files = event.target.files;
-  if (!files || files.length === 0) return;
-  let added = 0;
-  for (const file of files) {
-    if (!file.type.startsWith('image/')) continue;
-    const reader = new FileReader();
-    reader.onload = function(evt) { addImageToCard(id, evt.target.result); };
-    reader.readAsDataURL(file);
-    added++;
-  }
-  event.target.value = '';
-  if (added > 0) showToast(`已添加 ${added} 张图片`);
 }
 
 function finishEditImages(id) {
