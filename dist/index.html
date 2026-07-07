@@ -895,7 +895,14 @@ function extractUrls(text) {
 
 function isMetadataLine(line) {
   if (!line) return false;
-  return /^(游戏人数|人数|玩家|建议年龄|年龄|适合|体感操作|操作方式|参考原型|原型链接|原型)[:：]/.test(line.trim());
+  const trimmed = line.trim();
+  // 1. 以元数据关键字开头，后跟冒号、空格或数字
+  if (/^(游戏人数|人数|玩家|建议年龄|年龄|适合|体感操作|操作方式|参考原型|原型链接|原型)[:：\s]+/.test(trimmed)) return true;
+  // 2. 纯数字范围 + 人/岁，例如 "2~4人"、"6-9岁"
+  if (/^\d+\s*[~\-～到至]\s*\d+\s*[人岁]$/.test(trimmed)) return true;
+  // 3. 单个数字 + 人/岁，例如 "1人"、"6岁"
+  if (/^\d+\s*[人岁]$/.test(trimmed)) return true;
+  return false;
 }
 
 function extractTitle(text) {
