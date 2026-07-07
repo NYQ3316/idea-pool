@@ -183,6 +183,9 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
   color: #111827;
   letter-spacing: -0.02em;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card-title-icons {
   display: flex; justify-content: center; align-items: center; gap: 8px;
@@ -849,8 +852,8 @@ function renderMarkdown(text) {
   html = html.replace(/^---$/gim, '<hr>');
   html = html.replace(/^\*\*\*$/gim, '<hr>');
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '');
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-  html = html.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" onclick="event.stopPropagation();">$1</a>');
+  html = html.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" onclick="event.stopPropagation();">$1</a>');
   html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
   html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
   html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
@@ -886,12 +889,43 @@ function extractUrls(text) {
   return matches.map(u => u.replace(/[.,;!?]$/, '')).filter(u => !imgUrls.has(u) && !/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(u));
 }
 
+function isMetadataLine(line) {
+  if (!line) return false;
+  return /^(游戏人数|人数|玩家|建议年龄|年龄|适合|体感操作|操作方式|参考原型|原型链接|原型)[:：]/.test(line.trim());
+}
+
 function extractTitle(text) {
-  const h1 = text.match(/^#\s+(.+)$/m);
-  if (h1) return h1[1].trim().substring(0, 50);
-  const m = text.match(/^(.*?)(?:[,，.。!！?？]|\n)/);
-  if (m) return m[1].trim().substring(0, 50);
+  const lines = text.split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (trimmed.startsWith('# ')) {
+      const heading = trimmed.replace(/^#+\s*/, '').trim();
+      if (heading && !isMetadataLine(heading)) return heading.substring(0, 50);
+    }
+    if (!trimmed.startsWith('#') && !trimmed.startsWith('-') && !trimmed.startsWith('*') && !isMetadataLine(trimmed)) {
+      return trimmed.substring(0, 50);
+    }
+  }
   return text.trim().substring(0, 50);
+}
+
+function extractDisplayTitle(item) {
+  let title = item.title || '';
+  if (title && !isMetadataLine(title)) return title;
+  const lines = (item.desc || '').split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (trimmed.startsWith('# ')) {
+      const heading = trimmed.replace(/^#+\s*/, '').trim();
+      if (heading && !isMetadataLine(heading)) return heading;
+    }
+    if (!trimmed.startsWith('#') && !trimmed.startsWith('-') && !trimmed.startsWith('*') && !isMetadataLine(trimmed)) {
+      return trimmed.substring(0, 50);
+    }
+  }
+  return title ? title.substring(0, 50) : ('创意 #' + item.id);
 }
 
 function getNextId() {
@@ -1457,7 +1491,7 @@ function renderIdeas() {
     let urlsHtml = emptyText;
     if (item.urls && item.urls.length > 0) {
       urlsHtml = '<div class="mutil-link">' +
-        item.urls.map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener">🔗 ${escapeHtml(u)}</a>`).join('') +
+        item.urls.map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener" onclick="event.stopPropagation();">🔗 ${escapeHtml(u)}</a>`).join('') +
         '</div>';
     }
 
@@ -1472,20 +1506,7 @@ function renderIdeas() {
       statusHtml = `<span class="status-badge" onclick="event.stopPropagation();startEditStatus(${item.id}, this)">+ 标签</span>`;
     }
 
-    // 提取标题（从desc的第一行或# 标题）
-    let cardTitle = item.title || '';
-    if (!cardTitle && item.desc) {
-      const lines = item.desc.split('\n');
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('# ')) { cardTitle = trimmed.replace(/^#+\s*/, ''); break; }
-        if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('-') && !trimmed.startsWith('*')) {
-          cardTitle = trimmed.substring(0, 50);
-          break;
-        }
-      }
-    }
-    cardTitle = cardTitle || '创意 #' + item.id;
+    const cardTitle = extractDisplayTitle(item);
     
     const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : '?';
     
@@ -1512,8 +1533,8 @@ function renderIdeas() {
           <span class="meta-value" onclick="event.stopPropagation();startEditControl(${item.id}, this)"><span class="card-meta-editable">${ctrlDisplay}</span></span>
         </div>
         <div class="card-meta-item" style="grid-column: 1 / -1;">
-          <span class="meta-label">🔗 参考原型</span>
-          <span class="meta-value ${item.urls && item.urls.length > 0 ? '' : 'empty'}" onclick="event.stopPropagation();startEditUrls(${item.id}, this)"><span class="card-meta-editable">${urlsHtml}</span></span>
+          <span class="meta-label" style="cursor:pointer;" onclick="event.stopPropagation();startEditUrls(${item.id}, this.nextElementSibling)">🔗 参考原型 <span style="color:#9ca3af;font-size:0.7rem;margin-left:4px;">✏️</span></span>
+          <span class="meta-value ${item.urls && item.urls.length > 0 ? '' : 'empty'}">${urlsHtml}</span>
         </div>
       </div>
     `;
