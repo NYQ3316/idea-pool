@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>创意池</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -186,6 +189,7 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: keep-all;
 }
 .card-title-icons {
   display: flex; justify-content: center; align-items: center; gap: 8px;
@@ -925,7 +929,7 @@ function extractDisplayTitle(item) {
       return trimmed.substring(0, 50);
     }
   }
-  return title ? title.substring(0, 50) : ('创意 #' + item.id);
+  return '创意 #' + item.id;
 }
 
 function getNextId() {
