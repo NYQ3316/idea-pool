@@ -135,10 +135,10 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 }
 .card-author-badge {
   display: inline-flex; align-items: center; gap: 8px;
-  background: #f3f4f6; color: #374151;
-  font-size: 0.85rem; font-weight: 600;
-  padding: 5px 14px; border-radius: 20px;
-  border: 1px solid #e5e7eb;
+  background: transparent; color: #6b7280;
+  font-size: 0.85rem; font-weight: 500;
+  padding: 0; border-radius: 0;
+  border: none;
 }
 .card-author-badge .avatar {
   width: 24px; height: 24px; border-radius: 50%;
@@ -897,11 +897,11 @@ function isMetadataLine(line) {
   if (!line) return false;
   const trimmed = line.trim();
   // 1. 以元数据关键字开头，后跟冒号、空格或数字
-  if (/^(游戏人数|人数|玩家|建议年龄|年龄|适合|体感操作|操作方式|参考原型|原型链接|原型)[:：\s]+/.test(trimmed)) return true;
-  // 2. 纯数字范围 + 人/岁，例如 "2~4人"、"6-9岁"
-  if (/^\d+\s*[~\-～到至]\s*\d+\s*[人岁]$/.test(trimmed)) return true;
-  // 3. 单个数字 + 人/岁，例如 "1人"、"6岁"
-  if (/^\d+\s*[人岁]$/.test(trimmed)) return true;
+  if (/^(游戏人数|人数|玩家|建议年龄|年龄|年龄段|年龄层|适合年龄|适龄|体感操作|操作方式|参考原型|原型链接|原型)[:：\s]+/.test(trimmed)) return true;
+  // 2. 纯数字范围 + 人/岁/+，例如 "2~4人"、"6-9岁"、"6+"
+  if (/^\d+\s*[~\-～到至]\s*\d+\s*[人岁+]$/.test(trimmed)) return true;
+  // 3. 单个数字 + 人/岁/+，例如 "1人"、"6岁"、"6+"
+  if (/^\d+\s*[人岁+]$/.test(trimmed)) return true;
   return false;
 }
 
