@@ -733,6 +733,44 @@ body.edit-mode .edit-toolbar { display: flex; }
 .block-edit-actions .danger { background: white; color: #dc2626; border-color: #fecaca; }
 .block-edit-actions .danger:hover { background: #fee2e2; }
 
+/* 卡片原生组件（section） */
+.card-section {
+  position: relative;
+}
+body.edit-mode .card-section {
+  outline: 1px dashed rgba(99,102,241,0.35);
+  outline-offset: -1px;
+}
+body.edit-mode .card-section:hover {
+  outline-color: #6366f1;
+}
+body.edit-mode .card-section.sortable-ghost {
+  opacity: 0.4;
+  background: #eef2ff;
+}
+body.edit-mode .card-section.sortable-chosen {
+  cursor: grabbing;
+}
+body.edit-mode .card-section.sortable-drag {
+  box-shadow: 0 8px 24px rgba(99,102,241,0.35);
+}
+.section-handle {
+  display: none;
+  position: absolute;
+  top: 8px; right: 12px;
+  z-index: 5;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #6366f1; color: white; border: 1px solid #fff;
+  align-items: center; justify-content: center;
+  font-size: 0.8rem; cursor: grab;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  font-family: inherit; padding: 0;
+  transition: transform 0.15s;
+}
+.section-handle:hover { transform: scale(1.12); }
+.section-handle:active { cursor: grabbing; }
+body.edit-mode .card-section .section-handle { display: inline-flex; }
+
 /* 块样式 */
 .card-blocks { display: flex; flex-direction: column; gap: 10px; padding: 0 24px 18px; background: #ffffff; }
 .card-blocks:empty { display: none; }
@@ -828,7 +866,6 @@ body.edit-mode .edit-toolbar { display: flex; }
 <button class="edit-mode-toggle" id="editModeToggle" onclick="toggleEditMode()">🛠️ 编辑模式</button>
 
 <div class="edit-toolbar" id="editToolbar">
-  <button onclick="openBlockPicker()">➕ 添加组件</button>
   <button onclick="resetCardOrder()">🔀 重置顺序</button>
   <button onclick="toggleEditMode()">✅ 完成编辑</button>
 </div>
@@ -1829,49 +1866,64 @@ function renderIdeas() {
     return `
       <div class="idea-card" id="card-${item.id}" data-card-id="${item.id}" style="position:relative;">
         <button class="card-drag-handle" data-card-drag="${item.id}" title="拖动以重排卡片">⋮⋮</button>
-        <!-- 卡片顶部 -->
-        <div class="card-header">
-          <div class="card-header-left">
-            <div class="card-id-badge">⭐ 创意 #${String(item.id).padStart(4,'0')}</div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-              <div class="card-author-badge">
-                <span class="avatar">${authorInitial}</span>
-                ${escapeHtml(item.author)}
+
+        <div class="card-native-sortable" data-native-sortable="${item.id}">
+          <!-- 卡片顶部 -->
+          <div class="card-section" data-section-key="header">
+            <div class="card-header">
+              <div class="card-header-left">
+                <div class="card-id-badge">⭐ 创意 #${String(item.id).padStart(4,'0')}</div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <div class="card-author-badge">
+                    <span class="avatar">${authorInitial}</span>
+                    ${escapeHtml(item.author)}
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                ${statusHtml}
               </div>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-            ${statusHtml}
+
+          <!-- 标题区 -->
+          <div class="card-section" data-section-key="title">
+            <div class="card-title-section">
+              <h2 class="card-title">${escapeHtml(cardTitle)}</h2>
+              <div class="card-title-icons">✨ 💡 🎯</div>
+            </div>
+          </div>
+
+          <!-- 主内容区：左侧大图 + 右侧属性 -->
+          <div class="card-section" data-section-key="main">
+            <div class="card-main-layout">
+              <div class="card-image-showcase" onclick="event.stopPropagation();${mainImage ? `openLightbox('${escapeHtml(mainImage.src)}')` : `startEditImages(${item.id}, this)`}" style="cursor:pointer;">
+                ${mainImage
+                  ? `<img class="main-image" src="${escapeHtml(mainImage.src)}" alt="${escapeHtml(mainImage.alt)}">`
+                  : `<div class="card-no-image">📷 点击添加图片<br><small>Ctrl+V 粘贴</small></div>`
+                }
+              </div>
+              ${metaGrid}
+            </div>
+          </div>
+
+          <!-- 描述区域 -->
+          <div class="card-section" data-section-key="desc">
+            <div class="card-body" onclick="event.stopPropagation();startEditDesc(${item.id}, this)">
+              <div class="card-desc" style="cursor:pointer;">${renderMarkdown(item.desc)}</div>
+            </div>
+          </div>
+
+          <!-- 自定义组件区 -->
+          <div class="card-section" data-section-key="blocks">
+            ${renderBlocksSection(item)}
+          </div>
+
+          <!-- 图片轮播区 -->
+          <div class="card-section" data-section-key="images">
+            ${imagesSection}
           </div>
         </div>
-
-        <!-- 标题区 -->
-        <div class="card-title-section">
-          <h2 class="card-title">${escapeHtml(cardTitle)}</h2>
-          <div class="card-title-icons">✨ 💡 🎯</div>
-        </div>
-
-        <!-- 主内容区：左侧大图 + 右侧属性 -->
-        <div class="card-main-layout">
-          <div class="card-image-showcase" onclick="event.stopPropagation();${mainImage ? `openLightbox('${escapeHtml(mainImage.src)}')` : `startEditImages(${item.id}, this)`}" style="cursor:pointer;">
-            ${mainImage 
-              ? `<img class="main-image" src="${escapeHtml(mainImage.src)}" alt="${escapeHtml(mainImage.alt)}">`
-              : `<div class="card-no-image">📷 点击添加图片<br><small>Ctrl+V 粘贴</small></div>`
-            }
-          </div>
-          ${metaGrid}
-        </div>
-
-        <!-- 描述区域 -->
-        <div class="card-body" onclick="event.stopPropagation();startEditDesc(${item.id}, this)">
-          <div class="card-desc" style="cursor:pointer;">${renderMarkdown(item.desc)}</div>
-        </div>
-
-        <!-- 自定义组件区 -->
-        ${renderBlocksSection(item)}
-
-        <!-- 图片轮播区 -->
-        ${imagesSection}
 
         <!-- 底部操作栏 -->
         <div class="card-footer">
@@ -2109,20 +2161,7 @@ loadSampleDataIfEmpty();
 migrateBlocksIfNeeded();
 renderIdeas();
 
-// ===== 组件系统（块编辑） =====
-const BLOCK_TYPES = {
-  text:    { label: '文本段落', defaultData: () => ({ text: '在这里输入正文...' }) },
-  heading: { label: '小标题',   defaultData: () => ({ text: '小标题' }) },
-  image:   { label: '图片',     defaultData: () => ({ src: '', alt: '' }) },
-  link:    { label: '参考链接', defaultData: () => ({ url: '', label: '' }) },
-  callout: { label: '提示框',   defaultData: () => ({ text: '重要提示', tone: 'info' }) },
-  divider: { label: '分割线',   defaultData: () => ({}) }
-};
-
-function newBlockId() {
-  return 'b_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
-
+// ===== 组件系统（块渲染） =====
 function ensureBlocks(item) {
   if (!Array.isArray(item.blocks)) item.blocks = [];
   return item.blocks;
@@ -2249,74 +2288,26 @@ function initSortables() {
       }
     }));
   }
-  // 块级排序
-  document.querySelectorAll('.card-blocks').forEach(container => {
+  // 卡片内原生组件排序
+  document.querySelectorAll('.card-native-sortable').forEach(container => {
     sortableInstances.push(Sortable.create(container, {
       animation: 150,
-      handle: '.block-handle',
+      handle: '.section-handle',
       ghostClass: 'sortable-ghost',
       chosenClass: 'sortable-chosen',
       dragClass: 'sortable-drag',
       onEnd: () => {
-        const cardId = parseInt(container.dataset.cardBlocks);
-        const order = [...container.querySelectorAll('.edit-block')].map(el => el.dataset.blockId);
+        const cardId = parseInt(container.dataset.nativeSortable);
+        const order = [...container.querySelectorAll('.card-section')].map(el => el.dataset.sectionKey);
         const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         const item = ideas.find(i => i.id === cardId);
         if (!item) return;
-        const byId = Object.fromEntries((item.blocks || []).map(b => [b.id, b]));
-        item.blocks = order.map(id => byId[id]).filter(Boolean);
+        item.blockOrder = order;
         saveIdeas(ideas);
         showToast('组件顺序已保存');
       }
     }));
   });
-}
-
-// ===== 添加组件 =====
-let pendingBlockCardId = null;
-
-function openBlockPicker(forCardId) {
-  pendingBlockCardId = forCardId || null;
-  document.getElementById('blockPicker').classList.add('active');
-}
-function closeBlockPicker() {
-  document.getElementById('blockPicker').classList.remove('active');
-  pendingBlockCardId = null;
-}
-
-document.getElementById('blockPicker').addEventListener('click', (e) => {
-  const btn = e.target.closest('.block-picker-item');
-  if (!btn) return;
-  const type = btn.dataset.type;
-  if (!type || !BLOCK_TYPES[type]) return;
-  // 优先使用 picker 调用上下文，否则让用户选择应用到哪张卡
-  if (pendingBlockCardId == null) {
-    const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    if (list.length === 0) { showToast('暂无卡片可添加', true); return; }
-    if (list.length === 1) { addBlockToCard(list[0].id, type); closeBlockPicker(); return; }
-    const choice = prompt(`将组件添加到哪张卡片？\n输入卡片 ID（${list.map(i => '#' + String(i.id).padStart(4,'0')).join(' / ')}）`);
-    const found = list.find(i => String(i.id) === String(choice).replace(/^#/, ''));
-    if (!found) { showToast('未找到该卡片', true); return; }
-    addBlockToCard(found.id, type);
-  } else {
-    addBlockToCard(pendingBlockCardId, type);
-  }
-  closeBlockPicker();
-});
-
-function addBlockToCard(cardId, type) {
-  const def = BLOCK_TYPES[type];
-  if (!def) return;
-  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  const item = ideas.find(i => i.id === cardId);
-  if (!item) return;
-  ensureBlocks(item);
-  const block = { id: newBlockId(), type: type, data: def.defaultData() };
-  item.blocks.push(block);
-  saveIdeas(ideas);
-  renderIdeas();
-  if (editMode) initSortables();
-  showToast(`已添加：${def.label}`);
 }
 
 function deleteBlock(cardId, blockId) {
@@ -2341,8 +2332,9 @@ function editBlock(cardId, blockId) {
   const block = (item.blocks || []).find(b => b.id === blockId);
   if (!block) return;
   editingContext = { cardId, blockId };
-  const def = BLOCK_TYPES[block.type] || { label: '组件' };
-  document.getElementById('blockEditTitle').textContent = `编辑：${def.label}`;
+  const labels = { text: '文本段落', heading: '小标题', image: '图片', link: '参考链接', callout: '提示框', divider: '分割线' };
+  const label = labels[block.type] || '组件';
+  document.getElementById('blockEditTitle').textContent = `编辑：${label}`;
   const body = document.getElementById('blockEditBody');
   const d = block.data || {};
   switch (block.type) {
@@ -2358,7 +2350,6 @@ function editBlock(cardId, blockId) {
           <input id="be_src" type="text" value="${escapeHtml(d.src || '')}" placeholder="图片地址（http(s)://...）">
           <input id="be_alt" type="text" value="${escapeHtml(d.alt || '')}" placeholder="替代文字（可选）">
           ${d.src ? `<img src="${escapeHtml(d.src)}" style="max-width:100%;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;">` : ''}
-          <small style="color:#6b7280;">提示：也可以在编辑模式下点击“添加组件→图片”新建。</small>
         </div>`;
       break;
     case 'link':
@@ -2455,7 +2446,10 @@ function resetCardOrder() {
   if (!confirm('重置所有卡片与组件的顺序为默认顺序？')) return;
   const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   ideas.sort((a, b) => (a.id || 0) - (b.id || 0));
-  ideas.forEach(it => { it.blocks = (it.blocks || []).filter(b => BLOCK_TYPES[b.type]); });
+  ideas.forEach(it => {
+    const keys = ['header', 'title', 'main', 'desc', 'blocks', 'images'];
+    it.blockOrder = keys;
+  });
   saveIdeas(ideas);
   renderIdeas();
   if (editMode) initSortables();
