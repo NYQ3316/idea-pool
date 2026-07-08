@@ -570,6 +570,196 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
   .card-main-layout { grid-template-columns: 1fr; }
   .card-meta-grid { grid-template-columns: 1fr; }
 }
+
+/* ========== 编辑模式 ========== */
+body.edit-mode { padding-bottom: 80px; }
+
+.edit-mode-toggle {
+  position: fixed; top: 16px; right: 16px; z-index: 1500;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 999px;
+  background: rgba(255,255,255,0.95); color: #374151;
+  border: 1px solid rgba(0,0,0,0.08);
+  font-size: 0.85rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.2s;
+}
+.edit-mode-toggle:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+.edit-mode-toggle.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+/* 组件容器：编辑模式下高亮 */
+body.edit-mode .idea-card { outline: 2px dashed rgba(99,102,241,0.35); outline-offset: -2px; }
+body.edit-mode .idea-card:hover { outline-color: #6366f1; }
+
+.edit-block {
+  position: relative;
+  transition: outline 0.15s, background 0.15s;
+}
+body.edit-mode .edit-block { outline: 1px dashed rgba(99,102,241,0.45); outline-offset: -1px; border-radius: 6px; }
+body.edit-mode .edit-block:hover { outline-color: #6366f1; background: rgba(99,102,241,0.04); }
+body.edit-mode .edit-block.sortable-ghost { opacity: 0.4; background: #eef2ff; outline: 2px dashed #6366f1; }
+body.edit-mode .edit-block.sortable-chosen { cursor: grabbing; }
+body.edit-mode .edit-block.sortable-drag { box-shadow: 0 8px 24px rgba(99,102,241,0.35); }
+
+.block-controls {
+  position: absolute; top: -10px; right: -10px;
+  display: none; gap: 4px; z-index: 10;
+}
+body.edit-mode .edit-block:hover .block-controls,
+body.edit-mode .edit-block:focus-within .block-controls { display: inline-flex; }
+
+.block-handle, .block-delete {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid #fff; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  font-family: inherit; padding: 0;
+  transition: transform 0.15s;
+}
+.block-handle { background: #6366f1; color: white; cursor: grab; }
+.block-handle:active { cursor: grabbing; }
+.block-delete { background: #ef4444; color: white; }
+.block-handle:hover, .block-delete:hover { transform: scale(1.12); }
+
+/* 卡片级：拖拽整个卡片排序 */
+body.edit-mode .idea-card { cursor: default; }
+body.edit-mode .idea-card.sortable-ghost { opacity: 0.4; }
+body.edit-mode .idea-card.sortable-drag { box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+body.edit-mode .card-drag-handle { display: inline-flex !important; }
+
+.card-drag-handle {
+  display: none;
+  position: absolute; top: 8px; left: 8px;
+  z-index: 5;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(99,102,241,0.92); color: white;
+  border: 1px solid #fff;
+  align-items: center; justify-content: center;
+  font-size: 0.85rem; cursor: grab;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  font-family: inherit; padding: 0;
+}
+.card-drag-handle:active { cursor: grabbing; }
+
+/* 底部编辑工具条 */
+.edit-toolbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1400;
+  display: none;
+  justify-content: center; gap: 10px;
+  padding: 12px 16px;
+  background: rgba(15,12,41,0.92);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+body.edit-mode .edit-toolbar { display: flex; }
+
+.edit-toolbar button {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px; border-radius: 10px;
+  background: rgba(255,255,255,0.1); color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 0.88rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: all 0.15s;
+}
+.edit-toolbar button:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
+.edit-toolbar .danger { background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.4); }
+.edit-toolbar .danger:hover { background: rgba(239,68,68,0.32); }
+
+/* 添加组件弹层 */
+.block-picker-overlay {
+  position: fixed; inset: 0; z-index: 1800;
+  background: rgba(0,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.block-picker-overlay.active { display: flex; }
+.block-picker {
+  background: white; border-radius: 14px; padding: 20px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.block-picker h3 { margin-bottom: 12px; color: #111827; font-size: 1.05rem; }
+.block-picker-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+.block-picker-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 8px; border: 1px solid #e5e7eb; border-radius: 10px;
+  background: #f9fafb; cursor: pointer; font-family: inherit;
+  transition: all 0.15s; color: #374151;
+}
+.block-picker-item:hover { background: #eef2ff; border-color: #a5b4fc; color: #4338ca; }
+.block-picker-item .picker-icon { font-size: 1.6rem; margin-bottom: 6px; }
+.block-picker-item .picker-label { font-size: 0.85rem; font-weight: 600; }
+.block-picker-cancel {
+  margin-top: 14px; width: 100%;
+  padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;
+  background: white; color: #6b7280; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.block-picker-cancel:hover { background: #f3f4f6; }
+
+/* 块级编辑弹层（用于编辑块内容） */
+.block-edit-overlay {
+  position: fixed; inset: 0; z-index: 1900;
+  background: rgba(0,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.block-edit-overlay.active { display: flex; }
+.block-edit-box {
+  background: white; border-radius: 14px; padding: 20px;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.block-edit-box h3 { margin-bottom: 12px; color: #111827; font-size: 1.05rem; }
+.block-edit-box textarea, .block-edit-box input {
+  width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;
+  font-size: 0.95rem; font-family: inherit; color: #111827;
+  resize: vertical; min-height: 80px;
+}
+.block-edit-box textarea:focus, .block-edit-box input:focus {
+  outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+.block-edit-actions { display: flex; gap: 8px; margin-top: 14px; justify-content: flex-end; }
+.block-edit-actions button {
+  padding: 8px 16px; border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; border: 1px solid #e5e7eb;
+}
+.block-edit-actions .primary { background: #6366f1; color: white; border-color: #6366f1; }
+.block-edit-actions .primary:hover { background: #4f46e5; }
+.block-edit-actions .ghost { background: white; color: #6b7280; }
+.block-edit-actions .ghost:hover { background: #f3f4f6; }
+.block-edit-actions .danger { background: white; color: #dc2626; border-color: #fecaca; }
+.block-edit-actions .danger:hover { background: #fee2e2; }
+
+/* 块样式 */
+.card-blocks { display: flex; flex-direction: column; gap: 10px; padding: 0 24px 18px; background: #ffffff; }
+.card-blocks:empty { display: none; }
+.block-text { color: #374151; font-size: 0.92rem; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+.block-heading { color: #111827; font-size: 1.02rem; font-weight: 700; margin: 4px 0; }
+.block-image { width: 100%; max-height: 360px; object-fit: cover; border-radius: 10px; border: 1px solid #e5e7eb; cursor: pointer; }
+.block-image-empty, .block-link-empty {
+  padding: 22px; text-align: center; color: #9ca3af; font-size: 0.9rem;
+  border: 2px dashed #d1d5db; border-radius: 10px; background: #f9fafb; cursor: pointer;
+}
+.block-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #6366f1; font-size: 0.9rem; font-weight: 500; text-decoration: none;
+  word-break: break-all; overflow-wrap: anywhere;
+}
+.block-link:hover { text-decoration: underline; color: #4f46e5; }
+.block-divider { border: none; border-top: 1px solid #e5e7eb; margin: 6px 0; }
+.block-callout {
+  padding: 12px 14px; border-radius: 10px; font-size: 0.9rem; line-height: 1.6;
+  border: 1px solid;
+}
+.block-callout-info    { background: #eef2ff; color: #3730a3; border-color: #c7d2fe; }
+.block-callout-success { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.block-callout-warning { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+.block-callout-danger  { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+.block-unknown { color: #ef4444; font-size: 0.85rem; font-style: italic; }
 </style>
 </head>
 <body>
@@ -634,6 +824,59 @@ textarea { resize: none; overflow: hidden; min-height: 60px; field-sizing: conte
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <span class="lightbox-close">&times;</span>
   <img id="lightboxImg" src="">
+</div>
+
+<button class="edit-mode-toggle" id="editModeToggle" onclick="toggleEditMode()">🛠️ 编辑模式</button>
+
+<div class="edit-toolbar" id="editToolbar">
+  <button onclick="openBlockPicker()">➕ 添加组件</button>
+  <button onclick="resetCardOrder()">🔀 重置顺序</button>
+  <button onclick="toggleEditMode()">✅ 完成编辑</button>
+</div>
+
+<div class="block-picker-overlay" id="blockPicker" onclick="if(event.target===this)closeBlockPicker()">
+  <div class="block-picker">
+    <h3>➕ 选择要添加的组件</h3>
+    <div class="block-picker-grid">
+      <button class="block-picker-item" data-type="text">
+        <span class="picker-icon">📝</span>
+        <span class="picker-label">文本段落</span>
+      </button>
+      <button class="block-picker-item" data-type="heading">
+        <span class="picker-icon">🏷️</span>
+        <span class="picker-label">小标题</span>
+      </button>
+      <button class="block-picker-item" data-type="image">
+        <span class="picker-icon">🖼️</span>
+        <span class="picker-label">图片</span>
+      </button>
+      <button class="block-picker-item" data-type="link">
+        <span class="picker-icon">🔗</span>
+        <span class="picker-label">参考链接</span>
+      </button>
+      <button class="block-picker-item" data-type="callout">
+        <span class="picker-icon">💡</span>
+        <span class="picker-label">提示框</span>
+      </button>
+      <button class="block-picker-item" data-type="divider">
+        <span class="picker-icon">➖</span>
+        <span class="picker-label">分割线</span>
+      </button>
+    </div>
+    <button class="block-picker-cancel" onclick="closeBlockPicker()">取消</button>
+  </div>
+</div>
+
+<div class="block-edit-overlay" id="blockEditOverlay" onclick="if(event.target===this)closeBlockEdit()">
+  <div class="block-edit-box">
+    <h3 id="blockEditTitle">编辑组件</h3>
+    <div id="blockEditBody"></div>
+    <div class="block-edit-actions">
+      <button class="danger" id="blockEditDelete" style="margin-right:auto;">🗑️ 删除组件</button>
+      <button class="ghost" onclick="closeBlockEdit()">取消</button>
+      <button class="primary" id="blockEditSave">保存</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1047,6 +1290,7 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
       author: author,
       title: extractTitle(rawText),
       desc: cleanDesc,
+      blocks: [],
       gameTypes: gameTypes,
       urls: extractUrls(rawText),
       ageMin: ageMin,
@@ -1475,6 +1719,8 @@ function renderIdeas() {
   }
 
   footer.style.display = 'flex';
+  // 保障 blocks 字段存在
+  ideas.forEach(it => { if (!Array.isArray(it.blocks)) it.blocks = []; });
   list.innerHTML = ideas.map(item => {
     const emptyText = '<span class="empty">待补充</span>';
 
@@ -1582,7 +1828,8 @@ function renderIdeas() {
          </div>`;
 
     return `
-      <div class="idea-card" id="card-${item.id}">
+      <div class="idea-card" id="card-${item.id}" data-card-id="${item.id}" style="position:relative;">
+        <button class="card-drag-handle" data-card-drag="${item.id}" title="拖动以重排卡片">⋮⋮</button>
         <!-- 卡片顶部 -->
         <div class="card-header">
           <div class="card-header-left">
@@ -1620,6 +1867,9 @@ function renderIdeas() {
         <div class="card-body" onclick="event.stopPropagation();startEditDesc(${item.id}, this)">
           <div class="card-desc" style="cursor:pointer;">${renderMarkdown(item.desc)}</div>
         </div>
+
+        <!-- 自定义组件区 -->
+        ${renderBlocksSection(item)}
 
         <!-- 图片轮播区 -->
         ${imagesSection}
@@ -1788,6 +2038,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLight
         author: item.author || '',
         title: item.title || '',
         desc: item.desc || '',
+        blocks: Array.isArray(item.blocks) ? item.blocks : [],
         gameTypes: item.gameTypes || (item.gameType ? [item.gameType] : []),
         urls: item.urls || [],
         ageMin: item.ageMin || '',
@@ -1856,7 +2107,362 @@ function loadSampleDataIfEmpty() {
 
 // 页面初始化
 loadSampleDataIfEmpty();
+migrateBlocksIfNeeded();
 renderIdeas();
+
+// ===== 组件系统（块编辑） =====
+const BLOCK_TYPES = {
+  text:    { label: '文本段落', defaultData: () => ({ text: '在这里输入正文...' }) },
+  heading: { label: '小标题',   defaultData: () => ({ text: '小标题' }) },
+  image:   { label: '图片',     defaultData: () => ({ src: '', alt: '' }) },
+  link:    { label: '参考链接', defaultData: () => ({ url: '', label: '' }) },
+  callout: { label: '提示框',   defaultData: () => ({ text: '重要提示', tone: 'info' }) },
+  divider: { label: '分割线',   defaultData: () => ({}) }
+};
+
+function newBlockId() {
+  return 'b_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function ensureBlocks(item) {
+  if (!Array.isArray(item.blocks)) item.blocks = [];
+  return item.blocks;
+}
+
+function migrateBlocksIfNeeded() {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  let dirty = false;
+  for (const item of ideas) {
+    if (!Array.isArray(item.blocks)) {
+      item.blocks = [];
+      dirty = true;
+    }
+  }
+  if (dirty) localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+}
+
+function findItem(id) {
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  return ideas.find(i => i.id === id);
+}
+
+function saveIdeas(ideas) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+}
+
+function renderBlockHtml(block) {
+  const t = block.type;
+  const d = block.data || {};
+  let inner = '';
+  switch (t) {
+    case 'text':
+      inner = `<div class="block-text">${escapeHtml(d.text || '')}</div>`;
+      break;
+    case 'heading':
+      inner = `<h3 class="block-heading">${escapeHtml(d.text || '')}</h3>`;
+      break;
+    case 'image':
+      inner = d.src
+        ? `<img class="block-image" src="${escapeHtml(d.src)}" alt="${escapeHtml(d.alt || '')}" onclick="event.stopPropagation();openLightbox('${escapeHtml(d.src)}')">`
+        : `<div class="block-image-empty" onclick="event.stopPropagation();editBlock(${block._cardId}, '${block.id}')">🖼️ 点击设置图片</div>`;
+      break;
+    case 'link':
+      inner = d.url
+        ? `<a class="block-link" href="${escapeHtml(d.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation();">🔗 ${escapeHtml(d.label || d.url)}</a>`
+        : `<div class="block-link-empty" onclick="event.stopPropagation();editBlock(${block._cardId}, '${block.id}')">🔗 点击设置链接</div>`;
+      break;
+    case 'callout':
+      inner = `<div class="block-callout block-callout-${escapeHtml(d.tone || 'info')}">${escapeHtml(d.text || '')}</div>`;
+      break;
+    case 'divider':
+      inner = `<hr class="block-divider">`;
+      break;
+    default:
+      inner = `<div class="block-unknown">[未知组件: ${escapeHtml(t)}]</div>`;
+  }
+  const controls = `<div class="block-controls">
+    <button class="block-handle" data-block-handle="${block.id}" title="拖动排序">⋮⋮</button>
+    <button class="block-delete" onclick="event.stopPropagation();deleteBlock(${block._cardId},'${block.id}')" title="删除">×</button>
+  </div>`;
+  return `<div class="edit-block block-${t}" data-block-id="${block.id}" onclick="event.stopPropagation();editBlock(${block._cardId},'${block.id}')">${controls}${inner}</div>`;
+}
+
+function renderBlocksSection(item) {
+  const blocks = ensureBlocks(item);
+  if (blocks.length === 0) {
+    return `<div class="card-blocks" data-card-blocks="${item.id}"></div>`;
+  }
+  const html = blocks.map(b => { b._cardId = item.id; return renderBlockHtml(b); }).join('');
+  return `<div class="card-blocks" data-card-blocks="${item.id}">${html}</div>`;
+}
+
+// ===== 编辑模式开关 =====
+let editMode = false;
+let sortableLibLoaded = false;
+let sortableInstances = [];
+
+function toggleEditMode() {
+  editMode = !editMode;
+  document.body.classList.toggle('edit-mode', editMode);
+  const btn = document.getElementById('editModeToggle');
+  btn.classList.toggle('active', editMode);
+  btn.textContent = editMode ? '✅ 退出编辑' : '🛠️ 编辑模式';
+  if (editMode) {
+    loadSortableAndInit();
+  } else {
+    destroySortables();
+  }
+}
+
+function destroySortables() {
+  sortableInstances.forEach(s => { try { s.destroy(); } catch(e) {} });
+  sortableInstances = [];
+}
+
+function loadSortableAndInit() {
+  if (sortableLibLoaded) { initSortables(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js';
+  s.onload = () => { sortableLibLoaded = true; initSortables(); };
+  s.onerror = () => { showToast('编辑组件库加载失败，请检查网络', true); };
+  document.head.appendChild(s);
+}
+
+function initSortables() {
+  destroySortables();
+  if (typeof Sortable === 'undefined') return;
+  // 卡片级排序
+  const list = document.getElementById('ideasList');
+  if (list) {
+    sortableInstances.push(Sortable.create(list, {
+      animation: 150,
+      handle: '.card-drag-handle',
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      onEnd: () => {
+        const order = [...list.querySelectorAll('.idea-card')].map(el => parseInt(el.dataset.cardId));
+        const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        const byId = Object.fromEntries(ideas.map(i => [i.id, i]));
+        const reordered = order.map(id => byId[id]).filter(Boolean);
+        saveIdeas(reordered);
+        showToast('已保存卡片顺序');
+      }
+    }));
+  }
+  // 块级排序
+  document.querySelectorAll('.card-blocks').forEach(container => {
+    sortableInstances.push(Sortable.create(container, {
+      animation: 150,
+      handle: '.block-handle',
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      onEnd: () => {
+        const cardId = parseInt(container.dataset.cardBlocks);
+        const order = [...container.querySelectorAll('.edit-block')].map(el => el.dataset.blockId);
+        const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        const item = ideas.find(i => i.id === cardId);
+        if (!item) return;
+        const byId = Object.fromEntries((item.blocks || []).map(b => [b.id, b]));
+        item.blocks = order.map(id => byId[id]).filter(Boolean);
+        saveIdeas(ideas);
+        showToast('组件顺序已保存');
+      }
+    }));
+  });
+}
+
+// ===== 添加组件 =====
+let pendingBlockCardId = null;
+
+function openBlockPicker(forCardId) {
+  pendingBlockCardId = forCardId || null;
+  document.getElementById('blockPicker').classList.add('active');
+}
+function closeBlockPicker() {
+  document.getElementById('blockPicker').classList.remove('active');
+  pendingBlockCardId = null;
+}
+
+document.getElementById('blockPicker').addEventListener('click', (e) => {
+  const btn = e.target.closest('.block-picker-item');
+  if (!btn) return;
+  const type = btn.dataset.type;
+  if (!type || !BLOCK_TYPES[type]) return;
+  // 优先使用 picker 调用上下文，否则让用户选择应用到哪张卡
+  if (pendingBlockCardId == null) {
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    if (list.length === 0) { showToast('暂无卡片可添加', true); return; }
+    if (list.length === 1) { addBlockToCard(list[0].id, type); closeBlockPicker(); return; }
+    const choice = prompt(`将组件添加到哪张卡片？\n输入卡片 ID（${list.map(i => '#' + String(i.id).padStart(4,'0')).join(' / ')}）`);
+    const found = list.find(i => String(i.id) === String(choice).replace(/^#/, ''));
+    if (!found) { showToast('未找到该卡片', true); return; }
+    addBlockToCard(found.id, type);
+  } else {
+    addBlockToCard(pendingBlockCardId, type);
+  }
+  closeBlockPicker();
+});
+
+function addBlockToCard(cardId, type) {
+  const def = BLOCK_TYPES[type];
+  if (!def) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === cardId);
+  if (!item) return;
+  ensureBlocks(item);
+  const block = { id: newBlockId(), type: type, data: def.defaultData() };
+  item.blocks.push(block);
+  saveIdeas(ideas);
+  renderIdeas();
+  if (editMode) initSortables();
+  showToast(`已添加：${def.label}`);
+}
+
+function deleteBlock(cardId, blockId) {
+  if (!confirm('确定删除此组件吗？')) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === cardId);
+  if (!item) return;
+  item.blocks = (item.blocks || []).filter(b => b.id !== blockId);
+  saveIdeas(ideas);
+  renderIdeas();
+  if (editMode) initSortables();
+  showToast('组件已删除');
+}
+
+// ===== 编辑组件内容 =====
+let editingContext = null;
+
+function editBlock(cardId, blockId) {
+  if (!editMode) return;
+  const item = findItem(cardId);
+  if (!item) return;
+  const block = (item.blocks || []).find(b => b.id === blockId);
+  if (!block) return;
+  editingContext = { cardId, blockId };
+  const def = BLOCK_TYPES[block.type] || { label: '组件' };
+  document.getElementById('blockEditTitle').textContent = `编辑：${def.label}`;
+  const body = document.getElementById('blockEditBody');
+  const d = block.data || {};
+  switch (block.type) {
+    case 'text':
+      body.innerHTML = `<textarea id="be_text" rows="6">${escapeHtml(d.text || '')}</textarea>`;
+      break;
+    case 'heading':
+      body.innerHTML = `<input id="be_text" type="text" value="${escapeHtml(d.text || '')}" placeholder="小标题文本">`;
+      break;
+    case 'image':
+      body.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <input id="be_src" type="text" value="${escapeHtml(d.src || '')}" placeholder="图片地址（http(s)://...）">
+          <input id="be_alt" type="text" value="${escapeHtml(d.alt || '')}" placeholder="替代文字（可选）">
+          ${d.src ? `<img src="${escapeHtml(d.src)}" style="max-width:100%;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;">` : ''}
+          <small style="color:#6b7280;">提示：也可以在编辑模式下点击“添加组件→图片”新建。</small>
+        </div>`;
+      break;
+    case 'link':
+      body.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <input id="be_url" type="text" value="${escapeHtml(d.url || '')}" placeholder="链接地址（http(s)://...）">
+          <input id="be_label" type="text" value="${escapeHtml(d.label || '')}" placeholder="显示文字（可选）">
+        </div>`;
+      break;
+    case 'callout':
+      body.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <textarea id="be_text" rows="4">${escapeHtml(d.text || '')}</textarea>
+          <select id="be_tone" style="padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
+            <option value="info"    ${d.tone==='info'?'selected':''}>信息（蓝）</option>
+            <option value="success" ${d.tone==='success'?'selected':''}>成功（绿）</option>
+            <option value="warning" ${d.tone==='warning'?'selected':''}>警告（黄）</option>
+            <option value="danger"  ${d.tone==='danger'?'selected':''}>危险（红）</option>
+          </select>
+        </div>`;
+      break;
+    case 'divider':
+      body.innerHTML = `<p style="color:#6b7280;font-size:0.9rem;">分割线没有可编辑内容。</p>`;
+      break;
+    default:
+      body.innerHTML = `<p style="color:#ef4444;">未知组件类型</p>`;
+  }
+  document.getElementById('blockEditDelete').onclick = () => {
+    deleteBlock(cardId, blockId);
+    closeBlockEdit();
+  };
+  document.getElementById('blockEditSave').onclick = saveBlockEdit;
+  document.getElementById('blockEditOverlay').classList.add('active');
+  setTimeout(() => {
+    const f = body.querySelector('input,textarea,select');
+    if (f) f.focus();
+  }, 50);
+}
+
+function closeBlockEdit() {
+  document.getElementById('blockEditOverlay').classList.remove('active');
+  editingContext = null;
+}
+
+function saveBlockEdit() {
+  if (!editingContext) return;
+  const { cardId, blockId } = editingContext;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const item = ideas.find(i => i.id === cardId);
+  if (!item) return;
+  const block = (item.blocks || []).find(b => b.id === blockId);
+  if (!block) return;
+  const body = document.getElementById('blockEditBody');
+  const d = block.data || {};
+  switch (block.type) {
+    case 'text':
+    case 'heading': {
+      const v = body.querySelector('#be_text');
+      if (v) d.text = v.value;
+      break;
+    }
+    case 'image': {
+      const s = body.querySelector('#be_src');
+      const a = body.querySelector('#be_alt');
+      if (s) d.src = s.value.trim();
+      if (a) d.alt = a.value.trim();
+      break;
+    }
+    case 'link': {
+      const u = body.querySelector('#be_url');
+      const l = body.querySelector('#be_label');
+      if (u) d.url = u.value.trim();
+      if (l) d.label = l.value.trim();
+      break;
+    }
+    case 'callout': {
+      const t = body.querySelector('#be_text');
+      const tone = body.querySelector('#be_tone');
+      if (t) d.text = t.value;
+      if (tone) d.tone = tone.value;
+      break;
+    }
+    case 'divider': break;
+  }
+  block.data = d;
+  saveIdeas(ideas);
+  renderIdeas();
+  if (editMode) initSortables();
+  closeBlockEdit();
+  showToast('组件已保存');
+}
+
+function resetCardOrder() {
+  if (!confirm('重置所有卡片与组件的顺序为默认顺序？')) return;
+  const ideas = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  ideas.sort((a, b) => (a.id || 0) - (b.id || 0));
+  ideas.forEach(it => { it.blocks = (it.blocks || []).filter(b => BLOCK_TYPES[b.type]); });
+  saveIdeas(ideas);
+  renderIdeas();
+  if (editMode) initSortables();
+  showToast('顺序已重置');
+}
+
 </script>
 
 </body>
