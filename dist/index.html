@@ -605,8 +605,7 @@ body.edit-mode .edit-block.sortable-drag { box-shadow: 0 8px 24px rgba(99,102,24
   position: absolute; top: -10px; right: -10px;
   display: none; gap: 4px; z-index: 10;
 }
-body.edit-mode .edit-block:hover .block-controls,
-body.edit-mode .edit-block:focus-within .block-controls { display: inline-flex; }
+body.edit-mode .edit-block .block-controls { display: inline-flex; }
 
 .block-handle, .block-delete {
   width: 26px; height: 26px; border-radius: 50%;
@@ -2255,6 +2254,8 @@ function initSortables() {
     sortableInstances.push(Sortable.create(container, {
       animation: 150,
       handle: '.block-handle',
+      delay: 120,
+      delayOnTouchOnly: true,
       ghostClass: 'sortable-ghost',
       chosenClass: 'sortable-chosen',
       dragClass: 'sortable-drag',
